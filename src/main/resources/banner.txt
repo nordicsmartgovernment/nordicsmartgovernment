@@ -1,0 +1,4 @@
+==============================================================================================
+Nordic Smart Government reference implementation @project.version@
+Spring Boot @parent.version@, Spring @spring.version@
+==============================================================================================
