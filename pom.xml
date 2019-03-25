@@ -139,7 +139,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <imageName>dcat/nsgtest:latest</imageName>
+                    <imageName>nsg/referenceimplementation:latest</imageName>
                     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                     <pushImage>false</pushImage>
                     <resources>
@@ -157,7 +157,7 @@
                 </configuration>
             </plugin>
 
-            
+
         </plugins>
     </build>
 </project>
