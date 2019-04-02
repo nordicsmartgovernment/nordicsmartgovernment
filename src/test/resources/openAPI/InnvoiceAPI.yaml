@@ -1,0 +1,53 @@
+openapi: 3.0.2
+info:
+  description: Provides the The Nordic Smart Government's e-invoice collection
+  version: '0.1'
+  title: The Nordic Smart Government's invoice collection API
+  contact:
+    name: Nordic Smart Government
+    url: 'https://nordicsmartgovernment.github.io'
+  license:
+    name: CC0 1.0 Universal (CC0 1.0)
+    url: 'http://creativecommons.org/publicdomain/zero/1.0/deed.no'
+externalDocs:
+  description: Dokumentasjon på Informasjonsforvaltning GitHub
+  url: https://nordicsmartgovernment.github.io/referenceImplementation/api/
+servers:
+  - url: 'https://api.nordicsmartgovernment.org'
+    description: The reference implementation server
+tags:
+  - name: invoiceCollection
+    description: invoiceCollection operations
+paths:
+  /invoices:
+    get:
+      tags:
+        - invoiceCollection
+      summary: List every invoice in the catalog
+      description: So far only simple queries is supported
+      operationId: getInvoices
+      responses:
+        '200':
+          description: OK
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Invoice"
+components:
+  schemas:
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: string
+        prefLabel:
+          type: string
+          description: Anbefalt term
+        definition:
+          type: string
+      example:
+        id: "1"
+        prefLabel: journalpost
+        definition: enkelt registrering i en journal, det vil si opplysningene om et saksdokument med eventuelle vedlegg
