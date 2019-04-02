@@ -30,6 +30,7 @@
         <maven.exec.skip>false</maven.exec.skip>
         <!--end standard properties-->
 
+        <start-class>no.nsg.Application</start-class>
         <docker.image.name>nsg/referenceimplementation</docker.image.name>
         <docker.image.tag>latest</docker.image.tag>
 
