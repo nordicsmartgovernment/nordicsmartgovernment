@@ -15,5 +15,4 @@ public class RestAPI {
 
     public static final String POST_CREATE_INVOICE  = "syntetic_business_document_generator_service/invoice";
     public static final String PATCH_PAY_INVOICE    = "syntetic_business_document_generator_service/invoice/{invoice_id}";
-
 }
