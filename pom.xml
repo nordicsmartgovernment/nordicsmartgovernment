@@ -30,6 +30,10 @@
         <maven.exec.skip>false</maven.exec.skip>
         <!--end standard properties-->
 
+        <start-class>no.nsg.Application</start-class>
+        <docker.image.name>nsg/referenceimplementation</docker.image.name>
+        <docker.image.tag>latest</docker.image.tag>
+
         <surefireArgLine/>
         <integration.test.pattern/>
     </properties>
@@ -59,8 +63,12 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.19.0</version>
+            <version>2.25.1</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
     </dependencies>
 
@@ -85,11 +93,6 @@
         </resources>
 
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -118,51 +121,37 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                        <configuration>
-                            <classifier>exec</classifier>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
-
-            <!-- skip this step by -DskipDockerBuild -->
             <plugin>
                 <groupId>com.spotify</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <version>1.1.1</version>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.10</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
+                        <id>default</id>
                         <goals>
                             <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>tag</id>
+                        <goals>
+                            <goal>tag</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <imageName>dcat/nsgtest:latest</imageName>
-                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
-                    <pushImage>false</pushImage>
-                    <resources>
-                        <resource>
-                            <targetPath>/</targetPath>
-                            <directory>${project.build.directory}</directory>
-                            <include>${project.build.finalName}-exec.jar</include>
-                            <excludes>
-                                <exclude>target/**/*</exclude>
-                                <exclude>pom.xml</exclude>
-                                <exclude>*.iml</exclude>
-                            </excludes>
-                        </resource>
-                    </resources>
+                    <dockerfile>Dockerfile</dockerfile>
+                    <repository>${docker.image.name}</repository>
+                    <tag>${docker.image.tag}</tag>
+                    <buildArgs>
+                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                    </buildArgs>
                 </configuration>
             </plugin>
 
-
+            
         </plugins>
     </build>
 </project>
