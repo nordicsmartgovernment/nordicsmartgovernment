@@ -10,8 +10,8 @@ info:
     name: CC0 1.0 Universal (CC0 1.0)
     url: 'http://creativecommons.org/publicdomain/zero/1.0/deed.no'
 externalDocs:
-  description: Dokumentasjon på Informasjonsforvaltning GitHub
-  url: https://nordicsmartgovernment.github.io/referenceImplementation/api/
+  description: Documentation on nordicsmartgovernment docs:
+  url: https://nordicsmartgovernment.github.io
 servers:
   - url: 'https://api.nordicsmartgovernment.org'
     description: The reference implementation server
