@@ -73,22 +73,23 @@
 
         <!-- Generated code dependencies -->
         <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>swagger-ui</artifactId>
-            <version>3.14.2</version>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.8.0</version>
         </dependency>
         <dependency>
-            <groupId>io.swagger</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>1.5.14</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.8.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.openapitools</groupId>
+            <artifactId>jackson-databind-nullable</artifactId>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
@@ -130,19 +131,20 @@
                             <inputSpec>${project.basedir}/src/main/resources/openAPI/InnvoiceAPI.yaml</inputSpec>
                             <validateSpec>true</validateSpec>
                             <generatorName>spring</generatorName>
+                            <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <invokerPackage>no.nsg</invokerPackage>
                             <apiPackage>no.nsg.api</apiPackage>
                             <modelPackage>no.nsg.model</modelPackage>
                             <configOptions>
                                 <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
-                                <sourceFolder>src/gen/java/main</sourceFolder>
+                                <sourceFolder>src/main/java/gen</sourceFolder>
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
                                 <java8>true</java8>
                                 <dateLibrary>java8</dateLibrary>
-                                <apiFirst>true</apiFirst>
                                 <library>spring-boot</library>
                             </configOptions>
+                            <generateSupportingFiles>false</generateSupportingFiles>
                         </configuration>
                     </execution>
                 </executions>
