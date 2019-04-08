@@ -121,7 +121,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>3.3.4</version>
+                <version>4.0.0-beta2</version>
                 <executions>
                     <execution>
                         <goals>
@@ -131,7 +131,6 @@
                             <inputSpec>${project.basedir}/src/main/resources/openAPI/InnvoiceAPI.yaml</inputSpec>
                             <validateSpec>true</validateSpec>
                             <generatorName>spring</generatorName>
-                            <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <invokerPackage>no.nsg</invokerPackage>
                             <apiPackage>no.nsg.api</apiPackage>
@@ -144,7 +143,8 @@
                                 <dateLibrary>java8</dateLibrary>
                                 <library>spring-boot</library>
                             </configOptions>
-                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                         </configuration>
                     </execution>
                 </executions>
