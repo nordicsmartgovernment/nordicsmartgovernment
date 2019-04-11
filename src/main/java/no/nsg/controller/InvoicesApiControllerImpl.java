@@ -27,8 +27,9 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
      * generated API implementation
      */
 
+    @Override
     public ResponseEntity<List<Invoice>> getInvoices() {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
