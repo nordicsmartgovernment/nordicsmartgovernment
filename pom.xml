@@ -131,10 +131,11 @@
                             <inputSpec>${project.basedir}/src/main/resources/openAPI/InnvoiceAPI.yaml</inputSpec>
                             <validateSpec>true</validateSpec>
                             <generatorName>spring</generatorName>
+                            <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
-                            <invokerPackage>no.nsg</invokerPackage>
-                            <apiPackage>no.nsg.api</apiPackage>
-                            <modelPackage>no.nsg.model</modelPackage>
+                            <invokerPackage>no.nsg.generated</invokerPackage>
+                            <apiPackage>no.nsg.generated.api</apiPackage>
+                            <modelPackage>no.nsg.generated.model</modelPackage>
                             <configOptions>
                                 <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
                                 <sourceFolder>src/main/java/gen</sourceFolder>
