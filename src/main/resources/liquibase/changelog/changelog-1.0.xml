@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+    <changeSet author="extfrg" id="1.0-0">
+        <sql endDelimiter=";">
+            CREATE SCHEMA IF NOT EXISTS nsg
+        </sql>
+    </changeSet>
+
+    <changeSet author="extfrg" id="1.0-1">
+        <createSequence sequenceName="invoice_seq" schemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="1.0-7">
+        <createTable tableName="invoice" schemaName="nsg">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="invoice_pkey"/>
+            </column>
+            <column name="preflabel" type="TEXT"/>
+            <column name="definition" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
