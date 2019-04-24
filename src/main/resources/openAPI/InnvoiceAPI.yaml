@@ -23,8 +23,7 @@ paths:
     get:
       tags:
         - invoiceCollection
-      summary: List every invoice in the catalog
-      description: So far only simple queries is supported
+      description: List every invoice in the catalog
       operationId: getInvoices
       responses:
         '200':
@@ -35,19 +34,46 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Invoice"
+    post:
+      tags:
+        - invoiceCollection
+      description: create new invoice in the catalog
+      operationId: createInvoice
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The url to the new invoice
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/Invoice"
 components:
   schemas:
     Invoice:
       type: object
       properties:
+        customizationID:
+          type: string
+        profileID:
+          type: string
         id:
           type: string
-        prefLabel:
+        issueDate:
           type: string
-          description: Anbefalt term
-        definition:
+          format: date
+        dueDate:
           type: string
-      example:
-        id: "1"
-        prefLabel: journalpost
-        definition: enkelt registrering i en journal, det vil si opplysningene om et saksdokument med eventuelle vedlegg
+        invoiceTypeCode:
+          type: string
+        documentCurrencyCode:
+          type: string
+        accountingCost:
+          type: string
+        buyerReference:
+          type: string
