@@ -1,9 +1,8 @@
 package no.nsg.repository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import org.springframework.util.StringUtils;
+
+import java.sql.*;
 import java.text.MessageFormat;
 
 
@@ -52,6 +51,32 @@ public class ConnectionManager {
 				} catch (Exception e) {
 					throw e;
 				}
+
+				// Is the regular user created?
+				int user_count = 1;
+				try (PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(1) FROM pg_user WHERE pg_user.usename=?")) {
+					stmt.setString(1, System.getenv("NSG_POSTGRES_USER"));
+					ResultSet rs = stmt.executeQuery();
+					if (rs.next()) {
+						user_count = rs.getInt(1);
+					}
+				} catch (Exception e) {
+					throw e;
+				}
+
+				// If not created, create it now
+				if (user_count < 1) {
+					try (Statement stmt = connection.createStatement()) {
+						stmt.executeUpdate("CREATE USER " +
+										   StringUtils.replace(System.getenv("NSG_POSTGRES_USER"), "'", "''") +
+								           " WITH PASSWORD '" +
+								           StringUtils.replace(System.getenv("NSG_POSTGRES_PASSWORD"), "'", "''") +
+								           "'");
+					} catch (Exception e) {
+						throw e;
+					}
+				}
+
 				connection.commit();
 			}
 
