@@ -53,6 +53,26 @@ paths:
           application/xml:
             schema:
               $ref: "#/components/schemas/Invoice"
+  /invoices/{id}:
+    get:
+      tags:
+        - invoiceCollection
+      description: Get an invoice by id
+      operationId: getInvoiceById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the Invoice
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Invoice"
 components:
   schemas:
     Invoice:
