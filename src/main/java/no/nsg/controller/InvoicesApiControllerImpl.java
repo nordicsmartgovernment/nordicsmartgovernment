@@ -28,6 +28,16 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
      */
 
     @Override
+    public ResponseEntity<Void> createInvoice(Invoice invoice) {
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Invoice> getInvoiceById(String id) {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Override
     public ResponseEntity<List<Invoice>> getInvoices() {
         return new ResponseEntity<>(HttpStatus.OK);
     }
