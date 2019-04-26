@@ -80,20 +80,38 @@ components:
       properties:
         customizationID:
           type: string
+          xml:
+            name: CustomizationID
         profileID:
           type: string
+          xml:
+            name: ProfileID
         id:
           type: string
+          xml:
+            name: ID
         issueDate:
           type: string
           format: date
+          xml:
+            name: IssueDate
         dueDate:
           type: string
+          xml:
+            name: DueDate
         invoiceTypeCode:
           type: string
+          xml:
+            name: InvoiceTypeCode
         documentCurrencyCode:
           type: string
+          xml:
+            name: DocumentCurrencyCode
         accountingCost:
           type: string
+          xml:
+            name: AccountingCost
         buyerReference:
           type: string
+          xml:
+            name: BuyerReference
