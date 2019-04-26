@@ -44,15 +44,15 @@ public class InvoicesApiControllerTest {
         ObjectMapper xmlMapper = new XmlMapper();
         Invoice invoice = xmlMapper.readValue("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<Invoice>\n" +
-                "  <customizationID>customizationID</customizationID>\n" +
-                "  <profileID>profileID</profileID>\n" +
-                "  <id>id</id>\n" +
-                "  <issueDate></issueDate>\n" +
-                "  <dueDate>dueDate</dueDate>\n" +
-                "  <invoiceTypeCode>invoiceTypeCode</invoiceTypeCode>\n" +
-                "  <documentCurrencyCode>documentCurrencyCode</documentCurrencyCode>\n" +
-                "  <accountingCost>accountingCost</accountingCost>\n" +
-                "  <buyerReference>buyerReference</buyerReference>\n" +
+                "  <CustomizationID>customizationID</CustomizationID>\n" +
+                "  <ProfileID>profileID</ProfileID>\n" +
+                "  <ID>id</ID>\n" +
+                "  <IssueDate>2019-01-01</IssueDate>\n" +
+                "  <DueDate>dueDate</DueDate>\n" +
+                "  <InvoiceTypeCode>invoiceTypeCode</InvoiceTypeCode>\n" +
+                "  <DocumentCurrencyCode>documentCurrencyCode</DocumentCurrencyCode>\n" +
+                "  <AccountingCost>accountingCost</AccountingCost>\n" +
+                "  <BuyerReference>buyerReference</BuyerReference>\n" +
                 "</Invoice>", Invoice.class);
 
         Assert.assertNotNull(invoice);
