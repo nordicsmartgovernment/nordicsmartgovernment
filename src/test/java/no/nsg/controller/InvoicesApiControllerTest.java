@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 
@@ -42,6 +43,8 @@ public class InvoicesApiControllerTest {
     @Test
     public void testDeserialize() throws IOException {
         ObjectMapper xmlMapper = new XmlMapper();
+        xmlMapper.findAndRegisterModules();
+
         Invoice invoice = xmlMapper.readValue("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                 "<Invoice>\n" +
                 "  <CustomizationID>customizationID</CustomizationID>\n" +

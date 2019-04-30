@@ -1,6 +1,9 @@
 package no.nsg.controller;
 
 import no.nsg.generated.model.Invoice;
+import no.nsg.repository.InvoiceManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +15,8 @@ import java.util.List;
 
 @Controller
 public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesApi {
+    private static Logger LOGGER = LoggerFactory.getLogger(InvoicesApiControllerImpl.class);
+
 
     @RequestMapping(value="/ping", method=RequestMethod.GET, produces={"text/plain"})
     public ResponseEntity<String> getPing() {
@@ -29,7 +34,19 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
 
     @Override
     public ResponseEntity<Void> createInvoice(Invoice invoice) {
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        Invoice persistedInvoice;
+        try {
+            persistedInvoice = InvoiceManager.getInstance().createInvoice(invoice);
+        } catch (Exception e) {
+            LOGGER.error("POST_CREATEINVOICE failed:", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (persistedInvoice==null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
     }
 
     @Override

@@ -78,40 +78,22 @@ components:
     Invoice:
       type: object
       properties:
-        customizationID:
+        CustomizationID:
           type: string
-          xml:
-            name: CustomizationID
-        profileID:
+        ProfileID:
           type: string
-          xml:
-            name: ProfileID
-        id:
+        ID:
           type: string
-          xml:
-            name: ID
-        issueDate:
+        IssueDate:
           type: string
           format: date
-          xml:
-            name: IssueDate
-        dueDate:
+        DueDate:
           type: string
-          xml:
-            name: DueDate
-        invoiceTypeCode:
+        InvoiceTypeCode:
           type: string
-          xml:
-            name: InvoiceTypeCode
-        documentCurrencyCode:
+        DocumentCurrencyCode:
           type: string
-          xml:
-            name: DocumentCurrencyCode
-        accountingCost:
+        AccountingCost:
           type: string
-          xml:
-            name: AccountingCost
-        buyerReference:
+        BuyerReference:
           type: string
-          xml:
-            name: BuyerReference

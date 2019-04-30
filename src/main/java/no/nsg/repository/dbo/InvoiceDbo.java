@@ -19,6 +19,22 @@ public class InvoiceDbo extends Invoice {
     public InvoiceDbo() {
         super();
         this._id = UNINITIALIZED;
+        _invoiceoriginalid = InvoiceOriginalDbo.UNINITIALIZED;
+    }
+
+    public InvoiceDbo(final Invoice invoice) {
+        super();
+        this._id = UNINITIALIZED;
+        this._id = UNINITIALIZED;
+        setCustomizationID(invoice.getCustomizationID());
+        setProfileID(invoice.getProfileID());
+        setID(invoice.getID());
+        setIssueDate(invoice.getIssueDate());
+        setDueDate(invoice.getDueDate());
+        setInvoiceTypeCode(invoice.getInvoiceTypeCode());
+        setDocumentCurrencyCode(invoice.getDocumentCurrencyCode());
+        setAccountingCost(invoice.getAccountingCost());
+        setBuyerReference(invoice.getBuyerReference());
     }
 
     public int getInternalId() {
@@ -34,7 +50,7 @@ public class InvoiceDbo extends Invoice {
             final String sql = "INSERT INTO nsg.invoice (_invoiceoriginalid, " +
                                                         "customizationid, profileid, id, issuedate, duedate, invoicetypecode, " +
                                                         "documentcurrencycode, accountingcost, buyerreference) " +
-                                      "VALUES (?,?,?,?,?,?,?)";
+                                      "VALUES (?,?,?,?,?,?,?,?,?,?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 if (_invoiceoriginalid == InvoiceOriginalDbo.UNINITIALIZED) {
                     stmt.setNull(1, Types.INTEGER);
@@ -43,7 +59,7 @@ public class InvoiceDbo extends Invoice {
                 }
                 stmt.setString(2, getCustomizationID());
                 stmt.setString(3, getProfileID());
-                stmt.setString(4, getId());
+                stmt.setString(4, getID());
                 stmt.setDate(5, Date.valueOf(getIssueDate()));
                 stmt.setString(6, getDueDate());
                 stmt.setString(7, getInvoiceTypeCode());
@@ -71,7 +87,7 @@ public class InvoiceDbo extends Invoice {
                 }
                 stmt.setString(2, getCustomizationID());
                 stmt.setString(3, getProfileID());
-                stmt.setString(4, getId());
+                stmt.setString(4, getID());
                 stmt.setDate(5, Date.valueOf(getIssueDate()));
                 stmt.setString(6, getDueDate());
                 stmt.setString(7, getInvoiceTypeCode());
