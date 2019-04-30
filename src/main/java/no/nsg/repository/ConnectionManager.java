@@ -1,5 +1,7 @@
 package no.nsg.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.sql.*;
@@ -7,6 +9,8 @@ import java.text.MessageFormat;
 
 
 public class ConnectionManager {
+
+	private static Logger LOGGER = LoggerFactory.getLogger(ConnectionManager.class);
 
 	public static final String DB_SCHEMA = "nsg";
 
@@ -20,10 +24,10 @@ public class ConnectionManager {
 			PropertyManager propertyManager = PropertyManager.getInstance();
 			Class.forName(propertyManager.getProperty("driver")).newInstance();
 
-			String host = System.getenv("NSG_POSTGRES_HOST");
-			String db = System.getenv("NSG_POSTGRES_DB");
-			if (db==null) {
-				db = "nsg_db";
+			String safeHost = StringUtils.replace(System.getenv("NSG_POSTGRES_HOST"), "'", "''");
+			String safeDb = StringUtils.replace(System.getenv("NSG_POSTGRES_DB"), "'", "''");
+			if (safeDb==null) {
+				safeDb = "nsg_db";
 			}
 
 			String username = null;
@@ -37,47 +41,22 @@ public class ConnectionManager {
 				password = System.getenv("NSG_POSTGRES_PASSWORD");
 			}
 
-			if (host==null || username==null || password==null) {
+			if (safeHost==null || username==null || password==null) {
 				throw new RuntimeException("System environment variable NSG_POSTGRES_HOST, NSG_POSTGRES_DB, NSG_POSTGRES_DBO_USER/NSG_POSTGRES_USER and NSG_POSTGRES_DBO_PASSWORD/NSG_POSTGRES_PASSWORD not set correctly.");
 			}
 
-			String dbUrl = MessageFormat.format(propertyManager.getProperty("nsg_db_url"), host, db, username, password);
+			String dbUrl = MessageFormat.format(propertyManager.getProperty("nsg_db_url"), safeHost, safeDb, username, password);
 			Connection connection = DriverManager.getConnection(dbUrl);
 			connection.setAutoCommit(false);
 
 			if (requireDboPermissions) {
 				try (Statement stmt = connection.createStatement()) {
+					LOGGER.info("Creating schema " + DB_SCHEMA);
 					stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + DB_SCHEMA);
+					connection.commit();
 				} catch (Exception e) {
 					throw e;
 				}
-
-				// Is the regular user created?
-				int user_count = 1;
-				try (PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(1) FROM pg_user WHERE pg_user.usename=?")) {
-					stmt.setString(1, System.getenv("NSG_POSTGRES_USER"));
-					ResultSet rs = stmt.executeQuery();
-					if (rs.next()) {
-						user_count = rs.getInt(1);
-					}
-				} catch (Exception e) {
-					throw e;
-				}
-
-				// If not created, create it now
-				if (user_count < 1) {
-					try (Statement stmt = connection.createStatement()) {
-						stmt.executeUpdate("CREATE USER " +
-										   StringUtils.replace(System.getenv("NSG_POSTGRES_USER"), "'", "''") +
-								           " WITH PASSWORD '" +
-								           StringUtils.replace(System.getenv("NSG_POSTGRES_PASSWORD"), "'", "''") +
-								           "'");
-					} catch (Exception e) {
-						throw e;
-					}
-				}
-
-				connection.commit();
 			}
 
 			return connection;
@@ -86,4 +65,39 @@ public class ConnectionManager {
 		}
 	}
 
+	public static void createRegularUser(final Connection connection) throws SQLException {
+		try {
+			// Is the regular user created?
+			int user_count = 1;
+			try (PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(1) FROM pg_user WHERE pg_user.usename=?")) {
+				stmt.setString(1, System.getenv("NSG_POSTGRES_USER"));
+				ResultSet rs = stmt.executeQuery();
+				if (rs.next()) {
+					user_count = rs.getInt(1);
+				}
+			} catch (Exception e) {
+				throw e;
+			}
+
+			// If not created, create it now
+			if (user_count < 1) {
+				try (Statement stmt = connection.createStatement()) {
+					final String safeDb = StringUtils.replace(System.getenv("NSG_POSTGRES_DB"), "'", "''");
+					final String safeUser = StringUtils.replace(System.getenv("NSG_POSTGRES_USER"), "'", "''");
+					final String safePassword = StringUtils.replace(System.getenv("NSG_POSTGRES_PASSWORD"), "'", "''");
+
+					LOGGER.info("Creating regular user " + safeUser);
+					stmt.executeUpdate("CREATE USER " +	safeUser + " WITH PASSWORD '" + safePassword + "'");
+					stmt.executeUpdate("GRANT CONNECT ON DATABASE " + safeDb + " TO " + safeUser);
+					stmt.executeUpdate("GRANT USAGE ON SCHEMA " + DB_SCHEMA + " TO " + safeUser);
+					stmt.executeUpdate("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA " + DB_SCHEMA + " TO " + safeUser);
+					stmt.executeUpdate("GRANT USAGE ON ALL SEQUENCES IN SCHEMA " + DB_SCHEMA + " TO " + safeUser);
+				} catch (Exception e) {
+					throw e;
+				}
+			}
+		} catch (Exception e) {
+			throw new SQLException(e);
+		}
+	}
 }

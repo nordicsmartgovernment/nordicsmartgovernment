@@ -34,6 +34,7 @@ public class Application {
                 database.setLiquibaseSchemaName(ConnectionManager.DB_SCHEMA);
                 Liquibase liquibase = new Liquibase("liquibase/changelog/changelog-master.xml", new ClassLoaderResourceAccessor(), database);
                 liquibase.update(new Contexts(), new LabelExpression());
+                ConnectionManager.createRegularUser(connection);
                 connection.commit();
                 LOGGER.info("Liquibase synced OK.");
             } catch (LiquibaseException | SQLException e) {
