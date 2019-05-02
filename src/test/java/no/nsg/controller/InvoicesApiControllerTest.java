@@ -3,6 +3,7 @@ package no.nsg.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import no.nsg.generated.model.Invoice;
+import no.nsg.repository.dbo.InvoiceDbo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 
@@ -38,6 +38,24 @@ public class InvoicesApiControllerTest {
         InvoicesApiControllerImpl invoicesApiController = new InvoicesApiControllerImpl();
         ResponseEntity<List<Invoice>> response = invoicesApiController.getInvoices();
         Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
+    }
+
+    @Test
+    public void testSerialize() throws IOException {
+        ObjectMapper xmlMapper = new XmlMapper();
+        xmlMapper.findAndRegisterModules();
+
+        Invoice invoice = new InvoiceDbo();
+        invoice.setID("1");
+
+        String xml = xmlMapper.writeValueAsString(invoice);
+
+        Assert.assertNotNull(xml);
+
+        Assert.assertTrue(xml.contains("<ID>"));
+        Assert.assertFalse(xml.contains("<Id>"));
+        Assert.assertFalse(xml.contains("<id>"));
+        Assert.assertFalse(xml.contains("<_id>"));
     }
 
     @Test

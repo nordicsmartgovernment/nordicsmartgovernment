@@ -1,11 +1,14 @@
 package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsg.generated.model.Invoice;
 
 import java.sql.*;
+import java.util.NoSuchElementException;
 
 
+@JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class InvoiceDbo extends Invoice {
     public static final int UNINITIALIZED = 0;
 
@@ -25,7 +28,7 @@ public class InvoiceDbo extends Invoice {
     public InvoiceDbo(final Invoice invoice) {
         super();
         this._id = UNINITIALIZED;
-        this._id = UNINITIALIZED;
+        this._invoiceoriginalid = InvoiceOriginalDbo.UNINITIALIZED;
         setCustomizationID(invoice.getCustomizationID());
         setProfileID(invoice.getProfileID());
         setID(invoice.getID());
@@ -37,16 +40,42 @@ public class InvoiceDbo extends Invoice {
         setBuyerReference(invoice.getBuyerReference());
     }
 
-    public int getInternalId() {
+    public InvoiceDbo(final Connection connection, final int id) throws SQLException {
+        final String sql = "SELECT customizationid, profileid, id, issuedate, duedate, invoicetypecode, documentcurrencycode, " +
+                                  "accountingcost, buyerreference FROM invoice WHERE _id=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (!rs.next()) {
+                throw new NoSuchElementException();
+            }
+
+            this._id = id;
+            setCustomizationID(rs.getString("customizationid"));
+            setProfileID(rs.getString("profileid"));
+            setID(rs.getString("id"));
+            Date issueDate = rs.getDate("issuedate");
+            if (!rs.wasNull() && issueDate != null) {
+                setIssueDate(issueDate.toLocalDate());
+            }
+            setDueDate(rs.getString("duedate"));
+            setInvoiceTypeCode(rs.getString("invoicetypecode"));
+            setDocumentCurrencyCode(rs.getString("documentcurrencycode"));
+            setAccountingCost(rs.getString("accountingcost"));
+            setBuyerReference(rs.getString("buyerreference"));
+        }
+    }
+
+    public int get_id() {
         return this._id;
     }
 
-    public void setInvoiceOriginalId(int invoiceOriginalId) {
+    public void set_InvoiceOriginalId(int invoiceOriginalId) {
         this._invoiceoriginalid = invoiceOriginalId;
     }
 
     public void persist(final Connection connection) throws SQLException {
-        if (getInternalId() == UNINITIALIZED) {
+        if (get_id() == UNINITIALIZED) {
             final String sql = "INSERT INTO nsg.invoice (_invoiceoriginalid, " +
                                                         "customizationid, profileid, id, issuedate, duedate, invoicetypecode, " +
                                                         "documentcurrencycode, accountingcost, buyerreference) " +
@@ -94,7 +123,7 @@ public class InvoiceDbo extends Invoice {
                 stmt.setString(8, getDocumentCurrencyCode());
                 stmt.setString(9, getAccountingCost());
                 stmt.setString(10, getBuyerReference());
-                stmt.setInt(11, getInternalId());
+                stmt.setInt(11, get_id());
 
                 stmt.executeUpdate();
             }
