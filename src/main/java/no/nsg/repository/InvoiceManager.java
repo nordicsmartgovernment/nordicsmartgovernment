@@ -41,8 +41,25 @@ public class InvoiceManager {
         return newInvoiceDbo;
     }
 
-    public Invoice getInvoiceById(String id) {
-        return null;
+    public Invoice getInvoiceById(final String id) throws SQLException {
+        Invoice invoice = null;
+        try (Connection connection = ConnectionManager.getConnection()) {
+            try {
+                try {
+                    invoice = new InvoiceDbo(connection, InvoiceDbo.findInternalId(connection, id));
+                } catch (NoSuchElementException|NumberFormatException e) {
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                    throw e;
+                } catch (SQLException e2) {
+                    throw e2;
+                }
+            }
+        }
+        return invoice;
     }
 
     public List<Invoice> getInvoices() throws SQLException {

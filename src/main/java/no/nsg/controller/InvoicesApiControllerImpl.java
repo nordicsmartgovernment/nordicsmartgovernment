@@ -54,7 +54,19 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
 
     @Override
     public ResponseEntity<Invoice> getInvoiceById(String id) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        Invoice invoice;
+        try {
+            invoice = invoiceManager.getInvoiceById(id);
+        } catch (Exception e) {
+            LOGGER.error("GET_GETINVOICE failed:", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (invoice==null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(invoice, HttpStatus.OK);
+        }
     }
 
     @Override
@@ -70,7 +82,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
         if (invoices==null || invoices.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(invoices, HttpStatus.CREATED);
+            return new ResponseEntity<>(invoices, HttpStatus.OK);
         }
     }
 

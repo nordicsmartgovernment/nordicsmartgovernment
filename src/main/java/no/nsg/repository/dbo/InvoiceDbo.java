@@ -40,17 +40,21 @@ public class InvoiceDbo extends Invoice {
         setBuyerReference(invoice.getBuyerReference());
     }
 
-    public InvoiceDbo(final Connection connection, final int id) throws SQLException {
+    public InvoiceDbo(final Connection connection, final int _id) throws SQLException {
+        if (_id == UNINITIALIZED) {
+            throw new NoSuchElementException();
+        }
+
         final String sql = "SELECT customizationid, profileid, id, issuedate, duedate, invoicetypecode, documentcurrencycode, " +
                                   "accountingcost, buyerreference FROM invoice WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, id);
+            stmt.setInt(1, _id);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
                 throw new NoSuchElementException();
             }
 
-            this._id = id;
+            this._id = _id;
             setCustomizationID(rs.getString("customizationid"));
             setProfileID(rs.getString("profileid"));
             setID(rs.getString("id"));
@@ -64,6 +68,18 @@ public class InvoiceDbo extends Invoice {
             setAccountingCost(rs.getString("accountingcost"));
             setBuyerReference(rs.getString("buyerreference"));
         }
+    }
+
+    public static int findInternalId(final Connection connection, final String id) throws SQLException {
+        final String sql = "SELECT _id FROM invoice WHERE id=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("_id");
+            }
+        }
+        throw new NoSuchElementException();
     }
 
     public int get_id() {
