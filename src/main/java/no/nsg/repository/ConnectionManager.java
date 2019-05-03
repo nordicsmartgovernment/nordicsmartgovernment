@@ -51,7 +51,7 @@ public class ConnectionManager {
 
 			if (requireDboPermissions) {
 				try (Statement stmt = connection.createStatement()) {
-					LOGGER.info("Creating schema " + DB_SCHEMA);
+					LOGGER.info("Creating schema " + DB_SCHEMA + " if not exists");
 					stmt.executeUpdate("CREATE SCHEMA IF NOT EXISTS " + DB_SCHEMA);
 					connection.commit();
 				} catch (Exception e) {
