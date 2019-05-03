@@ -25,10 +25,10 @@ public class InvoiceDbo extends Invoice {
         _invoiceoriginalid = InvoiceOriginalDbo.UNINITIALIZED;
     }
 
-    public InvoiceDbo(final Invoice invoice) {
+    public InvoiceDbo(final Invoice invoice, final InvoiceOriginalDbo invoiceOriginal) {
         super();
         this._id = UNINITIALIZED;
-        this._invoiceoriginalid = InvoiceOriginalDbo.UNINITIALIZED;
+        set_InvoiceOriginalId(invoiceOriginal == null ? InvoiceOriginalDbo.UNINITIALIZED : invoiceOriginal.get_id());
         setCustomizationID(invoice.getCustomizationID());
         setProfileID(invoice.getProfileID());
         setID(invoice.getID());
@@ -45,8 +45,8 @@ public class InvoiceDbo extends Invoice {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT customizationid, profileid, id, issuedate, duedate, invoicetypecode, documentcurrencycode, " +
-                                  "accountingcost, buyerreference FROM invoice WHERE _id=?";
+        final String sql = "SELECT _invoiceoriginalid, customizationid, profileid, id, issuedate, duedate, invoicetypecode, "+
+                                  "documentcurrencycode, accountingcost, buyerreference FROM invoice WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, _id);
             ResultSet rs = stmt.executeQuery();
@@ -55,6 +55,11 @@ public class InvoiceDbo extends Invoice {
             }
 
             this._id = _id;
+            set_InvoiceOriginalId(rs.getInt("_invoiceoriginalid"));
+            if (rs.wasNull()) {
+                set_InvoiceOriginalId(InvoiceOriginalDbo.UNINITIALIZED);
+            }
+
             setCustomizationID(rs.getString("customizationid"));
             setProfileID(rs.getString("profileid"));
             setID(rs.getString("id"));
@@ -86,8 +91,8 @@ public class InvoiceDbo extends Invoice {
         return this._id;
     }
 
-    public void set_InvoiceOriginalId(int invoiceOriginalId) {
-        this._invoiceoriginalid = invoiceOriginalId;
+    public void set_InvoiceOriginalId(int _invoiceOriginalId) {
+        this._invoiceoriginalid = _invoiceOriginalId;
     }
 
     public void persist(final Connection connection) throws SQLException {

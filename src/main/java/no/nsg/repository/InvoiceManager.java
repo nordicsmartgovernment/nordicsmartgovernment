@@ -2,6 +2,7 @@ package no.nsg.repository;
 
 import no.nsg.generated.model.Invoice;
 import no.nsg.repository.dbo.InvoiceDbo;
+import no.nsg.repository.dbo.InvoiceOriginalDbo;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -17,7 +18,7 @@ import java.util.NoSuchElementException;
 public class InvoiceManager {
 
 
-    public Invoice createInvoice(final Invoice newInvoice) throws SQLException {
+    public Invoice createInvoice(final String invoiceOriginalXml, final Invoice newInvoice) throws SQLException {
         InvoiceDbo newInvoiceDbo;
         try (Connection connection = ConnectionManager.getConnection()) {
             try {
@@ -25,7 +26,10 @@ public class InvoiceManager {
                     return null;
                 }
 
-                newInvoiceDbo = new InvoiceDbo(newInvoice);
+                InvoiceOriginalDbo newInvoiceOriginalDbo = new InvoiceOriginalDbo(invoiceOriginalXml);
+                newInvoiceOriginalDbo.persist(connection);
+
+                newInvoiceDbo = new InvoiceDbo(newInvoice, newInvoiceOriginalDbo);
                 newInvoiceDbo.persist(connection);
                 connection.commit();
             } catch (SQLException e) {

@@ -39,7 +39,8 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
     public ResponseEntity<Void> createInvoice(Invoice invoice) {
         Invoice persistedInvoice;
         try {
-            persistedInvoice = invoiceManager.createInvoice(invoice);
+            final String original = "asdf";
+            persistedInvoice = invoiceManager.createInvoice(original, invoice);
         } catch (Exception e) {
             LOGGER.error("POST_CREATEINVOICE failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
