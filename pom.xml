@@ -164,6 +164,7 @@
                                 <java8>true</java8>
                                 <dateLibrary>java8</dateLibrary>
                                 <library>spring-boot</library>
+                                <delegatePattern>false</delegatePattern>
                             </configOptions>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
