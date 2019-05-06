@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
@@ -21,12 +21,12 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
     @Autowired
     private InvoiceManager invoiceManager;
 
-    @RequestMapping(value="/ping", method=RequestMethod.GET, produces={"text/plain"})
+    @GetMapping(value="/ping", produces={"text/plain"})
     public ResponseEntity<String> getPing() {
         return ResponseEntity.ok("pong");
     }
 
-    @RequestMapping(value="/ready", method=RequestMethod.GET)
+    @GetMapping(value="/ready")
     public ResponseEntity getReady() {
         return ResponseEntity.ok().build();
     }
