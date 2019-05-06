@@ -7,10 +7,12 @@ import no.nsg.repository.dbo.InvoiceDbo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,6 +20,8 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 public class InvoicesApiControllerTest {
 
+    @Mock
+    HttpServletRequest httpServletRequestMock;
 
     @Test
     public void happyDay()
@@ -29,14 +33,14 @@ public class InvoicesApiControllerTest {
     public void createInvoiceTest() {
         InvoicesApiControllerImpl invoicesApiController = new InvoicesApiControllerImpl();
         Invoice invoice = new Invoice();
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(invoice);
+        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, invoice);
         Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
     }
 
     @Test
     public void getInvoicesTest() {
         InvoicesApiControllerImpl invoicesApiController = new InvoicesApiControllerImpl();
-        ResponseEntity<List<Invoice>> response = invoicesApiController.getInvoices();
+        ResponseEntity<List<Invoice>> response = invoicesApiController.getInvoices(httpServletRequestMock);
         Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
     }
 

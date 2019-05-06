@@ -9,8 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 
@@ -36,10 +37,11 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
      */
 
     @Override
-    public ResponseEntity<Void> createInvoice(Invoice invoice) {
+    public ResponseEntity<Void> createInvoice(HttpServletRequest httpServletRequest, Invoice invoice) {
         Invoice persistedInvoice;
         try {
-            final String original = "asdf";
+            ContentCachingRequestWrapper requestCacheWrapperObject = (ContentCachingRequestWrapper) httpServletRequest;
+            String original = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
             persistedInvoice = invoiceManager.createInvoice(original, invoice);
         } catch (Exception e) {
             LOGGER.error("POST_CREATEINVOICE failed:", e);
@@ -54,7 +56,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
     }
 
     @Override
-    public ResponseEntity<Invoice> getInvoiceById(String id) {
+    public ResponseEntity<Invoice> getInvoiceById(HttpServletRequest httpServletRequest, String id) {
         Invoice invoice;
         try {
             invoice = invoiceManager.getInvoiceById(id);
@@ -71,7 +73,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
     }
 
     @Override
-    public ResponseEntity<List<Invoice>> getInvoices() {
+    public ResponseEntity<List<Invoice>> getInvoices(HttpServletRequest httpServletRequest) {
         List<Invoice> invoices;
         try {
             invoices = invoiceManager.getInvoices();
