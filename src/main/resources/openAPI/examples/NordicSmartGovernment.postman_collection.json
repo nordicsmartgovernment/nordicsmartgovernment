@@ -1,0 +1,100 @@
+{
+	"info": {
+		"_postman_id": "356886a9-7ceb-4156-8424-b28cc421c169",
+		"name": "NordicSmartGovernment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST data",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/xml",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Invoice xmlns:cac=\"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2\"\n    xmlns:cbc=\"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2\"\n    xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\">\n    <cbc:CustomizationID>urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0</cbc:CustomizationID>\n    <cbc:ProfileID>urn:fdc:peppol.eu:2017:poacc:billing:01:1.0</cbc:ProfileID>\n    <cbc:ID>Snippet1</cbc:ID>\n    <cbc:IssueDate>2017-11-13</cbc:IssueDate>\n    <cbc:DueDate>2017-12-01</cbc:DueDate>\n    <cbc:InvoiceTypeCode>380</cbc:InvoiceTypeCode>\n    <cbc:DocumentCurrencyCode>EUR</cbc:DocumentCurrencyCode>\n    <cbc:AccountingCost>4025:123:4343</cbc:AccountingCost>\n    <cbc:BuyerReference>0150abc</cbc:BuyerReference>\n    <cac:AccountingSupplierParty>\n        <cac:Party>\n            <cbc:EndpointID schemeID=\"0088\">9482348239847239874</cbc:EndpointID>\n            <cac:PartyIdentification>\n                <cbc:ID>99887766</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyName>\n                <cbc:Name>SupplierTradingName Ltd.</cbc:Name>\n            </cac:PartyName>\n            <cac:PostalAddress>\n                <cbc:StreetName>Main street 1</cbc:StreetName>\n                <cbc:AdditionalStreetName>Postbox 123</cbc:AdditionalStreetName>\n                <cbc:CityName>London</cbc:CityName>\n                <cbc:PostalZone>GB 123 EW</cbc:PostalZone>\n                <cac:Country>\n                    <cbc:IdentificationCode>GB</cbc:IdentificationCode>\n                </cac:Country>\n            </cac:PostalAddress>\n            <cac:PartyTaxScheme>\n                <cbc:CompanyID>GB1232434</cbc:CompanyID>\n                <cac:TaxScheme>\n                    <cbc:ID>VAT</cbc:ID>\n                </cac:TaxScheme>\n            </cac:PartyTaxScheme>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName>SupplierOfficialName Ltd</cbc:RegistrationName>\n                <cbc:CompanyID>GB983294</cbc:CompanyID>\n            </cac:PartyLegalEntity>\n        </cac:Party>\n    </cac:AccountingSupplierParty>\n    <cac:AccountingCustomerParty>\n        <cac:Party>\n            <cbc:EndpointID schemeID=\"0002\">FR23342</cbc:EndpointID>\n            <cac:PartyIdentification>\n                <cbc:ID schemeID=\"0002\">FR23342</cbc:ID>\n            </cac:PartyIdentification>\n            <cac:PartyName>\n                <cbc:Name>BuyerTradingName AS</cbc:Name>\n            </cac:PartyName>\n            <cac:PostalAddress>\n                <cbc:StreetName>Hovedgatan 32</cbc:StreetName>\n                <cbc:AdditionalStreetName>Po box 878</cbc:AdditionalStreetName>\n                <cbc:CityName>Stockholm</cbc:CityName>\n                <cbc:PostalZone>456 34</cbc:PostalZone>\n                <cac:Country>\n                    <cbc:IdentificationCode>SE</cbc:IdentificationCode>\n                </cac:Country>\n            </cac:PostalAddress>\n            <cac:PartyTaxScheme>\n                <cbc:CompanyID>SE4598375937</cbc:CompanyID>\n                <cac:TaxScheme>\n                    <cbc:ID>VAT</cbc:ID>\n                </cac:TaxScheme>\n            </cac:PartyTaxScheme>\n            <cac:PartyLegalEntity>\n                <cbc:RegistrationName>Buyer Official Name</cbc:RegistrationName>\n                <cbc:CompanyID schemeID=\"0183\">39937423947</cbc:CompanyID>\n            </cac:PartyLegalEntity>\n            <cac:Contact>\n                <cbc:Name>Lisa Johnson</cbc:Name>\n                <cbc:Telephone>23434234</cbc:Telephone>\n                <cbc:ElectronicMail>lj@buyer.se</cbc:ElectronicMail>\n            </cac:Contact>\n        </cac:Party>\n    </cac:AccountingCustomerParty>\n    <cac:Delivery>\n        <cbc:ActualDeliveryDate>2017-11-01</cbc:ActualDeliveryDate>\n        <cac:DeliveryLocation>\n            <cbc:ID schemeID=\"0088\">9483759475923478</cbc:ID>\n            <cac:Address>\n                <cbc:StreetName>Delivery street 2</cbc:StreetName>\n                <cbc:AdditionalStreetName>Building 56</cbc:AdditionalStreetName>\n                <cbc:CityName>Stockholm</cbc:CityName>\n                <cbc:PostalZone>21234</cbc:PostalZone>\n                <cac:Country>\n                    <cbc:IdentificationCode>SE</cbc:IdentificationCode>\n                </cac:Country>\n            </cac:Address>\n        </cac:DeliveryLocation>\n        <cac:DeliveryParty>\n            <cac:PartyName>\n                <cbc:Name>Delivery party Name</cbc:Name>\n            </cac:PartyName>\n        </cac:DeliveryParty>\n    </cac:Delivery>\n    <cac:PaymentMeans>\n        <cbc:PaymentMeansCode name=\"Credit transfer\">30</cbc:PaymentMeansCode>\n        <cbc:PaymentID>Snippet1</cbc:PaymentID>\n        <cac:PayeeFinancialAccount>\n            <cbc:ID>IBAN32423940</cbc:ID>\n            <cbc:Name>AccountName</cbc:Name>\n            <cac:FinancialInstitutionBranch>\n                <cbc:ID>BIC324098</cbc:ID>\n            </cac:FinancialInstitutionBranch>\n        </cac:PayeeFinancialAccount>\n    </cac:PaymentMeans>\n    <cac:PaymentTerms>\n        <cbc:Note>Payment within 10 days, 2% discount</cbc:Note>\n    </cac:PaymentTerms>\n        <cac:AllowanceCharge>\n            <cbc:ChargeIndicator>true</cbc:ChargeIndicator>\n            <cbc:AllowanceChargeReason>Insurance</cbc:AllowanceChargeReason>\n            <cbc:Amount currencyID=\"EUR\">25</cbc:Amount>\n            <cac:TaxCategory>\n                <cbc:ID>S</cbc:ID>\n                <cbc:Percent>25.0</cbc:Percent>\n                <cac:TaxScheme>\n                    <cbc:ID>VAT</cbc:ID>\n                </cac:TaxScheme>\n            </cac:TaxCategory>\n        </cac:AllowanceCharge>\n    <cac:TaxTotal>\n        <cbc:TaxAmount currencyID=\"EUR\">331.25</cbc:TaxAmount>\n        <cac:TaxSubtotal>\n            <cbc:TaxableAmount currencyID=\"EUR\">1325</cbc:TaxableAmount>\n            <cbc:TaxAmount currencyID=\"EUR\">331.25</cbc:TaxAmount>\n            <cac:TaxCategory>\n                <cbc:ID>S</cbc:ID>\n                <cbc:Percent>25.0</cbc:Percent>\n                <cac:TaxScheme>\n                    <cbc:ID>VAT</cbc:ID>\n                </cac:TaxScheme>\n            </cac:TaxCategory>\n        </cac:TaxSubtotal>\n    </cac:TaxTotal>\n    <cac:LegalMonetaryTotal>\n        <cbc:LineExtensionAmount currencyID=\"EUR\">1300</cbc:LineExtensionAmount>\n        <cbc:TaxExclusiveAmount currencyID=\"EUR\">1325</cbc:TaxExclusiveAmount>\n        <cbc:TaxInclusiveAmount currencyID=\"EUR\">1656.25</cbc:TaxInclusiveAmount>\n        <cbc:ChargeTotalAmount currencyID=\"EUR\">25</cbc:ChargeTotalAmount>\n        <cbc:PayableAmount currencyID=\"EUR\">1656.25</cbc:PayableAmount>\n    </cac:LegalMonetaryTotal>\n\n<cac:InvoiceLine>\n        <cbc:ID>1</cbc:ID>\n    <cbc:InvoicedQuantity unitCode=\"DAY\" unitCodeListID=\"UNECERec20\">7</cbc:InvoicedQuantity>\n    <cbc:LineExtensionAmount currencyID= \"EUR\">2800</cbc:LineExtensionAmount>\n        <cbc:AccountingCost>Konteringsstreng</cbc:AccountingCost>\n       <cac:OrderLineReference>\n            <cbc:LineID>123</cbc:LineID>\n        </cac:OrderLineReference>\n    <cac:Item>\n            <cbc:Description>Description of item</cbc:Description>\n            <cbc:Name>item name</cbc:Name>\n            <cac:StandardItemIdentification>\n                <cbc:ID schemeID=\"0088\">21382183120983</cbc:ID>\n            </cac:StandardItemIdentification>\n            <cac:OriginCountry>\n                <cbc:IdentificationCode>NO</cbc:IdentificationCode>\n            </cac:OriginCountry>\n            <cac:CommodityClassification>\n                <cbc:ItemClassificationCode listID=\"SRV\">09348023</cbc:ItemClassificationCode>\n            </cac:CommodityClassification>\n            <cac:ClassifiedTaxCategory>\n                <cbc:ID>S</cbc:ID>\n                <cbc:Percent>25.0</cbc:Percent>\n                <cac:TaxScheme>\n                    <cbc:ID>VAT</cbc:ID>\n                </cac:TaxScheme>\n            </cac:ClassifiedTaxCategory>\n        </cac:Item>\n    <cac:Price>\n        <cbc:PriceAmount currencyID=\"EUR\">400</cbc:PriceAmount>\n    </cac:Price>\n    </cac:InvoiceLine>\n<cac:InvoiceLine>\n    <cbc:ID>2</cbc:ID>\n    <cbc:InvoicedQuantity unitCode=\"DAY\" unitCodeListID=\"UNECERec20\">-3</cbc:InvoicedQuantity>\n    <cbc:LineExtensionAmount currencyID=\"EUR\">-1500</cbc:LineExtensionAmount>\n    <cac:OrderLineReference>\n        <cbc:LineID>123</cbc:LineID>\n    </cac:OrderLineReference>\n    <cac:Item>\n        <cbc:Description>Description 2</cbc:Description>\n        <cbc:Name>item name 2</cbc:Name>\n        <cac:StandardItemIdentification>\n            <cbc:ID schemeID=\"0088\">21382183120983</cbc:ID>\n        </cac:StandardItemIdentification>\n        <cac:OriginCountry>\n            <cbc:IdentificationCode>NO</cbc:IdentificationCode>\n        </cac:OriginCountry>\n        <cac:CommodityClassification>\n            <cbc:ItemClassificationCode listID=\"SRV\">09348023</cbc:ItemClassificationCode>\n        </cac:CommodityClassification>\n        <cac:ClassifiedTaxCategory>\n            <cbc:ID>S</cbc:ID>\n            <cbc:Percent>25.0</cbc:Percent>\n            <cac:TaxScheme>\n                <cbc:ID>VAT</cbc:ID>\n            </cac:TaxScheme>\n        </cac:ClassifiedTaxCategory>\n    </cac:Item>\n    <cac:Price>\n        <cbc:PriceAmount currencyID=\"EUR\">500</cbc:PriceAmount>\n    </cac:Price>\n</cac:InvoiceLine>\n</Invoice>\n"
+				},
+				"url": {
+					"raw": "LOCALHOST:8080/invoices",
+					"host": [
+						"LOCALHOST"
+					],
+					"port": "8080",
+					"path": [
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET list of invoices",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "LOCALHOST:8080/invoices",
+					"host": [
+						"LOCALHOST"
+					],
+					"port": "8080",
+					"path": [
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET specific invoice",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/xml",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "LOCALHOST:8080/invoices/Snippet1",
+					"host": [
+						"LOCALHOST"
+					],
+					"port": "8080",
+					"path": [
+						"invoices",
+						"Snippet1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
