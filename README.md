@@ -14,11 +14,7 @@ sudo apt-get upgrade
 
 ##### For Linux
 ```
-sudo apt-get install default-jdk
-sudo apt install git
-sudo apt install maven
-sudo apt install docker.io
-sudo apt install docker-compose
+sudo apt-get install default-jdk git maven docker.io docker-compose
 ```
 
 ##### For Windows
@@ -38,14 +34,13 @@ systemctl enable docker
 
 ##### Enable executing Docker and Maven without sudo
 ```
-sudo usermod -aG docker ${USER}
-sudo usermod -aG mvn ${USER}
-su - ${USER}
+sudo adduser ${USER} docker
+sudo adduser ${USER} mvn
 ```
 
-Check that they have been added with "id -nG"
+Check that they have been added with "id -nG", force the update with a reboot or with "su - ${USER}"
 
-## Enviorment variables
+## Environment variables
 These are needed to connect to the local database
 ```
 NSG_POSTGRES_DB="nsg_db"
@@ -57,9 +52,18 @@ NSG_POSTGRES_USER="nsg"
 ```
 
 ##### For linux
+Open ~/.bashrc and add the lines
 ```
-sudo -H gedit /etc/environment
-source /etc/environment
+export NSG_POSTGRES_DB="nsg_db"
+export NSG_POSTGRES_DBO_PASSWORD="Passw0rd"
+export NSG_POSTGRES_DBO_USER="nsg_dbo"
+export NSG_POSTGRES_HOST="postgres:5432"
+export NSG_POSTGRES_PASSWORD="Passw0rd"
+export NSG_POSTGRES_USER="nsg"
+```
+Update from ~/.bashrc with
+```
+source ~/.bashrc
 ```
 
 Check that they have been added with "printenv"
