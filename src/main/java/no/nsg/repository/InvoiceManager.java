@@ -1,10 +1,13 @@
 package no.nsg.repository;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import no.nsg.generated.model.Invoice;
 import no.nsg.repository.dbo.InvoiceDbo;
 import no.nsg.repository.dbo.InvoiceOriginalDbo;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,26 +15,45 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UnknownFormatConversionException;
 
 
 @Component
 public class InvoiceManager {
 
+    private enum Format {
+        INVOICE,
+        FINVOICE
+    }
 
-    public Invoice createInvoice(final String invoiceOriginalXml, final Invoice newInvoice) throws SQLException {
+    static ObjectMapper xmlMapper = null;
+
+    private ObjectMapper getXmlMapper() {
+        if (xmlMapper == null) {
+            xmlMapper = new XmlMapper();
+            xmlMapper.findAndRegisterModules();
+        }
+        return xmlMapper;
+    }
+
+    public Object createInvoice(final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException {
+        Object invoice = deserializeInvoice(invoiceOriginalXml);
+        if (invoice == null) {
+            throw new UnknownFormatConversionException("Unknown invoice format");
+        }
+
         InvoiceDbo newInvoiceDbo;
         try (Connection connection = ConnectionManager.getConnection()) {
             try {
-                if (newInvoice==null) {
-                    return null;
-                }
-
                 InvoiceOriginalDbo newInvoiceOriginalDbo = new InvoiceOriginalDbo(invoiceOriginalXml);
                 newInvoiceOriginalDbo.persist(connection);
 
-                newInvoiceDbo = new InvoiceDbo(newInvoice, newInvoiceOriginalDbo);
-                newInvoiceDbo.persist(connection);
+                if (invoice instanceof Invoice) {
+                    newInvoiceDbo = new InvoiceDbo((Invoice)invoice, newInvoiceOriginalDbo);
+                    newInvoiceDbo.persist(connection);
+                }
                 connection.commit();
+
             } catch (SQLException e) {
                 try {
                     connection.rollback();
@@ -42,7 +64,7 @@ public class InvoiceManager {
             }
         }
 
-        return newInvoiceDbo;
+        return invoice;
     }
 
     public Invoice getInvoiceById(final String id) throws SQLException {
@@ -91,4 +113,16 @@ public class InvoiceManager {
         return invoices;
     }
 
+    private Format detectFormat(final String invoiceOriginalXml) {
+        return Format.INVOICE;
+    }
+
+    private Object deserializeInvoice(final String invoiceOriginalXml) throws IOException {
+        Format format = detectFormat(invoiceOriginalXml);
+        if (format == Format.INVOICE) {
+            return getXmlMapper().readValue(invoiceOriginalXml, Invoice.class);
+        } else {
+            return null;
+        }
+    }
 }
