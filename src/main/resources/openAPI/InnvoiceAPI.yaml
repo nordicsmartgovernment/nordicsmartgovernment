@@ -52,7 +52,8 @@ paths:
         content:
           application/xml:
             schema:
-              $ref: "#/components/schemas/Invoice"
+              type: string
+              description: An XML-document (Finvoice/Invoice) in the form of a string
   /invoices/{id}:
     get:
       tags:
