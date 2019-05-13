@@ -26,7 +26,7 @@ public class InvoiceManager {
         FINVOICE
     }
 
-    static ObjectMapper xmlMapper = null;
+    private static ObjectMapper xmlMapper = null;
 
     private ObjectMapper getXmlMapper() {
         if (xmlMapper == null) {
@@ -51,6 +51,8 @@ public class InvoiceManager {
                 if (invoice instanceof Invoice) {
                     newInvoiceDbo = new InvoiceDbo((Invoice)invoice, newInvoiceOriginalDbo);
                     newInvoiceDbo.persist(connection);
+                } else if (invoice instanceof Finvoice) {
+
                 }
                 connection.commit();
 
@@ -114,13 +116,19 @@ public class InvoiceManager {
     }
 
     private Format detectFormat(final String invoiceOriginalXml) {
-        return Format.INVOICE;
+        if (invoiceOriginalXml.contains("<Finvoice ")) { //TODO: Proper detection
+            return Format.FINVOICE;
+        } else {
+            return Format.INVOICE;
+        }
     }
 
     private Object deserializeInvoice(final String invoiceOriginalXml) throws IOException {
         Format format = detectFormat(invoiceOriginalXml);
         if (format == Format.INVOICE) {
             return getXmlMapper().readValue(invoiceOriginalXml, Invoice.class);
+        } else if (format == Format.FINVOICE) {
+            return getXmlMapper().readValue(invoiceOriginalXml, Finvoice.class);
         } else {
             return null;
         }
