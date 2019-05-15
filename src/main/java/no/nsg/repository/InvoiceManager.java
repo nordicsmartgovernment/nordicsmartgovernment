@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import no.nsg.generated.model.Invoice;
 import no.nsg.repository.dbo.InvoiceDbo;
 import no.nsg.repository.dbo.InvoiceOriginalDbo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -26,6 +27,9 @@ public class InvoiceManager {
         FINVOICE
     }
 
+    @Autowired
+    private ConnectionManager connectionManager;
+
     private static ObjectMapper xmlMapper = null;
 
     private ObjectMapper getXmlMapper() {
@@ -43,7 +47,7 @@ public class InvoiceManager {
         }
 
         InvoiceDbo newInvoiceDbo;
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionManager.getConnection()) {
             try {
                 InvoiceOriginalDbo newInvoiceOriginalDbo = new InvoiceOriginalDbo(invoiceOriginalXml);
                 newInvoiceOriginalDbo.persist(connection);
@@ -71,7 +75,7 @@ public class InvoiceManager {
 
     public Invoice getInvoiceById(final String id) throws SQLException {
         Invoice invoice = null;
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionManager.getConnection()) {
             try {
                 try {
                     invoice = new InvoiceDbo(connection, InvoiceDbo.findInternalId(connection, id));
@@ -92,7 +96,7 @@ public class InvoiceManager {
 
     public List<Invoice> getInvoices() throws SQLException {
         List<Invoice> invoices = new ArrayList<>();
-        try (Connection connection = ConnectionManager.getConnection()) {
+        try (Connection connection = connectionManager.getConnection()) {
             final String sql = "SELECT _id FROM invoice";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 ResultSet rs = stmt.executeQuery();
