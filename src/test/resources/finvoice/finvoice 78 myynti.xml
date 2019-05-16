@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="Finvoice.xsl"?>
+<Finvoice Version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Finvoice.xsd">
+<SellerPartyDetails>
+<SellerPartyIdentifier>2372513-5</SellerPartyIdentifier>
+<SellerOrganisationName>Komkom Ky</SellerOrganisationName>
+<SellerOrganisationTaxCode/>
+<SellerPostalAddressDetails>
+<SellerStreetName>Backaksentie233</SellerStreetName>
+<SellerTownName>Liljendahl</SellerTownName>
+<SellerPostCodeIdentifier>07890</SellerPostCodeIdentifier>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+<SellerPostOfficeBoxIdentifier/>
+</SellerPostalAddressDetails>
+</SellerPartyDetails>
+<SellerCommunicationDetails>
+<SellerPhoneNumberIdentifier/>
+<SellerEmailaddressIdentifier/>
+</SellerCommunicationDetails>
+<SellerInformationDetails>
+<SellerHomeTownName>Loviisa</SellerHomeTownName>
+<SellerPhoneNumber/>
+<SellerFaxNumber/>
+<SellerCommonEmailaddressIdentifier/>
+<SellerWebaddressIdentifier/>
+<SellerAccountDetails>
+<SellerAccountID IdentificationSchemeName="IBAN">FI5551722020109317</SellerAccountID>
+</SellerAccountDetails>
+</SellerInformationDetails>
+<InvoiceSenderPartyDetails>
+<InvoiceSenderOrganisationName>Komkom Ky</InvoiceSenderOrganisationName>
+</InvoiceSenderPartyDetails>
+<InvoiceRecipientPartyDetails>
+<InvoiceRecipientPartyIdentifier>0514039-5</InvoiceRecipientPartyIdentifier>
+<InvoiceRecipientOrganisationName>Syväpuron hoitokoti osk            </InvoiceRecipientOrganisationName>
+<InvoiceRecipientDepartment>Syväpuron hoitokoti osk            </InvoiceRecipientDepartment>
+<InvoiceRecipientOrganisationTaxCode/>
+<InvoiceRecipientPostalAddressDetails>
+<InvoiceRecipientStreetName>Mickelsipiltomintie 270</InvoiceRecipientStreetName>
+<InvoiceRecipientTownName>                              </InvoiceRecipientTownName>
+<InvoiceRecipientPostCodeIdentifier>      </InvoiceRecipientPostCodeIdentifier>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+<InvoiceRecipientPostOfficeBoxIdentifier>Mickelsipiltomintie 270</InvoiceRecipientPostOfficeBoxIdentifier>
+</InvoiceRecipientPostalAddressDetails>
+</InvoiceRecipientPartyDetails>
+<InvoiceRecipientOrganisationUnitNumber>003705140395</InvoiceRecipientOrganisationUnitNumber>
+<InvoiceRecipientContactPersonName/>
+<InvoiceRecipientCommunicationDetails>
+<InvoiceRecipientPhoneNumberIdentifier/>
+<InvoiceRecipientEmailaddressIdentifier/>
+</InvoiceRecipientCommunicationDetails>
+<BuyerPartyDetails>
+<BuyerPartyIdentifier>003705140395</BuyerPartyIdentifier>
+<BuyerOrganisationName>Syväpuron hoitokoti osk            </BuyerOrganisationName>
+<BuyerOrganisationDepartment>Syväpuron hoitokoti osk            </BuyerOrganisationDepartment>
+<BuyerOrganisationTaxCode/>
+<BuyerPostalAddressDetails>
+<BuyerStreetName>Mickelsipiltomintie 270</BuyerStreetName>
+<BuyerTownName/>
+<BuyerPostCodeIdentifier/>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+</BuyerPostalAddressDetails>
+</BuyerPartyDetails>
+<BuyerOrganisationUnitNumber>003705140395</BuyerOrganisationUnitNumber>
+<BuyerContactPersonName/>
+<BuyerCommunicationDetails>
+<BuyerPhoneNumberIdentifier/>
+<BuyerEmailaddressIdentifier/>
+</BuyerCommunicationDetails>
+<DeliveryPartyDetails>
+<DeliveryPartyIdentifier>003705140395</DeliveryPartyIdentifier>
+<DeliveryOrganisationName>Syväpuron hoitokoti osk            </DeliveryOrganisationName>
+<DeliveryOrganisationDepartment>Syväpuron hoitokoti osk            </DeliveryOrganisationDepartment>
+<DeliveryOrganisationTaxCode/>
+<DeliveryPostalAddressDetails>
+<DeliveryStreetName>Mickelsipiltomintie 270            </DeliveryStreetName>
+<DeliveryTownName>                                   </DeliveryTownName>
+<DeliveryPostCodeIdentifier>                                   </DeliveryPostCodeIdentifier>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+</DeliveryPostalAddressDetails>
+</DeliveryPartyDetails>
+<DeliveryOrganisationUnitNumber>003705140395</DeliveryOrganisationUnitNumber>
+<DeliveryContactPersonName/>
+<DeliveryCommunicationDetails>
+<DeliveryPhoneNumberIdentifier/>
+<DeliveryEmailaddressIdentifier/>
+</DeliveryCommunicationDetails>
+<InvoiceDetails>
+<InvoiceTypeCode>INV01</InvoiceTypeCode>
+<InvoiceTypeText>LASKU</InvoiceTypeText>
+<OriginCode>Original</OriginCode>
+<InvoiceNumber>78</InvoiceNumber>
+<InvoiceDate Format="CCYYMMDD">20170731</InvoiceDate>
+<OrderIdentifier>102</OrderIdentifier>
+<BuyerReferenceIdentifier/>
+<InvoiceTotalVatExcludedAmount AmountCurrencyIdentifier="EUR">176,79</InvoiceTotalVatExcludedAmount>
+<InvoiceTotalVatAmount AmountCurrencyIdentifier="EUR">24,75</InvoiceTotalVatAmount>
+<InvoiceTotalVatIncludedAmount AmountCurrencyIdentifier="EUR">201,54</InvoiceTotalVatIncludedAmount>
+<VatSpecificationDetails>
+<VatBaseAmount AmountCurrencyIdentifier="EUR">176,79</VatBaseAmount>
+<VatRatePercent>14,00</VatRatePercent>
+<VatRateAmount AmountCurrencyIdentifier="EUR">24,75</VatRateAmount>
+</VatSpecificationDetails>
+<PaymentTermsDetails>
+<PaymentTermsFreeText>14 päivää netto</PaymentTermsFreeText>
+<InvoiceDueDate Format="CCYYMMDD">20170814</InvoiceDueDate>
+<PaymentOverDueFineDetails>
+<PaymentOverDueFineFreeText>1,5 % kotim. asiakkaille</PaymentOverDueFineFreeText>
+<PaymentOverDueFinePercent>1,5</PaymentOverDueFinePercent>
+</PaymentOverDueFineDetails>
+</PaymentTermsDetails>
+</InvoiceDetails>
+<InvoiceRow>
+<ArticleIdentifier>3002</ArticleIdentifier>
+<ArticleName>Irtokananmunat, kg  23.6.</ArticleName>
+<OrderedQuantity QuantityUnitCode="KPL">13,702</OrderedQuantity>
+<DeliveredQuantity QuantityUnitCode="KPL">13,702</DeliveredQuantity>
+<UnitPriceAmount AmountCurrencyIdentifier="EUR" UnitPriceUnitCode="EUR/KPL">3,75</UnitPriceAmount>
+<RowDiscountPercent>0,00</RowDiscountPercent>
+<RowVatRatePercent>14</RowVatRatePercent>
+<RowVatAmount AmountCurrencyIdentifier="EUR">7,19</RowVatAmount>
+<RowVatExcludedAmount AmountCurrencyIdentifier="EUR">51,38</RowVatExcludedAmount>
+<RowAmount AmountCurrencyIdentifier="EUR">58,57</RowAmount>
+</InvoiceRow>
+<InvoiceRow>
+<ArticleIdentifier>3002</ArticleIdentifier>
+<ArticleName>Irtokananmunat, kg  5., 19. ja 26.7.</ArticleName>
+<OrderedQuantity QuantityUnitCode="KPL">33,443</OrderedQuantity>
+<DeliveredQuantity QuantityUnitCode="KPL">33,443</DeliveredQuantity>
+<UnitPriceAmount AmountCurrencyIdentifier="EUR" UnitPriceUnitCode="EUR/KPL">3,75</UnitPriceAmount>
+<RowDiscountPercent>0,00</RowDiscountPercent>
+<RowVatRatePercent>14</RowVatRatePercent>
+<RowVatAmount AmountCurrencyIdentifier="EUR">17,56</RowVatAmount>
+<RowVatExcludedAmount AmountCurrencyIdentifier="EUR">125,41</RowVatExcludedAmount>
+<RowAmount AmountCurrencyIdentifier="EUR">142,97</RowAmount>
+</InvoiceRow>
+<EpiDetails>
+<EpiIdentificationDetails>
+<EpiDate Format="CCYYMMDD">20170731</EpiDate>
+<EpiReference>11028</EpiReference>
+</EpiIdentificationDetails>
+<EpiPartyDetails>
+<EpiBfiPartyDetails>
+</EpiBfiPartyDetails>
+<EpiBeneficiaryPartyDetails>
+<EpiNameAddressDetails>Komkom Ky</EpiNameAddressDetails>
+</EpiBeneficiaryPartyDetails>
+</EpiPartyDetails>
+<EpiPaymentInstructionDetails>
+<EpiPaymentInstructionId/>
+<EpiRemittanceInfoIdentifier IdentificationSchemeName="SPY">11028</EpiRemittanceInfoIdentifier>
+<EpiInstructedAmount AmountCurrencyIdentifier="EUR">201,54</EpiInstructedAmount>
+<EpiCharge ChargeOption="SHA">SHA</EpiCharge>
+<EpiDateOptionDate Format="CCYYMMDD">20170814</EpiDateOptionDate>
+</EpiPaymentInstructionDetails>
+<InvoiceUrlText/>
+</EpiDetails>
+</Finvoice>
