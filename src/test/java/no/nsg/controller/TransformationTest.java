@@ -35,4 +35,11 @@ public class TransformationTest {
         transformationManager.transform(getResourceAsStream("finvoice/finvoice 77 myynti.xml"), TransformationManager.FINVOICE_TO_XBRL, new ByteArrayOutputStream());
         transformationManager.transform(getResourceAsStream("finvoice/finvoice 78 myynti.xml"), TransformationManager.FINVOICE_TO_XBRL, new ByteArrayOutputStream());
     }
+
+    @Test
+    public void ublTransformTest() throws SaxonApiException, UnsupportedEncodingException {
+        transformationManager.transform(getResourceAsStream("ubl/Invoice_base-example.xml"), TransformationManager.UBL_TO_XBRL, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/ehf-2-faktura-1.xml"), TransformationManager.UBL_TO_XBRL, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/ehf-3-faktura-1.xml"), TransformationManager.UBL_TO_XBRL, new ByteArrayOutputStream());
+    }
 }
