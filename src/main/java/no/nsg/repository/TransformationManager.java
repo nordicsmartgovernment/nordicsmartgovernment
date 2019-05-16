@@ -15,6 +15,7 @@ import java.util.Map;
 public class TransformationManager {
 
     public static final String FINVOICE_TO_XBRL = "xslt/finvoice_to_xbrl.xslt";
+    public static final String UBL_TO_XBRL      = "xslt/ubl_2_1_to_xbrl.xslt";
 
     private Map<String, Xslt30Transformer> xsltCache = new HashMap<>();
     private static Processor processor = null;
