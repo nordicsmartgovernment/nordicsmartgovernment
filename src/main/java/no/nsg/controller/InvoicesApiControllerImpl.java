@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.util.ContentCachingRequestWrapper;
+//import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -37,12 +37,16 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesA
      */
 
     @Override
-    public ResponseEntity<Void> createInvoice(HttpServletRequest httpServletRequest, Invoice invoice) {
-        Invoice persistedInvoice;
+    public ResponseEntity<Void> createInvoice(HttpServletRequest httpServletRequest, String body) {
+        Object persistedInvoice;
         try {
+            /*
+            // If we do not get the invoice xml as string (as in, Spring Boot deserializes it to something else),
+            // the http body can be fetched like this:
             ContentCachingRequestWrapper requestCacheWrapperObject = (ContentCachingRequestWrapper) httpServletRequest;
-            String original = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
-            persistedInvoice = invoiceManager.createInvoice(original, invoice);
+            String invoiceOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
+             */
+            persistedInvoice = invoiceManager.createInvoice(body);
         } catch (Exception e) {
             LOGGER.error("POST_CREATEINVOICE failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

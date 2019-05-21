@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="Finvoice.xsl"?>
+<Finvoice Version="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Finvoice.xsd">
+<SellerPartyDetails>
+<SellerPartyIdentifier>2372513-5</SellerPartyIdentifier>
+<SellerOrganisationName>Komkom Ky</SellerOrganisationName>
+<SellerOrganisationTaxCode/>
+<SellerPostalAddressDetails>
+<SellerStreetName>Backaksentie233</SellerStreetName>
+<SellerTownName>Liljendahl</SellerTownName>
+<SellerPostCodeIdentifier>07890</SellerPostCodeIdentifier>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+<SellerPostOfficeBoxIdentifier/>
+</SellerPostalAddressDetails>
+</SellerPartyDetails>
+<SellerCommunicationDetails>
+<SellerPhoneNumberIdentifier/>
+<SellerEmailaddressIdentifier/>
+</SellerCommunicationDetails>
+<SellerInformationDetails>
+<SellerHomeTownName>Loviisa</SellerHomeTownName>
+<SellerPhoneNumber/>
+<SellerFaxNumber/>
+<SellerCommonEmailaddressIdentifier/>
+<SellerWebaddressIdentifier/>
+<SellerAccountDetails>
+</SellerAccountDetails>
+</SellerInformationDetails>
+<InvoiceSenderPartyDetails>
+<InvoiceSenderOrganisationName>Komkom Ky</InvoiceSenderOrganisationName>
+</InvoiceSenderPartyDetails>
+<InvoiceRecipientPartyDetails>
+<InvoiceRecipientPartyIdentifier>1199940-3</InvoiceRecipientPartyIdentifier>
+<InvoiceRecipientOrganisationName>Ari Puuri Puurin Kanala            </InvoiceRecipientOrganisationName>
+<InvoiceRecipientDepartment>Puurin Kanala                      </InvoiceRecipientDepartment>
+<InvoiceRecipientOrganisationTaxCode/>
+<InvoiceRecipientPostalAddressDetails>
+<InvoiceRecipientStreetName>Kiehuvantie 56</InvoiceRecipientStreetName>
+<InvoiceRecipientTownName>                              </InvoiceRecipientTownName>
+<InvoiceRecipientPostCodeIdentifier>      </InvoiceRecipientPostCodeIdentifier>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+<InvoiceRecipientPostOfficeBoxIdentifier>Kiehuvantie 56</InvoiceRecipientPostOfficeBoxIdentifier>
+</InvoiceRecipientPostalAddressDetails>
+</InvoiceRecipientPartyDetails>
+<InvoiceRecipientOrganisationUnitNumber>003711999403</InvoiceRecipientOrganisationUnitNumber>
+<InvoiceRecipientContactPersonName/>
+<InvoiceRecipientCommunicationDetails>
+<InvoiceRecipientPhoneNumberIdentifier/>
+<InvoiceRecipientEmailaddressIdentifier/>
+</InvoiceRecipientCommunicationDetails>
+<BuyerPartyDetails>
+<BuyerPartyIdentifier>003711999403</BuyerPartyIdentifier>
+<BuyerOrganisationName>Ari Puuri Puurin Kanala            </BuyerOrganisationName>
+<BuyerOrganisationDepartment>Puurin Kanala                      </BuyerOrganisationDepartment>
+<BuyerOrganisationTaxCode/>
+<BuyerPostalAddressDetails>
+<BuyerStreetName>Kiehuvantie 56</BuyerStreetName>
+<BuyerTownName/>
+<BuyerPostCodeIdentifier/>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+</BuyerPostalAddressDetails>
+</BuyerPartyDetails>
+<BuyerOrganisationUnitNumber>003711999403</BuyerOrganisationUnitNumber>
+<BuyerContactPersonName/>
+<BuyerCommunicationDetails>
+<BuyerPhoneNumberIdentifier/>
+<BuyerEmailaddressIdentifier/>
+</BuyerCommunicationDetails>
+<DeliveryPartyDetails>
+<DeliveryPartyIdentifier>003711999403</DeliveryPartyIdentifier>
+<DeliveryOrganisationName>Ari Puuri Puurin Kanala            </DeliveryOrganisationName>
+<DeliveryOrganisationDepartment>Puurin Kanala                      </DeliveryOrganisationDepartment>
+<DeliveryOrganisationTaxCode/>
+<DeliveryPostalAddressDetails>
+<DeliveryStreetName>Kiehuvantie 56                     </DeliveryStreetName>
+<DeliveryTownName>                                   </DeliveryTownName>
+<DeliveryPostCodeIdentifier>                                   </DeliveryPostCodeIdentifier>
+<CountryCode>FI</CountryCode>
+<CountryName>Suomi</CountryName>
+</DeliveryPostalAddressDetails>
+</DeliveryPartyDetails>
+<DeliveryOrganisationUnitNumber>003711999403</DeliveryOrganisationUnitNumber>
+<DeliveryContactPersonName/>
+<DeliveryCommunicationDetails>
+<DeliveryPhoneNumberIdentifier/>
+<DeliveryEmailaddressIdentifier/>
+</DeliveryCommunicationDetails>
+<InvoiceDetails>
+<InvoiceTypeCode>INV01</InvoiceTypeCode>
+<InvoiceTypeText>LASKU</InvoiceTypeText>
+<OriginCode>Original</OriginCode>
+<InvoiceNumber>1100</InvoiceNumber>
+<InvoiceDate Format="CCYYMMDD">20170526</InvoiceDate>
+<OrderIdentifier>100</OrderIdentifier>
+<BuyerReferenceIdentifier/>
+<InvoiceTotalVatExcludedAmount AmountCurrencyIdentifier="EUR">300,00</InvoiceTotalVatExcludedAmount>
+<InvoiceTotalVatAmount AmountCurrencyIdentifier="EUR">72,00</InvoiceTotalVatAmount>
+<InvoiceTotalVatIncludedAmount AmountCurrencyIdentifier="EUR">372,00</InvoiceTotalVatIncludedAmount>
+<VatSpecificationDetails>
+<VatBaseAmount AmountCurrencyIdentifier="EUR">300,00</VatBaseAmount>
+<VatRatePercent>24,00</VatRatePercent>
+<VatRateAmount AmountCurrencyIdentifier="EUR">72,00</VatRateAmount>
+</VatSpecificationDetails>
+<PaymentTermsDetails>
+<PaymentTermsFreeText>14 päivää netto</PaymentTermsFreeText>
+<InvoiceDueDate Format="CCYYMMDD">20170609</InvoiceDueDate>
+<PaymentOverDueFineDetails>
+<PaymentOverDueFineFreeText>1,5 % kotim. asiakkaille</PaymentOverDueFineFreeText>
+<PaymentOverDueFinePercent>1,5</PaymentOverDueFinePercent>
+</PaymentOverDueFineDetails>
+</PaymentTermsDetails>
+</InvoiceDetails>
+<InvoiceRow>
+<ArticleIdentifier>3000</ArticleIdentifier>
+<ArticleName>KomKom Ky Elävät kukot </ArticleName>
+<DeliveredQuantity QuantityUnitCode="KPL">10</DeliveredQuantity>
+<OrderedQuantity QuantityUnitCode="KPL">10</OrderedQuantity>
+<UnitPriceAmount AmountCurrencyIdentifier="EUR" UnitPriceUnitCode="EUR/KPL">30,00</UnitPriceAmount>
+<RowDiscountPercent>0,00</RowDiscountPercent>
+<RowVatRatePercent>24</RowVatRatePercent>
+<RowVatAmount AmountCurrencyIdentifier="EUR">72,00</RowVatAmount>
+<RowVatExcludedAmount AmountCurrencyIdentifier="EUR">300,00</RowVatExcludedAmount>
+<RowAmount AmountCurrencyIdentifier="EUR">372,00</RowAmount>
+</InvoiceRow>
+<EpiDetails>
+<EpiIdentificationDetails>
+<EpiDate Format="CCYYMMDD">20170526</EpiDate>
+<EpiReference>11002</EpiReference>
+</EpiIdentificationDetails>
+<EpiPartyDetails>
+<EpiBfiPartyDetails>
+</EpiBfiPartyDetails>
+<EpiBeneficiaryPartyDetails>
+<EpiNameAddressDetails>Komkom Ky</EpiNameAddressDetails>
+</EpiBeneficiaryPartyDetails>
+</EpiPartyDetails>
+<EpiPaymentInstructionDetails>
+<EpiPaymentInstructionId/>
+<EpiRemittanceInfoIdentifier IdentificationSchemeName="SPY">11002</EpiRemittanceInfoIdentifier>
+<EpiInstructedAmount AmountCurrencyIdentifier="EUR">372,00</EpiInstructedAmount>
+<EpiCharge ChargeOption="SHA">SHA</EpiCharge>
+<EpiDateOptionDate Format="CCYYMMDD">20170609</EpiDateOptionDate>
+</EpiPaymentInstructionDetails>
+<InvoiceUrlText/>
+</EpiDetails>
+</Finvoice>

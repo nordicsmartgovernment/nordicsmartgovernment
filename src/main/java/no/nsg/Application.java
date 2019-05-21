@@ -12,6 +12,7 @@ import no.nsg.repository.ConnectionManager;
 import no.nsg.spring.CachableDispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
@@ -29,6 +30,8 @@ public class Application {
 
     private static Logger LOGGER = LoggerFactory.getLogger(Application.class);
 
+    @Autowired
+    private ConnectionManager connectionManager;
 
     @Bean(name = DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
     public DispatcherServlet dispatcherServlet() {
@@ -37,13 +40,13 @@ public class Application {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initializeDatabase() {
-        try (Connection connection = ConnectionManager.getConnection(true)) {
+        try (Connection connection = connectionManager.getConnection(true)) {
             try {
                 Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
                 database.setLiquibaseSchemaName(ConnectionManager.DB_SCHEMA);
                 Liquibase liquibase = new Liquibase("liquibase/changelog/changelog-master.xml", new ClassLoaderResourceAccessor(), database);
                 liquibase.update(new Contexts(), new LabelExpression());
-                ConnectionManager.createRegularUser(connection);
+                connectionManager.createRegularUser(connection);
                 connection.commit();
                 LOGGER.info("Liquibase synced OK.");
             } catch (LiquibaseException | SQLException e) {

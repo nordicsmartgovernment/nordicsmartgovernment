@@ -20,6 +20,19 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 public class InvoicesApiControllerTest {
 
+    static final String EXAMPLE_INVOICE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                                          "<Invoice>\n" +
+                                          "  <CustomizationID>customizationID</CustomizationID>\n" +
+                                          "  <ProfileID>profileID</ProfileID>\n" +
+                                          "  <ID>id</ID>\n" +
+                                          "  <IssueDate>2019-01-01</IssueDate>\n" +
+                                          "  <DueDate>dueDate</DueDate>\n" +
+                                          "  <InvoiceTypeCode>invoiceTypeCode</InvoiceTypeCode>\n" +
+                                          "  <DocumentCurrencyCode>documentCurrencyCode</DocumentCurrencyCode>\n" +
+                                          "  <AccountingCost>accountingCost</AccountingCost>\n" +
+                                          "  <BuyerReference>buyerReference</BuyerReference>\n" +
+                                          "</Invoice>";
+
     @Mock
     HttpServletRequest httpServletRequestMock;
 
@@ -32,8 +45,7 @@ public class InvoicesApiControllerTest {
     @Test
     public void createInvoiceTest() {
         InvoicesApiControllerImpl invoicesApiController = new InvoicesApiControllerImpl();
-        Invoice invoice = new Invoice();
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, invoice);
+        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, EXAMPLE_INVOICE);
         Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
     }
 
@@ -67,18 +79,7 @@ public class InvoicesApiControllerTest {
         ObjectMapper xmlMapper = new XmlMapper();
         xmlMapper.findAndRegisterModules();
 
-        Invoice invoice = xmlMapper.readValue("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                "<Invoice>\n" +
-                "  <CustomizationID>customizationID</CustomizationID>\n" +
-                "  <ProfileID>profileID</ProfileID>\n" +
-                "  <ID>id</ID>\n" +
-                "  <IssueDate>2019-01-01</IssueDate>\n" +
-                "  <DueDate>dueDate</DueDate>\n" +
-                "  <InvoiceTypeCode>invoiceTypeCode</InvoiceTypeCode>\n" +
-                "  <DocumentCurrencyCode>documentCurrencyCode</DocumentCurrencyCode>\n" +
-                "  <AccountingCost>accountingCost</AccountingCost>\n" +
-                "  <BuyerReference>buyerReference</BuyerReference>\n" +
-                "</Invoice>", Invoice.class);
+        Invoice invoice = xmlMapper.readValue(EXAMPLE_INVOICE, Invoice.class);
 
         Assert.assertNotNull(invoice);
     }

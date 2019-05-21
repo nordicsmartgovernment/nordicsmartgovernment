@@ -44,6 +44,12 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.9.1-2</version>
+        </dependency>
+
         <!-- Database -->
         <dependency>
             <groupId>org.springframework</groupId>

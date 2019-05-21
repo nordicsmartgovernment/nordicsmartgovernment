@@ -2,30 +2,51 @@ package no.nsg.repository;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.sql.*;
 import java.text.MessageFormat;
 
 
+@Component
 public class ConnectionManager {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(ConnectionManager.class);
 
 	public static final String DB_SCHEMA = "nsg";
 
+	@Value("${postgres.nsg.host}")
+	private String postgresHost;
 
-	public static Connection getConnection() throws SQLException {
+	@Value("${postgres.nsg.db}")
+	private String postgresDb;
+
+	@Value("${postgres.nsg.dbo_user}")
+	private String postgresDboUser;
+
+	@Value("${postgres.nsg.dbo_password}")
+	private String postgresDboPassword;
+
+	@Value("${postgres.nsg.user}")
+	private String postgresUser;
+
+	@Value("${postgres.nsg.password}")
+	private String postgresPassword;
+
+
+	public Connection getConnection() throws SQLException {
 		return getConnection(false);
 	}
 
-	public static Connection getConnection(final boolean requireDboPermissions) throws SQLException {
+	public Connection getConnection(final boolean requireDboPermissions) throws SQLException {
 		try {
 			PropertyManager propertyManager = PropertyManager.getInstance();
 			Class.forName(propertyManager.getProperty("driver")).newInstance();
 
-			String safeHost = StringUtils.replace(System.getenv("NSG_POSTGRES_HOST"), "'", "''");
-			String safeDb = StringUtils.replace(System.getenv("NSG_POSTGRES_DB"), "'", "''");
+			String safeHost = StringUtils.replace(postgresHost, "'", "''");
+			String safeDb = StringUtils.replace(postgresDb, "'", "''");
 			if (safeDb==null) {
 				safeDb = "nsg_db";
 			}
@@ -33,12 +54,12 @@ public class ConnectionManager {
 			String username = null;
 			String password = null;
 			if (requireDboPermissions) {
-				username = System.getenv("NSG_POSTGRES_DBO_USER");
-				password = System.getenv("NSG_POSTGRES_DBO_PASSWORD");
+				username = postgresDboUser;
+				password = postgresDboPassword;
 			}
 			if (username==null) {
-				username = System.getenv("NSG_POSTGRES_USER");
-				password = System.getenv("NSG_POSTGRES_PASSWORD");
+				username = postgresUser;
+				password = postgresPassword;
 			}
 
 			if (safeHost==null || username==null || password==null) {
@@ -65,12 +86,12 @@ public class ConnectionManager {
 		}
 	}
 
-	public static void createRegularUser(final Connection connection) throws SQLException {
+	public void createRegularUser(final Connection connection) throws SQLException {
 		try {
 			// Is the regular user created?
 			int user_count = 1;
 			try (PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(1) FROM pg_user WHERE pg_user.usename=?")) {
-				stmt.setString(1, System.getenv("NSG_POSTGRES_USER"));
+				stmt.setString(1, postgresUser);
 				ResultSet rs = stmt.executeQuery();
 				if (rs.next()) {
 					user_count = rs.getInt(1);
@@ -82,9 +103,9 @@ public class ConnectionManager {
 			// If not created, create it now
 			if (user_count < 1) {
 				try (Statement stmt = connection.createStatement()) {
-					final String safeDb = StringUtils.replace(System.getenv("NSG_POSTGRES_DB"), "'", "''");
-					final String safeUser = StringUtils.replace(System.getenv("NSG_POSTGRES_USER"), "'", "''");
-					final String safePassword = StringUtils.replace(System.getenv("NSG_POSTGRES_PASSWORD"), "'", "''");
+					final String safeDb = StringUtils.replace(postgresDb, "'", "''");
+					final String safeUser = StringUtils.replace(postgresUser, "'", "''");
+					final String safePassword = StringUtils.replace(postgresPassword, "'", "''");
 
 					LOGGER.info("Creating regular user " + safeUser);
 					stmt.executeUpdate("CREATE USER " +	safeUser + " WITH PASSWORD '" + safePassword + "'");
