@@ -151,6 +151,7 @@
                 <version>4.0.0-beta2</version>
                 <executions>
                     <execution>
+                        <id>InnvoiceAPI</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -161,8 +162,35 @@
                             <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <invokerPackage>no.nsg.generated</invokerPackage>
-                            <apiPackage>no.nsg.generated.api</apiPackage>
-                            <modelPackage>no.nsg.generated.model</modelPackage>
+                            <apiPackage>no.nsg.generated.invoice_api</apiPackage>
+                            <modelPackage>no.nsg.generated.invoice_model</modelPackage>
+                            <configOptions>
+                                <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
+                                <sourceFolder>src/main/java/gen</sourceFolder>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <java8>true</java8>
+                                <dateLibrary>java8</dateLibrary>
+                                <library>spring-boot</library>
+                                <delegatePattern>false</delegatePattern>
+                            </configOptions>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>TransactionAPI</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openAPI/TransactionAPI.yaml</inputSpec>
+                            <validateSpec>true</validateSpec>
+                            <generatorName>spring</generatorName>
+                            <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <invokerPackage>no.nsg.generated</invokerPackage>
+                            <apiPackage>no.nsg.generated.transaction_api</apiPackage>
+                            <modelPackage>no.nsg.generated.transaction_model</modelPackage>
                             <configOptions>
                                 <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
                                 <sourceFolder>src/main/java/gen</sourceFolder>

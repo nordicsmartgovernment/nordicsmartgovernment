@@ -1,6 +1,6 @@
 package no.nsg.controller;
 
-import no.nsg.generated.model.Invoice;
+import no.nsg.generated.invoice_model.Invoice;
 import no.nsg.repository.InvoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @Controller
-public class InvoicesApiControllerImpl implements no.nsg.generated.api.InvoicesApi {
+public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.InvoicesApi {
     private static Logger LOGGER = LoggerFactory.getLogger(InvoicesApiControllerImpl.class);
 
     @Autowired

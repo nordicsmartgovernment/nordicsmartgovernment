@@ -2,7 +2,7 @@ package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nsg.generated.model.Invoice;
+import no.nsg.generated.invoice_model.Invoice;
 
 import java.sql.*;
 import java.util.NoSuchElementException;
