@@ -1,4 +1,4 @@
-package no.nsg.repository.dbo;
+package no.nsg.repository.dbo.invoice;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 

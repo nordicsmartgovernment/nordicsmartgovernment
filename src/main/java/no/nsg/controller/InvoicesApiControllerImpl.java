@@ -1,7 +1,7 @@
 package no.nsg.controller;
 
 import no.nsg.generated.invoice_model.Invoice;
-import no.nsg.repository.InvoiceManager;
+import no.nsg.repository.invoice.InvoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     @Autowired
     private InvoiceManager invoiceManager;
 
-    @GetMapping(value="/ping", produces={"text/plain"})
+    @GetMapping(value="invoices/ping", produces={"text/plain"})
     public ResponseEntity<String> getPing() {
         return ResponseEntity.ok("pong");
     }
 
-    @GetMapping(value="/ready")
+    @GetMapping(value="invoices/ready")
     public ResponseEntity getReady() {
         return ResponseEntity.ok().build();
     }

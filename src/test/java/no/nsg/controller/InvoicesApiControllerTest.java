@@ -3,7 +3,7 @@ package no.nsg.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import no.nsg.generated.invoice_model.Invoice;
-import no.nsg.repository.dbo.InvoiceDbo;
+import no.nsg.repository.dbo.invoice.InvoiceDbo;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

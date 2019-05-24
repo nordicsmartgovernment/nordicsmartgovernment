@@ -1,10 +1,11 @@
-package no.nsg.repository;
+package no.nsg.repository.invoice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import no.nsg.generated.invoice_model.Invoice;
-import no.nsg.repository.dbo.InvoiceDbo;
-import no.nsg.repository.dbo.InvoiceOriginalDbo;
+import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.dbo.invoice.InvoiceDbo;
+import no.nsg.repository.dbo.invoice.InvoiceOriginalDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
