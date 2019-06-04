@@ -78,23 +78,3 @@ components:
   schemas:
     Invoice:
       type: object
-      properties:
-        CustomizationID:
-          type: string
-        ProfileID:
-          type: string
-        ID:
-          type: string
-        IssueDate:
-          type: string
-          format: date
-        DueDate:
-          type: string
-        InvoiceTypeCode:
-          type: string
-        DocumentCurrencyCode:
-          type: string
-        AccountingCost:
-          type: string
-        BuyerReference:
-          type: string
