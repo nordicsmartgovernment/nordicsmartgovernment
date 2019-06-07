@@ -4,15 +4,19 @@ import net.sf.saxon.s9api.*;
 import no.nsg.repository.TransformationManager;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 
 @RunWith(SpringRunner.class)
 public class TransformationTest {
+    private static Logger LOGGER = LoggerFactory.getLogger(TransformationTest.class);
 
     TransformationManager transformationManager = new TransformationManager();
 
@@ -24,7 +28,7 @@ public class TransformationTest {
     public void finvoiceHappydayTransformTest() throws SaxonApiException, UnsupportedEncodingException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), TransformationManager.FINVOICE_TO_XBRL, baos);
-        baos.toString("UTF-8");
+        LOGGER.info(baos.toString(StandardCharsets.UTF_8.name()));
     }
 
     @Test

@@ -1,6 +1,5 @@
 package no.nsg.controller;
 
-import no.nsg.generated.invoice_model.Invoice;
 import no.nsg.repository.invoice.InvoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,9 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
 
     @Autowired
     private InvoiceManager invoiceManager;
+
+
+    InvoicesApiControllerImpl() {}
 
     @GetMapping(value="invoices/ping", produces={"text/plain"})
     public ResponseEntity<String> getPing() {
@@ -60,8 +62,8 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<Invoice> getInvoiceById(HttpServletRequest httpServletRequest, String id) {
-        Invoice invoice;
+    public ResponseEntity<Object> getInvoiceById(HttpServletRequest httpServletRequest, String id) {
+        Object invoice;
         try {
             invoice = invoiceManager.getInvoiceById(id);
         } catch (Exception e) {
@@ -77,8 +79,8 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<List<Invoice>> getInvoices(HttpServletRequest httpServletRequest) {
-        List<Invoice> invoices;
+    public ResponseEntity<List<Object>> getInvoices(HttpServletRequest httpServletRequest) {
+        List<Object> invoices;
         try {
             invoices = invoiceManager.getInvoices();
         } catch (Exception e) {

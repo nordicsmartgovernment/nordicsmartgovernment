@@ -45,11 +45,35 @@ public class TransactionApiControllerImpl implements no.nsg.generated.transactio
 
     @Override
     public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, String id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        Object transaction;
+        try {
+            transaction = transactionManager.getTransactionById(id);
+        } catch (Exception e) {
+            LOGGER.error("GET_GETTRANSACTION failed:", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (transaction==null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(transaction, HttpStatus.OK);
+        }
     }
 
     @Override
     public ResponseEntity<List<Object>> getTransactions(HttpServletRequest httpServletRequest) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+        List<Object> transactions;
+        try {
+            transactions = transactionManager.getTransactions();
+        } catch (Exception e) {
+            LOGGER.error("GET_GETTRANSACTIONS failed:", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (transactions==null || transactions.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(transactions, HttpStatus.OK);
+        }
     }
 }

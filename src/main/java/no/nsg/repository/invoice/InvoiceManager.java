@@ -1,11 +1,7 @@
 package no.nsg.repository.invoice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
-import no.nsg.generated.invoice_model.Invoice;
 import no.nsg.repository.ConnectionManager;
-import no.nsg.repository.dbo.invoice.InvoiceDbo;
-import no.nsg.repository.dbo.invoice.InvoiceOriginalDbo;
+import no.nsg.repository.dbo.DocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,44 +19,19 @@ import java.util.UnknownFormatConversionException;
 @Component
 public class InvoiceManager {
 
-    private enum Format {
-        INVOICE,
-        FINVOICE
-    }
-
     @Autowired
     private ConnectionManager connectionManager;
 
-    private static ObjectMapper xmlMapper = null;
-
-    private ObjectMapper getXmlMapper() {
-        if (xmlMapper == null) {
-            xmlMapper = new XmlMapper();
-            xmlMapper.findAndRegisterModules();
-        }
-        return xmlMapper;
-    }
 
     public Object createInvoice(final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException {
-        Object invoice = deserializeInvoice(invoiceOriginalXml);
-        if (invoice == null) {
-            throw new UnknownFormatConversionException("Unknown invoice format");
-        }
-
-        InvoiceDbo newInvoiceDbo;
+        DocumentDbo invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                InvoiceOriginalDbo newInvoiceOriginalDbo = new InvoiceOriginalDbo(invoiceOriginalXml);
-                newInvoiceOriginalDbo.persist(connection);
-
-                if (invoice instanceof Invoice) {
-                    newInvoiceDbo = new InvoiceDbo((Invoice)invoice, newInvoiceOriginalDbo);
-                    newInvoiceDbo.persist(connection);
-                } else if (invoice instanceof Finvoice) {
-
-                }
+                invoice = new DocumentDbo();
+                invoice.setDocumenttype(DocumentDbo.DOCUMENTTYPE_INVOICE);
+                invoice.setOriginalFromString(invoiceOriginalXml);
+                invoice.persist(connection);
                 connection.commit();
-
             } catch (SQLException e) {
                 try {
                     connection.rollback();
@@ -70,17 +41,16 @@ public class InvoiceManager {
                 }
             }
         }
-
         return invoice;
     }
 
-    public Invoice getInvoiceById(final String id) throws SQLException {
-        Invoice invoice = null;
+    public Object getInvoiceById(final String id) throws SQLException {
+        DocumentDbo invoice = null;
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 try {
-                    invoice = new InvoiceDbo(connection, InvoiceDbo.findInternalId(connection, id));
-                } catch (NoSuchElementException|NumberFormatException e) {
+                    invoice = new DocumentDbo(connection, DocumentDbo.findInternalId(connection, id));
+                } catch (NoSuchElementException|NumberFormatException|IOException e) {
                 }
                 connection.commit();
             } catch (SQLException e) {
@@ -95,16 +65,18 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public List<Invoice> getInvoices() throws SQLException {
-        List<Invoice> invoices = new ArrayList<>();
+    public List<Object> getInvoices() throws SQLException {
+        List<Object> invoices = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT _id FROM invoice";
+            final String sql = "SELECT _id FROM document WHERE type=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setInt(1, DocumentDbo.DOCUMENTTYPE_INVOICE);
+
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     try {
-                        invoices.add(new InvoiceDbo(connection, rs.getInt("_id")));
-                    } catch (NoSuchElementException e) {
+                        invoices.add(new DocumentDbo(connection, rs.getInt("_id")));
+                    } catch (NoSuchElementException|IOException e) {
                     }
                 }
                 connection.commit();
@@ -118,24 +90,5 @@ public class InvoiceManager {
             }
         }
         return invoices;
-    }
-
-    private Format detectFormat(final String invoiceOriginalXml) {
-        if (invoiceOriginalXml.contains("<Finvoice ")) { //TODO: Proper detection
-            return Format.FINVOICE;
-        } else {
-            return Format.INVOICE;
-        }
-    }
-
-    private Object deserializeInvoice(final String invoiceOriginalXml) throws IOException {
-        Format format = detectFormat(invoiceOriginalXml);
-        if (format == Format.INVOICE) {
-            return getXmlMapper().readValue(invoiceOriginalXml, Invoice.class);
-        } else if (format == Format.FINVOICE) {
-            return getXmlMapper().readValue(invoiceOriginalXml, Finvoice.class);
-        } else {
-            return null;
-        }
     }
 }

@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xbrli:xbrl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xmlns:gl-plt="http://www.xbrl.org/int/gl/plt/2015-03-25"
+            xmlns:xbrll="http://www.xbrl.org/2003/linkbase"
+            xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2015-03-25"
+            xmlns:iso639="http://www.xbrl.org/2005/iso639"
+            xmlns:gl-taf="http://www.xbrl.org/int/gl/taf/2015-03-25"
+            xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01"
+            xmlns:gl-muc="http://www.xbrl.org/int/gl/muc/2015-03-25"
+            xmlns:xbrli="http://www.xbrl.org/2003/instance"
+            xmlns:iso4217="http://www.xbrl.org/2003/iso4217"
+            xmlns:gl-srcd="http://www.xbrl.org/int/gl/srcd/2015-03-25"
+            xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2015-03-25"
+            xmlns:gl-cor-fi="http://www.xbrl.org/int/gl/cor/fi/2017-01-01"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:xs="http://www.w3.org/2001/XMLSchema"
+            xmlns:ix="http://www.xbrl.org/2008/inlineXBRL"
+            xmlns:ixt="http://www.xbrl.org/inlineXBRL/transformation/2010-04-20"
+            xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
+            xmlns:link="http://www.xbrl.org/2003/linkbase"
+            xmlns:cac="urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2"
+            xmlns:cbc="urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+            xsi:schemaLocation="http://www.xbrl.org/int/gl/plt/2015-03-25 ../../XBRL-GL-REC-2015-07-01-fi_draft/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd">
+   <xbrll:schemaRef xlink:type="simple"
+                    xlink:href="../../XBRL-GL-REC-2015-07-01-fi_draft/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd"
+                    xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/>
+   <xbrli:context id="now">
+      <xbrli:entity>
+         <xbrli:identifier scheme="http://www.xbrl.org/xbrlgl/sample">SAMPLE</xbrli:identifier>
+      </xbrli:entity>
+      <xbrli:period>
+         <xbrli:instant>2019-06-06+02:00</xbrli:instant>
+      </xbrli:period>
+   </xbrli:context>
+   <xbrli:unit id="NotUsed">
+      <xbrli:measure>pure</xbrli:measure>
+   </xbrli:unit>
+   <xbrli:unit id="EUR">
+      <xbrli:measure>iso4217:EUR</xbrli:measure>
+   </xbrli:unit>
+   <gl-cor:accountingEntries>
+      <gl-cor:documentInfo>
+         <gl-cor:entriesType contextRef="now">journal</gl-cor:entriesType>
+         <gl-cor:creationDate contextRef="now">2019-06-06+02:00</gl-cor:creationDate>
+      </gl-cor:documentInfo>
+      <gl-cor:entityInformation>
+         <gl-bus:organizationIdentifiers>
+            <gl-bus:organizationIdentifier contextRef="now">39937423947</gl-bus:organizationIdentifier>
+            <gl-bus:organizationDescription contextRef="now">ytunnus</gl-bus:organizationDescription>
+         </gl-bus:organizationIdentifiers>
+         <gl-bus:organizationIdentifiers>
+            <gl-bus:organizationIdentifier contextRef="now">SE4598375937</gl-bus:organizationIdentifier>
+            <gl-bus:organizationDescription contextRef="now">alvtunnus</gl-bus:organizationDescription>
+         </gl-bus:organizationIdentifiers>
+         <gl-bus:organizationAddress>
+            <gl-bus:organizationAddressName contextRef="now">BuyerTradingName AS</gl-bus:organizationAddressName>
+            <gl-bus:organizationAddressPurpose contextRef="now">billing</gl-bus:organizationAddressPurpose>
+            <gl-bus:organizationAddressStreet contextRef="now">Hovedgatan 32</gl-bus:organizationAddressStreet>
+            <gl-bus:organizationAddressStreet2 contextRef="now">Po box 878</gl-bus:organizationAddressStreet2>
+            <gl-bus:organizationAddressCity contextRef="now">Stockholm</gl-bus:organizationAddressCity>
+            <gl-bus:organizationAddressZipOrPostalCode contextRef="now">456 34</gl-bus:organizationAddressZipOrPostalCode>
+            <gl-bus:organizationAddressCountry contextRef="now">SE</gl-bus:organizationAddressCountry>
+         </gl-bus:organizationAddress>
+         <gl-bus:contactInformation>
+            <gl-bus:contactAttentionLine contextRef="now">0150abc, Lisa Johnson</gl-bus:contactAttentionLine>
+            <gl-bus:contactPhone>
+               <gl-bus:contactPhoneNumber contextRef="now">23434234</gl-bus:contactPhoneNumber>
+            </gl-bus:contactPhone>
+            <gl-bus:contactEMail>
+               <gl-bus:contactEmailAddress contextRef="now">lj@buyer.se</gl-bus:contactEmailAddress>
+            </gl-bus:contactEMail>
+         </gl-bus:contactInformation>
+      </gl-cor:entityInformation>
+      <gl-cor:entryHeader>
+         <gl-cor:entryNumberCounter contextRef="now" unitRef="NotUsed" decimals="0">1</gl-cor:entryNumberCounter>
+         <gl-cor:entryDetail>
+            <gl-cor:account>
+               <gl-cor:accountMainID contextRef="now">4025:123:4343</gl-cor:accountMainID>
+            </gl-cor:account>
+            <gl-cor:amount contextRef="now" unitRef="EUR" decimals="2">2800</gl-cor:amount>
+            <gl-cor-fi:priceDetails>
+               <gl-cor-fi:netPrice contextRef="now" unitRef="EUR" decimals="2">400</gl-cor-fi:netPrice>
+            </gl-cor-fi:priceDetails>
+            <gl-muc:amountOriginalCurrency contextRef="now">EUR</gl-muc:amountOriginalCurrency>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierCode contextRef="now">FR23342</gl-cor:identifierCode>
+               <gl-cor:identifierDescription contextRef="now">BuyerTradingName AS</gl-cor:identifierDescription>
+               <gl-cor:identifierType contextRef="now">FI-B</gl-cor:identifierType>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierExternalReference>
+                  <gl-cor:identifierAuthorityCode contextRef="now">99887766</gl-cor:identifierAuthorityCode>
+               </gl-cor:identifierExternalReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierExternalReference>
+                  <gl-cor:identifierAuthorityCode contextRef="now">IBAN32423940</gl-cor:identifierAuthorityCode>
+                  <gl-cor:identifierAuthority contextRef="now">IBAN</gl-cor:identifierAuthority>
+               </gl-cor:identifierExternalReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierExternalReference>
+                  <gl-cor:identifierAuthorityCode contextRef="now">BIC324098</gl-cor:identifierAuthorityCode>
+                  <gl-cor:identifierAuthority contextRef="now">FB</gl-cor:identifierAuthority>
+               </gl-cor:identifierExternalReference>
+               <gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
+               <gl-cor:identifierDescription contextRef="now">SupplierOfficialName Ltd</gl-cor:identifierDescription>
+               <gl-cor:identifierType contextRef="now">FI-S</gl-cor:identifierType>
+               <gl-bus:identifierAddress/>
+               <gl-cor:identifierContactInformationStructure>
+                  <gl-cor:identifierContactPhone/>
+                  <gl-cor:identifierContactEmail/>
+               </gl-cor:identifierContactInformationStructure>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-bus:identifierAddress/>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierDescription contextRef="now">Delivery party Name</gl-cor:identifierDescription>
+               <gl-bus:identifierAddress>
+                  <gl-bus:identifierStreet contextRef="now">Delivery street 2</gl-bus:identifierStreet>
+                  <gl-bus:identifierAddressStreet2 contextRef="now">Building 56</gl-bus:identifierAddressStreet2>
+                  <gl-bus:identifierCity contextRef="now">Stockholm</gl-bus:identifierCity>
+                  <gl-bus:identifierCountry contextRef="now">SE</gl-bus:identifierCountry>
+                  <gl-bus:identifierZipOrPostalCode contextRef="now">21234</gl-bus:identifierZipOrPostalCode>
+                  <gl-bus:identifierAddressLocationIdentifier contextRef="now">9483759475923478</gl-bus:identifierAddressLocationIdentifier>
+               </gl-bus:identifierAddress>
+               <gl-cor:identifierType contextRef="now">FI-D</gl-cor:identifierType>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-bus:identifierAddress/>
+            </gl-cor:identifierReference>
+            <gl-cor:documentType contextRef="now">invoice</gl-cor:documentType>
+            <gl-cor:documentNumber contextRef="now">Snippet1</gl-cor:documentNumber>
+            <gl-cor:documentReference contextRef="now">Snippet1</gl-cor:documentReference>
+            <gl-cor:documentDate contextRef="now">2017-11-13</gl-cor:documentDate>
+            <gl-bus:paymentMethod contextRef="now">30</gl-bus:paymentMethod>
+            <gl-cor:shipReceivedDate contextRef="now">2017-11-01</gl-cor:shipReceivedDate>
+            <gl-cor:terms contextRef="now">Payment within 10 days, 2% discount</gl-cor:terms>
+            <gl-bus:measurable>
+               <gl-bus:measurableID contextRef="now">21382183120983</gl-bus:measurableID>
+               <gl-bus:measurableDescription contextRef="now">item name</gl-bus:measurableDescription>
+               <gl-bus:measurableQuantity contextRef="now" unitRef="NotUsed" decimals="0">7</gl-bus:measurableQuantity>
+               <gl-bus:measurableUnitOfMeasure contextRef="now">DAY</gl-bus:measurableUnitOfMeasure>
+            </gl-bus:measurable>
+            <gl-bus:measurable>
+               <gl-bus:measurableQualifier contextRef="now">09348023</gl-bus:measurableQualifier>
+            </gl-bus:measurable>
+            <gl-cor:taxes/>
+            <gl-taf:originatingDocumentStructure>
+               <gl-taf:originatingDocumentType contextRef="now">despatch-advice</gl-taf:originatingDocumentType>
+            </gl-taf:originatingDocumentStructure>
+            <gl-taf:originatingDocumentStructure>
+               <gl-taf:originatingDocumentType contextRef="now">receive-advice</gl-taf:originatingDocumentType>
+            </gl-taf:originatingDocumentStructure>
+         </gl-cor:entryDetail>
+      </gl-cor:entryHeader>
+      <gl-cor:entryHeader>
+         <gl-cor:entryNumberCounter contextRef="now" unitRef="NotUsed" decimals="0">2</gl-cor:entryNumberCounter>
+         <gl-cor:entryDetail>
+            <gl-cor:account>
+               <gl-cor:accountMainID contextRef="now">4025:123:4343</gl-cor:accountMainID>
+            </gl-cor:account>
+            <gl-cor:amount contextRef="now" unitRef="EUR" decimals="2">-1500</gl-cor:amount>
+            <gl-cor-fi:priceDetails>
+               <gl-cor-fi:netPrice contextRef="now" unitRef="EUR" decimals="2">500</gl-cor-fi:netPrice>
+            </gl-cor-fi:priceDetails>
+            <gl-muc:amountOriginalCurrency contextRef="now">EUR</gl-muc:amountOriginalCurrency>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierCode contextRef="now">FR23342</gl-cor:identifierCode>
+               <gl-cor:identifierDescription contextRef="now">BuyerTradingName AS</gl-cor:identifierDescription>
+               <gl-cor:identifierType contextRef="now">FI-B</gl-cor:identifierType>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierExternalReference>
+                  <gl-cor:identifierAuthorityCode contextRef="now">99887766</gl-cor:identifierAuthorityCode>
+               </gl-cor:identifierExternalReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierExternalReference>
+                  <gl-cor:identifierAuthorityCode contextRef="now">IBAN32423940</gl-cor:identifierAuthorityCode>
+                  <gl-cor:identifierAuthority contextRef="now">IBAN</gl-cor:identifierAuthority>
+               </gl-cor:identifierExternalReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierExternalReference>
+                  <gl-cor:identifierAuthorityCode contextRef="now">BIC324098</gl-cor:identifierAuthorityCode>
+                  <gl-cor:identifierAuthority contextRef="now">FB</gl-cor:identifierAuthority>
+               </gl-cor:identifierExternalReference>
+               <gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
+               <gl-cor:identifierDescription contextRef="now">SupplierOfficialName Ltd</gl-cor:identifierDescription>
+               <gl-cor:identifierType contextRef="now">FI-S</gl-cor:identifierType>
+               <gl-bus:identifierAddress/>
+               <gl-cor:identifierContactInformationStructure>
+                  <gl-cor:identifierContactPhone/>
+                  <gl-cor:identifierContactEmail/>
+               </gl-cor:identifierContactInformationStructure>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierExternalReference/>
+               <gl-bus:identifierAddress/>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-cor:identifierDescription contextRef="now">Delivery party Name</gl-cor:identifierDescription>
+               <gl-bus:identifierAddress>
+                  <gl-bus:identifierStreet contextRef="now">Delivery street 2</gl-bus:identifierStreet>
+                  <gl-bus:identifierAddressStreet2 contextRef="now">Building 56</gl-bus:identifierAddressStreet2>
+                  <gl-bus:identifierCity contextRef="now">Stockholm</gl-bus:identifierCity>
+                  <gl-bus:identifierCountry contextRef="now">SE</gl-bus:identifierCountry>
+                  <gl-bus:identifierZipOrPostalCode contextRef="now">21234</gl-bus:identifierZipOrPostalCode>
+                  <gl-bus:identifierAddressLocationIdentifier contextRef="now">9483759475923478</gl-bus:identifierAddressLocationIdentifier>
+               </gl-bus:identifierAddress>
+               <gl-cor:identifierType contextRef="now">FI-D</gl-cor:identifierType>
+            </gl-cor:identifierReference>
+            <gl-cor:identifierReference>
+               <gl-bus:identifierAddress/>
+            </gl-cor:identifierReference>
+            <gl-cor:documentType contextRef="now">invoice</gl-cor:documentType>
+            <gl-cor:documentNumber contextRef="now">Snippet1</gl-cor:documentNumber>
+            <gl-cor:documentReference contextRef="now">Snippet1</gl-cor:documentReference>
+            <gl-cor:documentDate contextRef="now">2017-11-13</gl-cor:documentDate>
+            <gl-bus:paymentMethod contextRef="now">30</gl-bus:paymentMethod>
+            <gl-cor:shipReceivedDate contextRef="now">2017-11-01</gl-cor:shipReceivedDate>
+            <gl-cor:terms contextRef="now">Payment within 10 days, 2% discount</gl-cor:terms>
+            <gl-bus:measurable>
+               <gl-bus:measurableID contextRef="now">21382183120983</gl-bus:measurableID>
+               <gl-bus:measurableDescription contextRef="now">item name 2</gl-bus:measurableDescription>
+               <gl-bus:measurableQuantity contextRef="now" unitRef="NotUsed" decimals="0">-3</gl-bus:measurableQuantity>
+               <gl-bus:measurableUnitOfMeasure contextRef="now">DAY</gl-bus:measurableUnitOfMeasure>
+            </gl-bus:measurable>
+            <gl-bus:measurable>
+               <gl-bus:measurableQualifier contextRef="now">09348023</gl-bus:measurableQualifier>
+            </gl-bus:measurable>
+            <gl-cor:taxes/>
+            <gl-taf:originatingDocumentStructure>
+               <gl-taf:originatingDocumentType contextRef="now">despatch-advice</gl-taf:originatingDocumentType>
+            </gl-taf:originatingDocumentStructure>
+            <gl-taf:originatingDocumentStructure>
+               <gl-taf:originatingDocumentType contextRef="now">receive-advice</gl-taf:originatingDocumentType>
+            </gl-taf:originatingDocumentStructure>
+         </gl-cor:entryDetail>
+      </gl-cor:entryHeader>
+   </gl-cor:accountingEntries>
+</xbrli:xbrl>
