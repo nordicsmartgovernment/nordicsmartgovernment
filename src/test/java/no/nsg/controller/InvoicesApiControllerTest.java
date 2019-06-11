@@ -1,8 +1,10 @@
 package no.nsg.controller;
 
+import no.nsg.testcategories.ServiceTest;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.slf4j.Logger;
@@ -26,6 +28,7 @@ import java.util.List;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ContextConfiguration(initializers = {InvoicesApiControllerTest.Initializer.class})
+@Category(ServiceTest.class)
 public class InvoicesApiControllerTest {
     private static Logger LOGGER = LoggerFactory.getLogger(InvoicesApiControllerTest.class);
 

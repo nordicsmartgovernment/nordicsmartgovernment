@@ -1,7 +1,9 @@
 package no.nsg.controller;
 
+import no.nsg.testcategories.ServiceTest;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
@@ -13,6 +15,7 @@ import java.util.List;
 
 
 @RunWith(SpringRunner.class)
+@Category(ServiceTest.class)
 public class TransactionApiControllerTest {
 
     @Mock

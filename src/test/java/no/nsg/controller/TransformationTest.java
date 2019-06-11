@@ -2,7 +2,9 @@ package no.nsg.controller;
 
 import net.sf.saxon.s9api.*;
 import no.nsg.repository.TransformationManager;
+import no.nsg.testcategories.UnitTest;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 
 
 @RunWith(SpringRunner.class)
+@Category(UnitTest.class)
 public class TransformationTest {
     private static Logger LOGGER = LoggerFactory.getLogger(TransformationTest.class);
 

@@ -34,8 +34,11 @@
         <docker.image.name>nsg/referenceimplementation</docker.image.name>
         <docker.image.tag>latest</docker.image.tag>
 
+        <unittest.category/>
+        <servicetest.category/>
+        <integrationtest.category/>
+
         <surefireArgLine/>
-        <integration.test.pattern/>
     </properties>
 
     <dependencies>
@@ -129,6 +132,33 @@
             <artifactId>validation-api</artifactId>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>unit-test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <unittest.category>,no.nsg.testcategories.UnitTest</unittest.category>
+            </properties>
+        </profile>
+        <profile>
+            <id>service-test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <servicetest.category>,no.nsg.testcategories.ServiceTest</servicetest.category>
+            </properties>
+        </profile>
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <integrationtest.category>,no.nsg.testcategories.IntegrationTest</integrationtest.category>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <resources>
@@ -230,9 +260,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <excludes>
-                        <exclude>${integration.test.pattern}</exclude>
-                    </excludes>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <groups>java.lang.Exception ${unittest.category} ${servicetest.category} ${integrationtest.category}
+                    </groups> <!-- java.lang.Exception is a hack to make a valid comma-separated list og category classes -->
                     <argLine>${surefireArgLine} -Dfile.encoding=${java.encoding}</argLine>
                 </configuration>
             </plugin>
