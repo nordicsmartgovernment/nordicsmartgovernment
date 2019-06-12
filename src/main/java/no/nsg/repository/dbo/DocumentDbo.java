@@ -6,22 +6,39 @@ import net.sf.saxon.s9api.SaxonApiException;
 import no.nsg.repository.TransformationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.NoSuchElementException;
 
 
+@Component
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class DocumentDbo {
     private static Logger LOGGER = LoggerFactory.getLogger(DocumentDbo.class);
+
+    public enum DocumentFormat {
+        UNKNOWN,
+        UML,
+        FINVOICE
+    }
 
     public static final int UNINITIALIZED = 0;
 
     public static final int DOCUMENTTYPE_INVOICE = 1;
 
-    private static TransformationManager transformationManager;
+    @Autowired
+    private TransformationManager transformationManager;
 
     @JsonIgnore
     private int _id;
@@ -51,7 +68,7 @@ public class DocumentDbo {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT _transactionid, documenttype, documentid, original, xbrl FROM document WHERE _id=?";
+        final String sql = "SELECT _transactionid, documenttype, documentid, original, xbrl FROM nsg.document WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, _id);
             ResultSet rs = stmt.executeQuery();
@@ -60,7 +77,7 @@ public class DocumentDbo {
             }
 
             this._id = _id;
-            set_TransactionId(rs.getInt("_invoiceoriginalid"));
+            set_TransactionId(rs.getInt("_transactionid"));
             if (rs.wasNull()) {
                 set_TransactionId(TransactionDbo.UNINITIALIZED);
             }
@@ -69,13 +86,6 @@ public class DocumentDbo {
             setDocumentid(rs.getString("documentid"));
             setOriginalAndXbrl(rs.getBinaryStream("original"), rs.getCharacterStream("xbrl"));
         }
-    }
-
-    private TransformationManager getTransformationManager() {
-        if (transformationManager == null) {
-            transformationManager = new TransformationManager();
-        }
-        return transformationManager;
     }
 
     public int get_id() {
@@ -106,9 +116,9 @@ public class DocumentDbo {
         return original;
     }
 
-    public void setOriginalFromString(final String original) {
+    public void setOriginalFromString(final String original) throws IOException, SAXException {
         this.original = original.getBytes(StandardCharsets.UTF_8);
-        transformXbrlFromOriginal();
+        transformXbrlFromOriginal(getDocumentFormat(original));
         setDocumentid(getDocumentidFromXBRL());
     }
 
@@ -135,12 +145,10 @@ public class DocumentDbo {
         return xbrl;
     }
 
-    private void transformXbrlFromOriginal() {
+    private void transformXbrlFromOriginal(DocumentFormat documentFormat) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            getTransformationManager().transform(new ByteArrayInputStream(this.original),
-                    TransformationManager.UBL_TO_XBRL,
-                    baos);
+            transformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
             this.xbrl = baos.toString(StandardCharsets.UTF_8.name());
         } catch (SaxonApiException e) {
             LOGGER.info("Invoice failed converting to XBRL");
@@ -150,27 +158,67 @@ public class DocumentDbo {
         }
     }
 
-    private String getOrgnrFromXBRL() {
+    private DocumentFormat getDocumentFormat(final String document) {
+        if (document.contains("<Finvoice ")) {
+            return DocumentFormat.FINVOICE;
+        } else if (document.contains("<Invoice ")) {
+            return DocumentFormat.UML;
+        } else {
+            return DocumentFormat.UNKNOWN;
+        }
+    }
+
+    private String getOrgnrFromXBRL() throws IOException, SAXException {
+        Document document = getXbrlAsDocument();
+        if (document != null) {
+            NodeList nodes = document.getElementsByTagName("gl-cor:identifierAuthorityCode");
+            if (nodes.getLength() > 0) {
+                Node child = nodes.item(0).getFirstChild();
+                if (child != null) {
+                    return child.getTextContent();
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getDocumentidFromXBRL() throws IOException, SAXException {
+        Document document = getXbrlAsDocument();
+        if (document != null) {
+            NodeList nodes = document.getElementsByTagName("gl-cor:documentNumber");
+            if (nodes.getLength() > 0) {
+                Node child = nodes.item(0).getFirstChild();
+                if (child != null) {
+                    return child.getTextContent();
+                }
+            }
+        }
+        return null;
+    }
+
+    private Document getXbrlAsDocument() throws IOException, SAXException {
         if (xbrl == null) {
             return null;
         }
 
-        //Todo, parse and find gl-bus:organizationIdentifier (?)
+        DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder;
+        try {
+            builder = builderFactory.newDocumentBuilder();
+            Document document;
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(getXbrl().getBytes(StandardCharsets.UTF_8))) {
+                document = builder.parse(bais);
+            }
 
-        return null;
-    }
-
-    private String getDocumentidFromXBRL() {
-        if (xbrl == null) {
-            return null;
+            document.getDocumentElement().normalize();
+            return document;
+        } catch (ParserConfigurationException e) {
+            LOGGER.error(e.getMessage());
         }
-
-        //Todo, parse and find gl-cor:documentNumber (?)
-
         return null;
     }
 
-    private int initializeTransaction(final Connection connection) throws SQLException {
+    private int initializeTransaction(final Connection connection) throws SQLException, IOException, SAXException {
         if (_transactionid != TransactionDbo.UNINITIALIZED) {
             return _transactionid;
         }
@@ -187,7 +235,7 @@ public class DocumentDbo {
         return transactionDbo.get_id();
     }
 
-    public void persist(final Connection connection) throws SQLException {
+    public void persist(final Connection connection) throws SQLException, IOException, SAXException {
         if (_transactionid == TransactionDbo.UNINITIALIZED) {
             if ((_transactionid = initializeTransaction(connection)) == TransactionDbo.UNINITIALIZED) {
                 throw new NoSuchElementException();
@@ -195,14 +243,16 @@ public class DocumentDbo {
         }
 
         if (get_id() == UNINITIALIZED) {
-            final String sql = "INSERT INTO nsg.invoice (_transactionid, documenttype, documentid, original, xbrl) " +
+            final String sql = "INSERT INTO nsg.document (_transactionid, documenttype, documentid, original, xbrl) " +
                                       "VALUES (?,?,?,?,?)";
-            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                 ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
+                 Reader xbrlReader = new StringReader(xbrl)) {
                 stmt.setInt(1, _transactionid);
                 stmt.setInt(2, getDocumenttype());
                 stmt.setString(3, getDocumentid());
-                stmt.setBinaryStream(4, new ByteArrayInputStream(getOriginal()));
-                stmt.setCharacterStream(5, new StringReader(xbrl));
+                stmt.setBinaryStream(4, originalBais, originalBais.available());
+                stmt.setCharacterStream(5, xbrlReader);
 
                 stmt.executeUpdate();
 
@@ -212,15 +262,16 @@ public class DocumentDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.invoice SET _transactionid=?, documenttype=?, documentid=?, "+
-                                                      "original=?, xbrl=?) "+
+            final String sql = "UPDATE nsg.document SET _transactionid=?, documenttype=?, documentid=?, original=?, xbrl=?) "+
                                                 "WHERE _id=?";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            try (PreparedStatement stmt = connection.prepareStatement(sql);
+                 ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
+                 Reader xbrlReader = new StringReader(xbrl)) {
                 stmt.setInt(1, _transactionid);
                 stmt.setInt(2, getDocumenttype());
                 stmt.setString(3, getDocumentid());
-                stmt.setBinaryStream(4, new ByteArrayInputStream(getOriginal()));
-                stmt.setCharacterStream(5, new StringReader(xbrl));
+                stmt.setBinaryStream(4, originalBais, originalBais.available());
+                stmt.setCharacterStream(5, xbrlReader);
                 stmt.setInt(6, get_id());
 
                 stmt.executeUpdate();
@@ -229,7 +280,7 @@ public class DocumentDbo {
     }
 
     public static int findInternalId(final Connection connection, final String id) throws SQLException {
-        final String sql = "SELECT _id FROM document WHERE id=?";
+        final String sql = "SELECT _id FROM nsg.document WHERE id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();

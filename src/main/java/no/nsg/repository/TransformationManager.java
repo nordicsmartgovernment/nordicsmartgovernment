@@ -1,6 +1,7 @@
 package no.nsg.repository;
 
 import net.sf.saxon.s9api.*;
+import no.nsg.repository.dbo.DocumentDbo;
 import org.springframework.stereotype.Component;
 
 import javax.xml.transform.Source;
@@ -37,6 +38,24 @@ public class TransformationManager {
         }
 
         return xsltCache.get(xslt);
+    }
+
+    public void transform(final InputStream xmlStream, final DocumentDbo.DocumentFormat format, final OutputStream outputStream) throws SaxonApiException {
+        String xsltFile = null;
+        switch (format) {
+            case UML:
+                xsltFile = UBL_TO_XBRL;
+                break;
+
+            case FINVOICE:
+                xsltFile = FINVOICE_TO_XBRL;
+                break;
+
+            case UNKNOWN:
+            default:
+                break;
+        }
+        transform(xmlStream, xsltFile, outputStream);
     }
 
     public void transform(final InputStream xmlStream, final String xslt, final OutputStream outputStream) throws SaxonApiException {

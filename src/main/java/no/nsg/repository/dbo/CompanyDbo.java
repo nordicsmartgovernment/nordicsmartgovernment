@@ -26,7 +26,7 @@ public class CompanyDbo {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT orgno FROM company WHERE _id=?";
+        final String sql = "SELECT orgno FROM nsg.company WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, _id);
             ResultSet rs = stmt.executeQuery();
@@ -60,7 +60,7 @@ public class CompanyDbo {
     }
 
     public static int findByOrgno(final Connection connection, final String orgno) throws SQLException {
-        final String sql = "SELECT _id FROM company WHERE orgno=?";
+        final String sql = "SELECT _id FROM nsg.company WHERE orgno=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, orgno);
             ResultSet rs = stmt.executeQuery();
@@ -73,9 +73,11 @@ public class CompanyDbo {
 
     public void persist(final Connection connection) throws SQLException {
         if (get_id() == UNINITIALIZED) {
-            final String sql = "INSERT INTO nsg.company () " +
-                                      "VALUES ()";
+            final String sql = "INSERT INTO nsg.company (orgno) " +
+                                      "VALUES (?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, this.orgno);
+
                 stmt.executeUpdate();
 
                 ResultSet rs = stmt.getGeneratedKeys();
@@ -84,9 +86,10 @@ public class CompanyDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.company SET WHERE _id=?";
+            final String sql = "UPDATE nsg.company SET orgno=? WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, get_id());
+                stmt.setString(1, this.orgno);
+                stmt.setInt(2, get_id());
 
                 stmt.executeUpdate();
             }

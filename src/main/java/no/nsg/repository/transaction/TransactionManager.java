@@ -43,7 +43,7 @@ public class TransactionManager {
         List<Object> transactions = new ArrayList<>();
         /*
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT _id FROM invoice";
+            final String sql = "SELECT _id FROM nsg.invoice";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {

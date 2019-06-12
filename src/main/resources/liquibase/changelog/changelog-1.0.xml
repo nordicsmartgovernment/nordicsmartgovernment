@@ -41,7 +41,7 @@
             <column name="_transactionid" type="INT"/>
             <column name="documenttype" type="INT"/>
             <column name="documentid" type="TEXT"/>
-            <column name="original" type="BLOB"/>
+            <column name="original" type="bytea"/>
             <column name="xbrl" type="CLOB"/>
         </createTable>
     </changeSet>

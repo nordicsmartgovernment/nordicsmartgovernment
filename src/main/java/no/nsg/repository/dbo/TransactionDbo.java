@@ -28,7 +28,7 @@ public class TransactionDbo {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT _companyid FROM transaction WHERE _id=?";
+        final String sql = "SELECT _companyid FROM nsg.transaction WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, _id);
             ResultSet rs = stmt.executeQuery();

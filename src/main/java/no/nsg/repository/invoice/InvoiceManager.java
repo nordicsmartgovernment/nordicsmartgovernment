@@ -4,6 +4,7 @@ import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.dbo.DocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -23,7 +24,7 @@ public class InvoiceManager {
     private ConnectionManager connectionManager;
 
 
-    public Object createInvoice(final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException {
+    public Object createInvoice(final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         DocumentDbo invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
@@ -32,7 +33,7 @@ public class InvoiceManager {
                 invoice.setOriginalFromString(invoiceOriginalXml);
                 invoice.persist(connection);
                 connection.commit();
-            } catch (SQLException e) {
+            } catch (SQLException | SAXException e) {
                 try {
                     connection.rollback();
                     throw e;
@@ -68,7 +69,7 @@ public class InvoiceManager {
     public List<Object> getInvoices() throws SQLException {
         List<Object> invoices = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT _id FROM document WHERE type=?";
+            final String sql = "SELECT _id FROM nsg.document WHERE documenttype=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, DocumentDbo.DOCUMENTTYPE_INVOICE);
 
