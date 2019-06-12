@@ -31,7 +31,6 @@ public class TransformationTest {
     public void finvoiceHappydayTransformTest() throws SaxonApiException, UnsupportedEncodingException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), TransformationManager.FINVOICE_TO_XBRL, baos);
-        LOGGER.info(baos.toString(StandardCharsets.UTF_8.name()));
     }
 
     @Test
