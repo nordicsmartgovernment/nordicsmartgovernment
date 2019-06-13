@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Controller
@@ -49,6 +50,9 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
             String invoiceOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
             persistedInvoice = invoiceManager.createInvoice(body);
+        } catch (NoSuchElementException e) {
+            LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             LOGGER.error("POST_CREATEINVOICE failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
