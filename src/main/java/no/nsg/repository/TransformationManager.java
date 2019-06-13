@@ -18,19 +18,23 @@ public class TransformationManager {
     public static final String FINVOICE_TO_XBRL = "xslt/finvoice_to_xbrl.xslt";
     public static final String UBL_TO_XBRL      = "xslt/ubl_2_1_to_xbrl.xslt";
 
-    private Map<String, Xslt30Transformer> xsltCache = new HashMap<>();
+    private static Map<String, Xslt30Transformer> xsltCache = null;
     private static Processor processor = null;
     private static XsltCompiler compiler = null;
 
 
-    private Xslt30Transformer getStylesheetExecutable(final String xslt) throws SaxonApiException {
+    private static Xslt30Transformer getStylesheetExecutable(final String xslt) throws SaxonApiException {
+        if (xsltCache == null) {
+            xsltCache = new HashMap<>();
+        }
+
         if (processor == null) {
             processor = new Processor(false);
             compiler = processor.newXsltCompiler();
         }
 
         if (!xsltCache.containsKey(xslt)) {
-            InputStream xsltStream = getClass().getClassLoader().getResourceAsStream("xslt/finvoice_to_xbrl.xslt");
+            InputStream xsltStream = TransformationManager.class.getClassLoader().getResourceAsStream("xslt/finvoice_to_xbrl.xslt");
             if (xsltStream == null) {
                 throw new IllegalArgumentException("xslt '"+xslt+"' not found");
             }
@@ -40,7 +44,7 @@ public class TransformationManager {
         return xsltCache.get(xslt);
     }
 
-    public void transform(final InputStream xmlStream, final DocumentDbo.DocumentFormat format, final OutputStream outputStream) throws SaxonApiException {
+    public static void transform(final InputStream xmlStream, final DocumentDbo.DocumentFormat format, final OutputStream outputStream) throws SaxonApiException {
         String xsltFile = null;
         switch (format) {
             case UML:
@@ -58,7 +62,7 @@ public class TransformationManager {
         transform(xmlStream, xsltFile, outputStream);
     }
 
-    public void transform(final InputStream xmlStream, final String xslt, final OutputStream outputStream) throws SaxonApiException {
+    public static void transform(final InputStream xmlStream, final String xslt, final OutputStream outputStream) throws SaxonApiException {
         Xslt30Transformer transformer = getStylesheetExecutable(xslt);
         Source source = new StreamSource(xmlStream);
         Serializer destination = processor.newSerializer(outputStream);

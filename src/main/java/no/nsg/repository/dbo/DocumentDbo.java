@@ -37,9 +37,6 @@ public class DocumentDbo {
 
     public static final int DOCUMENTTYPE_INVOICE = 1;
 
-    @Autowired
-    private TransformationManager transformationManager;
-
     @JsonIgnore
     private int _id;
 
@@ -148,7 +145,7 @@ public class DocumentDbo {
     private void transformXbrlFromOriginal(DocumentFormat documentFormat) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            transformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
+            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
             this.xbrl = baos.toString(StandardCharsets.UTF_8.name());
         } catch (SaxonApiException e) {
             LOGGER.info("Invoice failed converting to XBRL");
