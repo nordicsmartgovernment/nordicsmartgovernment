@@ -1,25 +1,81 @@
 package no.nsg.controller;
 
 import no.nsg.testcategories.ServiceTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
+@SpringBootTest
 @RunWith(SpringRunner.class)
+@ContextConfiguration(initializers = {TransactionApiControllerTest.Initializer.class})
 @Category(ServiceTest.class)
 public class TransactionApiControllerTest {
+    private static Logger LOGGER = LoggerFactory.getLogger(TransactionApiControllerTest.class);
+
+    @Autowired
+    TransactionApiControllerImpl transactionApiController;
+
+    @Autowired
+    InvoicesApiControllerImpl invoicesApiController;
 
     @Mock
     HttpServletRequest httpServletRequestMock;
+
+    private boolean hasInitializedInvoiceData = false;
+
+
+    @ClassRule
+    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
+            .withDatabaseName("integration-tests-db")
+            .withUsername("testuser")
+            .withPassword("testpassword");
+
+    static class Initializer
+            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+            TestPropertyValues.of(
+                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
+                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
+                    "spring.datasource.password=" + postgreSQLContainer.getPassword(),
+                    "postgres.nsg.host=" + postgreSQLContainer.getContainerIpAddress()+":"+postgreSQLContainer.getMappedPort(5432),
+                    "postgres.nsg.db=" + postgreSQLContainer.getDatabaseName(),
+                    "postgres.nsg.dbo_user=" + postgreSQLContainer.getUsername(),
+                    "postgres.nsg.dbo_password=" + postgreSQLContainer.getPassword(),
+                    "postgres.nsg.user=" + postgreSQLContainer.getUsername(),
+                    "postgres.nsg.password=" + postgreSQLContainer.getPassword()
+            ).applyTo(configurableApplicationContext.getEnvironment());
+
+            LOGGER.info("JDBC: " + postgreSQLContainer.getJdbcUrl());
+        }
+    }
+
+    @Before
+    public void before() throws IOException {
+        initializeInvoiceData();
+    }
 
     @Test
     public void happyDay()
@@ -29,17 +85,46 @@ public class TransactionApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        TransactionApiControllerImpl transactionApiController = new TransactionApiControllerImpl();
         ResponseEntity<List<Object>> response = transactionApiController.getTransactions(httpServletRequestMock);
-        Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Object> responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        Assert.assertEquals(6, responseBody.size()); //one invoice, five finvoices
     }
 
     @Test
     public void getTransactionByIdTest() {
-        final String id = "1";
-        TransactionApiControllerImpl transactionApiController = new TransactionApiControllerImpl();
+        final String id = "77"; //Finvoice InvoiceNumber for "finvoice/finvoice 77 myynti.xml"
         ResponseEntity<Object> response = transactionApiController.getTransactionById(httpServletRequestMock, id);
-        Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Object responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        String xbrl = (String)responseBody;
+        Assert.assertTrue(xbrl.contains("<xbrli:xbrl "));
     }
 
+    private void initializeInvoiceData() throws IOException {
+        if (!hasInitializedInvoiceData) {
+            hasInitializedInvoiceData = true;
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        }
+    }
+
+    private static String resourceAsString(final String resource, final Charset charset) throws IOException {
+        InputStream resourceStream = TransactionApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
+
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceStream, charset))) {
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        return sb.toString();
+    }
 }

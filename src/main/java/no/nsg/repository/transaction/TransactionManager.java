@@ -4,6 +4,11 @@ import no.nsg.repository.ConnectionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +22,15 @@ public class TransactionManager {
 
 
     public Object getTransactionById(final String id) throws SQLException {
-        Object transaction = null;
-        /*
+        String transaction = null;
+
         try (Connection connection = connectionManager.getConnection()) {
-            try {
-                try {
-                    invoice = new InvoiceDbo(connection, InvoiceDbo.findInternalId(connection, id));
-                } catch (NoSuchElementException |NumberFormatException e) {
+            final String sql = "SELECT d.xbrl FROM nsg.document d, nsg.transaction t WHERE d._transactionid=t._id AND d.documentid=?;";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, id);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    transaction = readerToString(rs.getCharacterStream("xbrl"));
                 }
                 connection.commit();
             } catch (SQLException e) {
@@ -35,21 +42,21 @@ public class TransactionManager {
                 }
             }
         }
-         */
+
         return transaction;
     }
 
     public List<Object> getTransactions() throws SQLException {
         List<Object> transactions = new ArrayList<>();
-        /*
+
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT _id FROM nsg.invoice";
+            final String sql = "SELECT d.xbrl FROM nsg.document d, nsg.transaction t WHERE d._transactionid=t._id;";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
-                    try {
-                        invoices.add(new InvoiceDbo(connection, rs.getInt("_id")));
-                    } catch (NoSuchElementException e) {
+                    String xbrl = readerToString(rs.getCharacterStream("xbrl"));
+                    if (xbrl != null) {
+                        transactions.add(xbrl);
                     }
                 }
                 connection.commit();
@@ -62,7 +69,21 @@ public class TransactionManager {
                 }
             }
         }
-         */
+
         return transactions;
+    }
+
+    private String readerToString(final Reader xbrlReader) {
+        StringBuilder sb = new StringBuilder();
+        char[] buffer = new char[10 * 1024];
+        int length;
+        try {
+            while ((length = xbrlReader.read(buffer)) != -1) {
+                sb.append(buffer, 0, length);
+            }
+        } catch (IOException e) {
+            return null;
+        }
+        return sb.toString();
     }
 }

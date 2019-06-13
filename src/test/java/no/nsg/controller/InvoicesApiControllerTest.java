@@ -7,8 +7,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -21,7 +19,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.SQLException;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -30,21 +33,6 @@ import java.util.List;
 @ContextConfiguration(initializers = {InvoicesApiControllerTest.Initializer.class})
 @Category(ServiceTest.class)
 public class InvoicesApiControllerTest {
-    private static Logger LOGGER = LoggerFactory.getLogger(InvoicesApiControllerTest.class);
-
-
-    static final String EXAMPLE_INVOICE = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                          "<Invoice>\n" +
-                                          "  <CustomizationID>customizationID</CustomizationID>\n" +
-                                          "  <ProfileID>profileID</ProfileID>\n" +
-                                          "  <ID>id</ID>\n" +
-                                          "  <IssueDate>2019-01-01</IssueDate>\n" +
-                                          "  <DueDate>dueDate</DueDate>\n" +
-                                          "  <InvoiceTypeCode>invoiceTypeCode</InvoiceTypeCode>\n" +
-                                          "  <DocumentCurrencyCode>documentCurrencyCode</DocumentCurrencyCode>\n" +
-                                          "  <AccountingCost>accountingCost</AccountingCost>\n" +
-                                          "  <BuyerReference>buyerReference</BuyerReference>\n" +
-                                          "</Invoice>";
 
     @Mock
     HttpServletRequest httpServletRequestMock;
@@ -54,9 +42,9 @@ public class InvoicesApiControllerTest {
 
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
-                                                                    .withDatabaseName("integration-tests-db")
-                                                                    .withUsername("testuser")
-                                                                    .withPassword("testpassword");
+            .withDatabaseName("integration-tests-db")
+            .withUsername("testuser")
+            .withPassword("testpassword");
 
     static class Initializer
             implements ApplicationContextInitializer<ConfigurableApplicationContext> {
@@ -82,17 +70,33 @@ public class InvoicesApiControllerTest {
     }
 
     @Test
-    public void createInvoiceTest() throws SQLException {
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, EXAMPLE_INVOICE);
-        Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
-        Assert.assertNotEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    public void createFinvoiceTest() throws IOException {
+        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    public void createInvoiceTest() throws IOException {
+        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void getInvoicesTest() {
         ResponseEntity<List<Object>> response = invoicesApiController.getInvoices(httpServletRequestMock);
-        Assert.assertNotEquals(HttpStatus.NOT_IMPLEMENTED, response.getStatusCode());
-        Assert.assertNotEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
+    private static String resourceAsString(final String resource, final Charset charset) throws IOException {
+        InputStream resourceStream = InvoicesApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
+
+        StringBuilder sb = new StringBuilder();
+        String line;
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resourceStream, charset))) {
+            while ((line = bufferedReader.readLine()) != null) {
+                sb.append(line);
+            }
+        }
+        return sb.toString();
+    }
 }
