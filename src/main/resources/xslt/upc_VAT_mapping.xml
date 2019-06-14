@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<map:Mapping xmlns:map="http://www.nsg.org/map">
+<map:Map>
+<map:UPC>123</map:UPC>
+<map:VatRate country="FI">14</map:VatRate>
+<map:VatRate country="SE">24</map:VatRate>
+<map:VatRate country="NO">34</map:VatRate>
+<map:VatRate country="IS">54</map:VatRate>
+<map:VatRate country="DK">64</map:VatRate>
+</map:Map>
+<map:Map>
+<map:UPC>12344321</map:UPC>
+<map:VatRate country="FI">4</map:VatRate>
+<map:VatRate country="SE">8</map:VatRate>
+<map:VatRate country="NO">10</map:VatRate>
+<map:VatRate country="IS">12</map:VatRate>
+<map:VatRate country="DK">14</map:VatRate>
+</map:Map>
+   
+</map:Mapping>
