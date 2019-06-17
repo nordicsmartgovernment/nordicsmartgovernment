@@ -276,7 +276,7 @@ public class DocumentDbo {
     }
 
     public static int findInternalId(final Connection connection, final String id) throws SQLException {
-        final String sql = "SELECT _id FROM nsg.document WHERE id=?";
+        final String sql = "SELECT _id FROM nsg.document WHERE documentid=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();
