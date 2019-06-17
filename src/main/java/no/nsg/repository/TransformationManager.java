@@ -17,6 +17,7 @@ public class TransformationManager {
 
     public static final String FINVOICE_TO_XBRL = "xslt/finvoice_to_xbrl.xslt";
     public static final String UBL_TO_XBRL      = "xslt/ubl_2_1_to_xbrl.xslt";
+    public static final String UBL_TO_XBRL_GL   = "xslt/ubl_2_1_to_xbrl_gl.xslt";
 
     private static Map<String, Xslt30Transformer> xsltCache = null;
     private static Processor processor = null;
@@ -34,7 +35,7 @@ public class TransformationManager {
         }
 
         if (!xsltCache.containsKey(xslt)) {
-            InputStream xsltStream = TransformationManager.class.getClassLoader().getResourceAsStream("xslt/finvoice_to_xbrl.xslt");
+            InputStream xsltStream = TransformationManager.class.getClassLoader().getResourceAsStream(xslt);
             if (xsltStream == null) {
                 throw new IllegalArgumentException("xslt '"+xslt+"' not found");
             }
@@ -48,7 +49,7 @@ public class TransformationManager {
         String xsltFile = null;
         switch (format) {
             case UML:
-                xsltFile = UBL_TO_XBRL;
+                xsltFile = UBL_TO_XBRL_GL;
                 break;
 
             case FINVOICE:
