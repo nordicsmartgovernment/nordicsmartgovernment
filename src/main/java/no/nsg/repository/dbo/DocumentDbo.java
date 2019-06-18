@@ -42,7 +42,9 @@ public class DocumentDbo {
     @JsonIgnore
     private int _transactionid;
 
+    @JsonIgnore
     private int documenttype;
+
     private String documentid;
 
     private byte[] original;

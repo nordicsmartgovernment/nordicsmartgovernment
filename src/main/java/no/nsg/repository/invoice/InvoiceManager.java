@@ -45,7 +45,7 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public Object getInvoiceById(final String id) throws SQLException {
+    public DocumentDbo getInvoiceById(final String id) throws SQLException {
         DocumentDbo invoice = null;
         try (Connection connection = connectionManager.getConnection()) {
             try {
@@ -66,8 +66,8 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public List<Object> getInvoices() throws SQLException {
-        List<Object> invoices = new ArrayList<>();
+    public List<DocumentDbo> getInvoices() throws SQLException {
+        List<DocumentDbo> invoices = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
             final String sql = "SELECT _id FROM nsg.document WHERE documenttype=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
