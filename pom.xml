@@ -34,8 +34,11 @@
         <docker.image.name>nsg/referenceimplementation</docker.image.name>
         <docker.image.tag>latest</docker.image.tag>
 
+        <unittest.category/>
+        <servicetest.category/>
+        <integrationtest.category/>
+
         <surefireArgLine/>
-        <integration.test.pattern/>
     </properties>
 
     <dependencies>
@@ -83,6 +86,12 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.10.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>2.25.1</version>
@@ -124,6 +133,33 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>unit-test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <unittest.category>,no.nsg.testcategories.UnitTest</unittest.category>
+            </properties>
+        </profile>
+        <profile>
+            <id>service-test</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <servicetest.category>,no.nsg.testcategories.ServiceTest</servicetest.category>
+            </properties>
+        </profile>
+        <profile>
+            <id>integration-test</id>
+            <properties>
+                <integrationtest.category>,no.nsg.testcategories.IntegrationTest</integrationtest.category>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
         <resources>
             <resource>
@@ -151,6 +187,7 @@
                 <version>4.0.0-beta2</version>
                 <executions>
                     <execution>
+                        <id>InnvoiceAPI</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -161,8 +198,35 @@
                             <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <invokerPackage>no.nsg.generated</invokerPackage>
-                            <apiPackage>no.nsg.generated.api</apiPackage>
-                            <modelPackage>no.nsg.generated.model</modelPackage>
+                            <apiPackage>no.nsg.generated.invoice_api</apiPackage>
+                            <modelPackage>no.nsg.generated.invoice_model</modelPackage>
+                            <configOptions>
+                                <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
+                                <sourceFolder>src/main/java/gen</sourceFolder>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <java8>true</java8>
+                                <dateLibrary>java8</dateLibrary>
+                                <library>spring-boot</library>
+                                <delegatePattern>false</delegatePattern>
+                            </configOptions>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>TransactionAPI</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openAPI/TransactionAPI.yaml</inputSpec>
+                            <validateSpec>true</validateSpec>
+                            <generatorName>spring</generatorName>
+                            <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <invokerPackage>no.nsg.generated</invokerPackage>
+                            <apiPackage>no.nsg.generated.transaction_api</apiPackage>
+                            <modelPackage>no.nsg.generated.transaction_model</modelPackage>
                             <configOptions>
                                 <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
                                 <sourceFolder>src/main/java/gen</sourceFolder>
@@ -196,9 +260,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <excludes>
-                        <exclude>${integration.test.pattern}</exclude>
-                    </excludes>
+                    <useSystemClassLoader>false</useSystemClassLoader>
+                    <groups>java.lang.Exception ${unittest.category} ${servicetest.category} ${integrationtest.category}
+                    </groups> <!-- java.lang.Exception is a hack to make a valid comma-separated list og category classes -->
                     <argLine>${surefireArgLine} -Dfile.encoding=${java.encoding}</argLine>
                 </configuration>
             </plugin>

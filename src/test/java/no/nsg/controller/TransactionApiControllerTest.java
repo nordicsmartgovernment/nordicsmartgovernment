@@ -1,12 +1,12 @@
 package no.nsg.controller;
 
 import no.nsg.testcategories.ServiceTest;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -30,15 +30,22 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(initializers = {InvoicesApiControllerTest.Initializer.class})
+@ContextConfiguration(initializers = {TransactionApiControllerTest.Initializer.class})
 @Category(ServiceTest.class)
-public class InvoicesApiControllerTest {
+public class TransactionApiControllerTest {
+    private static Logger LOGGER = LoggerFactory.getLogger(TransactionApiControllerTest.class);
+
+    @Autowired
+    TransactionApiControllerImpl transactionApiController;
+
+    @Autowired
+    InvoicesApiControllerImpl invoicesApiController;
 
     @Mock
     HttpServletRequest httpServletRequestMock;
 
-    @Autowired
-    InvoicesApiControllerImpl invoicesApiController;
+    private boolean hasInitializedInvoiceData = false;
+
 
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
@@ -60,7 +67,14 @@ public class InvoicesApiControllerTest {
                     "postgres.nsg.user=" + postgreSQLContainer.getUsername(),
                     "postgres.nsg.password=" + postgreSQLContainer.getPassword()
             ).applyTo(configurableApplicationContext.getEnvironment());
+
+            LOGGER.info("JDBC: " + postgreSQLContainer.getJdbcUrl());
         }
+    }
+
+    @Before
+    public void before() throws IOException {
+        initializeInvoiceData();
     }
 
     @Test
@@ -70,38 +84,39 @@ public class InvoicesApiControllerTest {
     }
 
     @Test
-    public void createFinvoiceTest() throws IOException {
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    public void getTransactionsTest() {
+        ResponseEntity<List<Object>> response = transactionApiController.getTransactions(httpServletRequestMock);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Object> responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        Assert.assertEquals(6, responseBody.size()); //one invoice, five finvoices
     }
 
     @Test
-    public void createInvoiceTest() throws IOException {
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    public void getTransactionByIdTest() {
+        final String id = "77"; //Finvoice InvoiceNumber for "finvoice/finvoice 77 myynti.xml"
+        ResponseEntity<Object> response = transactionApiController.getTransactionById(httpServletRequestMock, id);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Object responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        String xbrl = (String)responseBody;
+        Assert.assertTrue(xbrl.contains("<xbrli:xbrl "));
     }
 
-    @Test
-    public void getInvoicesTest() {
-        ResponseEntity<List<Object>> response = invoicesApiController.getInvoices(httpServletRequestMock);
-        Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
-    }
-
-    @Test
-    public void getInvoiceByIdTest() throws IOException {
-        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(httpServletRequestMock, "TOSL108");
-        Assert.assertTrue(response.getStatusCode() == HttpStatus.NO_CONTENT);
-
-        invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
-        response = invoicesApiController.getInvoiceById(httpServletRequestMock, "TOSL108");
-        Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
-
-        InvoicesApiControllerImpl.Invoice invoice = (InvoicesApiControllerImpl.Invoice) response.getBody();
-        Assert.assertEquals("TOSL108", invoice.documentid);
+    private void initializeInvoiceData() throws IOException {
+        if (!hasInitializedInvoiceData) {
+            hasInitializedInvoiceData = true;
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        }
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {
-        InputStream resourceStream = InvoicesApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
+        InputStream resourceStream = TransactionApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
 
         StringBuilder sb = new StringBuilder();
         String line;
