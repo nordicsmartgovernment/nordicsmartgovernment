@@ -87,6 +87,19 @@ public class InvoicesApiControllerTest {
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
+    @Test
+    public void getInvoiceByIdTest() throws IOException {
+        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(httpServletRequestMock, "TOSL108");
+        Assert.assertTrue(response.getStatusCode() == HttpStatus.NO_CONTENT);
+
+        invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
+        response = invoicesApiController.getInvoiceById(httpServletRequestMock, "TOSL108");
+        Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
+
+        InvoicesApiControllerImpl.Invoice invoice = (InvoicesApiControllerImpl.Invoice) response.getBody();
+        Assert.assertEquals("TOSL108", invoice.documentid);
+    }
+
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {
         InputStream resourceStream = InvoicesApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
 
