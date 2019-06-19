@@ -66,6 +66,10 @@ public class ConnectionManager {
 				throw new RuntimeException("System environment variable NSG_POSTGRES_HOST, NSG_POSTGRES_DB, NSG_POSTGRES_DBO_USER/NSG_POSTGRES_USER and NSG_POSTGRES_DBO_PASSWORD/NSG_POSTGRES_PASSWORD not set correctly.");
 			}
 
+			if (requireDboPermissions) { //This happens only at application startup. Do some extra logging
+				LOGGER.info("Connecting to " + MessageFormat.format(propertyManager.getProperty("nsg_db_url"), safeHost, safeDb, username, "****"));
+			}
+
 			String dbUrl = MessageFormat.format(propertyManager.getProperty("nsg_db_url"), safeHost, safeDb, username, password);
 			Connection connection = DriverManager.getConnection(dbUrl);
 			connection.setAutoCommit(false);
