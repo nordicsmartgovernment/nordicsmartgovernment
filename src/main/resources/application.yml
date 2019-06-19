@@ -1,16 +1,7 @@
 postgres:
   nsg:
-    host: ${NSG_POSTGRES_HOST:postgres:5432}
-    db: ${NSG_POSTGRES_DB:nsg_db}
-    dbo_user: ${NSG_POSTGRES_DBO_USER:nsg_dbo}
-    dbo_password: ${NSG_POSTGRES_DBO_PASSWORD}
-    user: ${NSG_POSTGRES_USER:nsg}
-    password: ${NSG_POSTGRES_PASSWORD}
-
----
-# Local development environment
-spring:
-  profiles: local
-postgres:
-  nsg:
-    host: localhost:5432
+    db_url: ${NSG_POSTGRES_DB_URL:jdbc:postgresql://postgres:5432/postgres?currentSchema=nsg&sslmode=prefer}
+    dbo_user: ${NSG_POSTGRES_DBO_USER:postgres}
+    dbo_password: ${NSG_POSTGRES_DBO_PASSWORD:password}
+    user: ${NSG_POSTGRES_USER:postgres}
+    password: ${NSG_POSTGRES_PASSWORD:password}

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.sql.*;
-import java.text.MessageFormat;
 
 
 @Component
@@ -15,13 +14,11 @@ public class ConnectionManager {
 
 	private static Logger LOGGER = LoggerFactory.getLogger(ConnectionManager.class);
 
+	public static final String DB        = "postgres";
 	public static final String DB_SCHEMA = "nsg";
 
-	@Value("${postgres.nsg.host}")
-	private String postgresHost;
-
-	@Value("${postgres.nsg.db}")
-	private String postgresDb;
+	@Value("${postgres.nsg.db_url}")
+	private String postgresDbUrl;
 
 	@Value("${postgres.nsg.dbo_user}")
 	private String postgresDboUser;
@@ -42,14 +39,7 @@ public class ConnectionManager {
 
 	public Connection getConnection(final boolean requireDboPermissions) throws SQLException {
 		try {
-			PropertyManager propertyManager = PropertyManager.getInstance();
-			Class.forName(propertyManager.getProperty("driver")).newInstance();
-
-			String safeHost = StringUtils.replace(postgresHost, "'", "''");
-			String safeDb = StringUtils.replace(postgresDb, "'", "''");
-			if (safeDb==null) {
-				safeDb = "nsg_db";
-			}
+			Class.forName("org.postgresql.Driver").newInstance();
 
 			String username = null;
 			String password = null;
@@ -62,16 +52,15 @@ public class ConnectionManager {
 				password = postgresPassword;
 			}
 
-			if (safeHost==null || username==null || password==null) {
-				throw new RuntimeException("System environment variable NSG_POSTGRES_HOST, NSG_POSTGRES_DB, NSG_POSTGRES_DBO_USER/NSG_POSTGRES_USER and NSG_POSTGRES_DBO_PASSWORD/NSG_POSTGRES_PASSWORD not set correctly.");
+			if (postgresDbUrl==null || username==null || password==null) {
+				throw new RuntimeException("System environment variable NSG_POSTGRES_DB_URL, NSG_POSTGRES_DBO_USER/NSG_POSTGRES_USER and NSG_POSTGRES_DBO_PASSWORD/NSG_POSTGRES_PASSWORD not set correctly.");
 			}
 
 			if (requireDboPermissions) { //This happens only at application startup. Do some extra logging
-				LOGGER.info("Connecting to " + MessageFormat.format(propertyManager.getProperty("nsg_db_url"), safeHost, safeDb, username, "****"));
+				LOGGER.info("Connecting to " + postgresDbUrl);
 			}
 
-			String dbUrl = MessageFormat.format(propertyManager.getProperty("nsg_db_url"), safeHost, safeDb, username, password);
-			Connection connection = DriverManager.getConnection(dbUrl);
+			Connection connection = DriverManager.getConnection(postgresDbUrl, username, password);
 			connection.setAutoCommit(false);
 
 			if (requireDboPermissions) {
@@ -107,13 +96,12 @@ public class ConnectionManager {
 			// If not created, create it now
 			if (user_count < 1) {
 				try (Statement stmt = connection.createStatement()) {
-					final String safeDb = StringUtils.replace(postgresDb, "'", "''");
 					final String safeUser = StringUtils.replace(postgresUser, "'", "''");
 					final String safePassword = StringUtils.replace(postgresPassword, "'", "''");
 
 					LOGGER.info("Creating regular user " + safeUser);
 					stmt.executeUpdate("CREATE USER " +	safeUser + " WITH PASSWORD '" + safePassword + "'");
-					stmt.executeUpdate("GRANT CONNECT ON DATABASE " + safeDb + " TO " + safeUser);
+					stmt.executeUpdate("GRANT CONNECT ON DATABASE " + DB + " TO " + safeUser);
 					stmt.executeUpdate("GRANT USAGE ON SCHEMA " + DB_SCHEMA + " TO " + safeUser);
 					stmt.executeUpdate("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA " + DB_SCHEMA + " TO " + safeUser);
 					stmt.executeUpdate("GRANT USAGE ON ALL SEQUENCES IN SCHEMA " + DB_SCHEMA + " TO " + safeUser);
