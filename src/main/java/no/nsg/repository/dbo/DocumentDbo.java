@@ -159,7 +159,7 @@ public class DocumentDbo {
     private DocumentFormat getDocumentFormat(final String document) {
         if (document.contains("<Finvoice ")) {
             return DocumentFormat.FINVOICE;
-        } else if (document.contains("<Invoice ")) {
+        } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"") || document.contains("<Invoice ")) {
             return DocumentFormat.UML;
         } else {
             return DocumentFormat.UNKNOWN;
