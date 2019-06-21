@@ -39,8 +39,6 @@ public class ConnectionManager {
 
 	public Connection getConnection(final boolean requireDboPermissions) throws SQLException {
 		try {
-			Class.forName("org.postgresql.Driver").newInstance();
-
 			String username = null;
 			String password = null;
 			if (requireDboPermissions) {
