@@ -43,6 +43,8 @@
             <column name="documentid" type="TEXT"/>
             <column name="original" type="bytea"/>
             <column name="xbrl" type="CLOB"/>
+            <column name="issuedate" type="DATE"><constraints nullable="true"/></column>
+            <column name="duedate" type="DATE"><constraints nullable="true"/></column>
         </createTable>
     </changeSet>
 
@@ -50,6 +52,24 @@
         <addForeignKeyConstraint baseColumnNames="_transactionid" baseTableName="document" baseTableSchemaName="nsg"
                                  constraintName="nsg_d_t_fk" onDelete="CASCADE" onUpdate="CASCADE"
                                  referencedColumnNames="_id" referencedTableName="transaction" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="1.0-6">
+        <createTable tableName="documentrow" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="documentrow_pkey"/>
+            </column>
+            <column name="_documentid" type="INT"/>
+            <column name="amount" type="FLOAT"><constraints nullable="true"/></column>
+            <column name="currency" type="TEXT"><constraints nullable="true"/></column>
+            <column name="account" type="TEXT"><constraints nullable="true"/></column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="1.0-7">
+        <addForeignKeyConstraint baseColumnNames="_documentid" baseTableName="documentrow" baseTableSchemaName="nsg"
+                                 constraintName="nsg_dr_d_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="document" referencedTableSchemaName="nsg"/>
     </changeSet>
 
 </databaseChangeLog>
