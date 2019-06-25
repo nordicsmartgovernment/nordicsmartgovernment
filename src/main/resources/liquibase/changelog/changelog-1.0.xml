@@ -43,8 +43,6 @@
             <column name="documentid" type="TEXT"/>
             <column name="original" type="bytea"/>
             <column name="xbrl" type="CLOB"/>
-            <column name="issuedate" type="DATE"><constraints nullable="true"/></column>
-            <column name="duedate" type="DATE"><constraints nullable="true"/></column>
         </createTable>
     </changeSet>
 
@@ -60,8 +58,6 @@
                 <constraints primaryKey="true" primaryKeyName="documentrow_pkey"/>
             </column>
             <column name="_documentid" type="INT"/>
-            <column name="amount" type="FLOAT"><constraints nullable="true"/></column>
-            <column name="currency" type="TEXT"><constraints nullable="true"/></column>
             <column name="account" type="TEXT"><constraints nullable="true"/></column>
         </createTable>
     </changeSet>
