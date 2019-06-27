@@ -20,6 +20,7 @@ import java.util.NoSuchElementException;
 //force another build
 //yet another build
 //and another
+//another
 
 @Controller
 public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.InvoicesApi {
