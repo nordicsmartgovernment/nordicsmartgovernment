@@ -25,13 +25,10 @@ public class InvoiceManager {
 
 
     public Object createInvoice(final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
-        DocumentDbo invoice;
+        Object invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                invoice = new DocumentDbo();
-                invoice.setDocumenttype(DocumentDbo.DOCUMENTTYPE_INVOICE);
-                invoice.setOriginalFromString(invoiceOriginalXml);
-                invoice.persist(connection);
+                invoice = createInvoice(invoiceOriginalXml, connection);
                 connection.commit();
             } catch (SQLException | SAXException e) {
                 try {
@@ -45,12 +42,20 @@ public class InvoiceManager {
         return invoice;
     }
 
+    public Object createInvoice(final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+        DocumentDbo invoice = new DocumentDbo();
+        invoice.setDocumenttype(DocumentDbo.DOCUMENTTYPE_INVOICE);
+        invoice.setOriginalFromString(invoiceOriginalXml);
+        invoice.persist(connection);
+        return invoice;
+    }
+
     public DocumentDbo getInvoiceById(final String id) throws SQLException {
         DocumentDbo invoice = null;
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 try {
-                    invoice = new DocumentDbo(connection, DocumentDbo.findInternalId(connection, id));
+                    invoice = getInvoiceById(id, connection);
                 } catch (NoSuchElementException|NumberFormatException|IOException e) {
                 }
                 connection.commit();
@@ -66,20 +71,15 @@ public class InvoiceManager {
         return invoice;
     }
 
+    public DocumentDbo getInvoiceById(final String id, final Connection connection) throws SQLException, IOException {
+        return new DocumentDbo(connection, DocumentDbo.findInternalId(connection, id));
+    }
+
     public List<DocumentDbo> getInvoices() throws SQLException {
         List<DocumentDbo> invoices = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT _id FROM nsg.document WHERE documenttype=?";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, DocumentDbo.DOCUMENTTYPE_INVOICE);
-
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    try {
-                        invoices.add(new DocumentDbo(connection, rs.getInt("_id")));
-                    } catch (NoSuchElementException|IOException e) {
-                    }
-                }
+            try {
+                invoices = getInvoices(connection);
                 connection.commit();
             } catch (SQLException e) {
                 try {
@@ -90,6 +90,28 @@ public class InvoiceManager {
                 }
             }
         }
+        return invoices;
+    }
+
+    public List<DocumentDbo> getInvoices(final Connection connection) throws SQLException {
+        List<DocumentDbo> invoices = new ArrayList<>();
+
+        final String sql = "SELECT _id FROM nsg.document WHERE documenttype=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, DocumentDbo.DOCUMENTTYPE_INVOICE);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                try {
+                    invoices.add(new DocumentDbo(connection, rs.getInt("_id")));
+                } catch (NoSuchElementException|IOException e) {
+                }
+            }
+            connection.commit();
+        } catch (Exception e) {
+            throw e;
+        }
+
         return invoices;
     }
 }
