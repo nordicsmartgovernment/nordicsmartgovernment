@@ -35,6 +35,7 @@ public class DocumentDbo {
     public static final int UNINITIALIZED = 0;
 
     public static final int DOCUMENTTYPE_INVOICE = 1;
+    public static final int DOCUMENTTYPE_BANKSTATEMENT = 2;
 
     @JsonIgnore
     private int _id;

@@ -8,18 +8,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Optional;
 
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 
 @Controller
-public class TransactionApiControllerImpl implements no.nsg.generated.transaction_api.TransactionsApi {
-    private static Logger LOGGER = LoggerFactory.getLogger(TransactionApiControllerImpl.class);
+public class TransactionsApiControllerImpl implements no.nsg.generated.transaction_api.TransactionsApi {
+    private static Logger LOGGER = LoggerFactory.getLogger(TransactionsApiControllerImpl.class);
 
     @Autowired
     private TransactionManager transactionManager;
@@ -37,11 +35,6 @@ public class TransactionApiControllerImpl implements no.nsg.generated.transactio
     /*
      * generated API implementation
      */
-
-    @Override
-    public Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     @Override
     public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, String id) {

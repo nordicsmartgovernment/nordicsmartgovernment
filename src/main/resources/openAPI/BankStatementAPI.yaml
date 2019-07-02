@@ -1,0 +1,80 @@
+openapi: 3.0.2
+info:
+  title: The Nordic Smart Government's bank statement collection API
+  description: Provides the The Nordic Smart Government's bank statement (ISO 20022, camt 053) collection
+  version: '0.1'
+  contact:
+    name: Nordic Smart Government
+    url: 'https://nordicsmartgovernment.github.io'
+  license:
+    name: CC0 1.0 Universal (CC0 1.0)
+    url: 'http://creativecommons.org/publicdomain/zero/1.0/deed.no'
+externalDocs:
+  description: Documentation on nordicsmartgovernment docs
+  url: https://nordicsmartgovernment.github.io
+servers:
+  - url: 'https://api.nordicsmartgovernment.org'
+    description: The reference implementation server
+tags:
+  - name: bankStatementCollection
+    description: bank statement collection operations
+paths:
+  /bankStatements:
+    get:
+      tags:
+        - bankStatementCollection
+      description: List every bank statement in the catalog
+      operationId: getBankStatements
+      responses:
+        '200':
+          description: OK
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BankStatement"
+    post:
+      tags:
+        - bankStatementCollection
+      description: create new bank statement in the catalog
+      operationId: createBankStatement
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The url to the new bank statement
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              type: string
+              description: An XML-document in the form of a string
+  /bankStatements/{id}:
+    get:
+      tags:
+        - bankStatementCollection
+      description: Get a bank statement by id
+      operationId: getBankStatementById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the BankStatement
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/BankStatement"
+components:
+  schemas:
+    BankStatement:
+      type: object

@@ -187,6 +187,33 @@
                 <version>4.0.2</version>
                 <executions>
                     <execution>
+                        <id>BankStatementsAPI</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/main/resources/openAPI/BankStatementAPI.yaml</inputSpec>
+                            <validateSpec>true</validateSpec>
+                            <generatorName>spring</generatorName>
+                            <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
+                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <invokerPackage>no.nsg.generated</invokerPackage>
+                            <apiPackage>no.nsg.generated.bankstatements_api</apiPackage>
+                            <modelPackage>no.nsg.generated.bankstatements_model</modelPackage>
+                            <configOptions>
+                                <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
+                                <sourceFolder>src/main/java/gen</sourceFolder>
+                                <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <java8>true</java8>
+                                <dateLibrary>java8</dateLibrary>
+                                <library>spring-boot</library>
+                                <delegatePattern>false</delegatePattern>
+                            </configOptions>
+                            <generateSupportingFiles>true</generateSupportingFiles>
+                            <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>InnvoiceAPI</id>
                         <goals>
                             <goal>generate</goal>
