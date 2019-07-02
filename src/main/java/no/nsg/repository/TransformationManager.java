@@ -18,8 +18,9 @@ import java.util.Map;
 @Component
 public class TransformationManager {
     private static final String XSLT_BASE = "xslt/";
-    public static final String  FINVOICE_TO_XBRL = XSLT_BASE+"finvoice_to_xbrl.xslt";
-    public static final String  UBL_TO_XBRL_GL   = XSLT_BASE+"ubl_2_1_to_xbrl_gl.xslt";
+    public static final String  FINVOICE_TO_XBRL    = XSLT_BASE+"finvoice_to_xbrl.xslt";
+    public static final String  UBL_TO_XBRL_GL      = XSLT_BASE+"ubl_2_1_to_xbrl_gl.xslt";
+    public static final String  CAMT_053_TO_XBRL_GL = XSLT_BASE+"camt_053_xbrlgl.xslt";
 
     private static Map<String, Xslt30Transformer> xsltCache = null;
     private static Processor processor = null;
@@ -61,9 +62,13 @@ public class TransformationManager {
                 xsltFile = FINVOICE_TO_XBRL;
                 break;
 
+            case CAMT053:
+                xsltFile = CAMT_053_TO_XBRL_GL;
+                break;
+
             case UNKNOWN:
             default:
-                break;
+                throw new RuntimeException("Uninitialized/unknown XSLT format");
         }
         transform(xmlStream, xsltFile, outputStream);
     }

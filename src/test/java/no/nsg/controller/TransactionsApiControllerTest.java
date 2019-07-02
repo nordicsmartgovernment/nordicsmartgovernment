@@ -107,7 +107,7 @@ public class TransactionsApiControllerTest {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
 
-            ResponseEntity<List<Object>> response = transactionApiController.getTransactions(httpServletRequestMock);
+            ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(httpServletRequestMock);
             if (response.getStatusCode()==HttpStatus.OK) {
                 List<Object> responseBody = response.getBody();
                 syntheticTransactionsCount = responseBody.size();

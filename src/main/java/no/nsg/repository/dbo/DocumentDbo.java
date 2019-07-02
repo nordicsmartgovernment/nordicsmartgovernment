@@ -29,6 +29,7 @@ public class DocumentDbo {
     public enum DocumentFormat {
         UNKNOWN,
         UML,
+        CAMT053,
         FINVOICE
     }
 
@@ -160,6 +161,8 @@ public class DocumentDbo {
     private DocumentFormat getDocumentFormat(final String document) {
         if (document.contains("<Finvoice ")) {
             return DocumentFormat.FINVOICE;
+        } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.001.02\"")) {
+            return DocumentFormat.CAMT053;
         } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"") || document.contains("<Invoice ")) {
             return DocumentFormat.UML;
         } else {
