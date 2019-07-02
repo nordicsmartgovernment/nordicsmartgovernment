@@ -45,6 +45,7 @@ public class TransactionsApiControllerTest {
     HttpServletRequest httpServletRequestMock;
 
     private boolean hasInitializedInvoiceData = false;
+    private int syntheticTransactionsCount = 0;
 
 
     @ClassRule
@@ -88,7 +89,7 @@ public class TransactionsApiControllerTest {
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Object> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
-        Assert.assertEquals(6, responseBody.size()); //one invoice, five finvoices
+        Assert.assertEquals(6, responseBody.size() - syntheticTransactionsCount); //one invoice, five finvoices
     }
 
     @Test
@@ -105,6 +106,13 @@ public class TransactionsApiControllerTest {
     private void initializeInvoiceData() throws IOException {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
+
+            ResponseEntity<List<Object>> response = transactionApiController.getTransactions(httpServletRequestMock);
+            if (response.getStatusCode()==HttpStatus.OK) {
+                List<Object> responseBody = response.getBody();
+                syntheticTransactionsCount = responseBody.size();
+            }
+
             invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
             invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
             invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));

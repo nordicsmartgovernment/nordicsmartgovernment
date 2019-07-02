@@ -1,11 +1,21 @@
 package no.nsg.repository;
 
+import no.nsg.repository.invoice.InvoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.xml.sax.SAXException;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 
@@ -31,6 +41,12 @@ public class ConnectionManager {
 
 	@Value("${postgres.nsg.password}")
 	private String postgresPassword;
+
+	//For synthetic data
+	@Autowired
+	ResourcePatternResolver resourceResolver;
+	@Autowired
+	private InvoiceManager invoiceManager;
 
 
 	public Connection getConnection() throws SQLException {
@@ -112,5 +128,32 @@ public class ConnectionManager {
 		} catch (Exception e) {
 			throw new SQLException(e);
 		}
+	}
+
+	public void importSyntheticData(final Connection connection) throws SQLException, IOException, SAXException {
+		final String sql = "DELETE FROM nsg.company WHERE orgno=?";
+		try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+			stmt.setString(1, "DK20202020");
+			stmt.executeUpdate();
+		}
+
+		for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/Inbound/*.xml")) {
+			invoiceManager.createInvoice(resourceAsString(resource, StandardCharsets.UTF_8), connection);
+		}
+
+        for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/Outbound/*.xml")) {
+            invoiceManager.createInvoice(resourceAsString(resource, StandardCharsets.UTF_8), connection);
+        }
+	}
+
+	private String resourceAsString(final Resource resource, final Charset charset) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		String line;
+		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.getInputStream(), charset))) {
+			while ((line = bufferedReader.readLine()) != null) {
+				sb.append(line);
+			}
+		}
+		return sb.toString();
 	}
 }

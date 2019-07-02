@@ -20,7 +20,9 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.xml.sax.SAXException;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -46,10 +48,12 @@ public class Application {
                 database.setLiquibaseSchemaName(ConnectionManager.DB_SCHEMA);
                 Liquibase liquibase = new Liquibase("liquibase/changelog/changelog-master.xml", new ClassLoaderResourceAccessor(), database);
                 liquibase.update(new Contexts(), new LabelExpression());
-                connectionManager.createRegularUser(connection);
-                connection.commit();
                 LOGGER.info("Liquibase synced OK.");
-            } catch (LiquibaseException | SQLException e) {
+                connectionManager.createRegularUser(connection);
+                connectionManager.importSyntheticData(connection);
+                LOGGER.info("Synthetic data imported OK.");
+                connection.commit();
+            } catch (LiquibaseException | SQLException | IOException | SAXException e) {
                 try {
                     LOGGER.error("Initializing DB failed: "+e.getMessage());
                     connection.rollback();
