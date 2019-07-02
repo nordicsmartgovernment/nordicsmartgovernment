@@ -30,13 +30,13 @@ import java.util.List;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(initializers = {TransactionApiControllerTest.Initializer.class})
+@ContextConfiguration(initializers = {TransactionsApiControllerTest.Initializer.class})
 @Category(ServiceTest.class)
-public class TransactionApiControllerTest {
-    private static Logger LOGGER = LoggerFactory.getLogger(TransactionApiControllerTest.class);
+public class TransactionsApiControllerTest {
+    private static Logger LOGGER = LoggerFactory.getLogger(TransactionsApiControllerTest.class);
 
     @Autowired
-    TransactionApiControllerImpl transactionApiController;
+    TransactionsApiControllerImpl transactionsApiController;
 
     @Autowired
     InvoicesApiControllerImpl invoicesApiController;
@@ -84,7 +84,7 @@ public class TransactionApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        ResponseEntity<List<Object>> response = transactionApiController.getTransactions(httpServletRequestMock);
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(httpServletRequestMock);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Object> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -94,7 +94,7 @@ public class TransactionApiControllerTest {
     @Test
     public void getTransactionByIdTest() {
         final String id = "77"; //Finvoice InvoiceNumber for "finvoice/finvoice 77 myynti.xml"
-        ResponseEntity<Object> response = transactionApiController.getTransactionById(httpServletRequestMock, id);
+        ResponseEntity<Object> response = transactionsApiController.getTransactionById(httpServletRequestMock, id);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -115,7 +115,7 @@ public class TransactionApiControllerTest {
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {
-        InputStream resourceStream = TransactionApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
+        InputStream resourceStream = TransactionsApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
 
         StringBuilder sb = new StringBuilder();
         String line;
