@@ -187,7 +187,7 @@
                 <version>4.0.2</version>
                 <executions>
                     <execution>
-                        <id>BankStatementAPI</id>
+                        <id>BankStatementsAPI</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -198,8 +198,8 @@
                             <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
                             <invokerPackage>no.nsg.generated</invokerPackage>
-                            <apiPackage>no.nsg.generated.bankstatement_api</apiPackage>
-                            <modelPackage>no.nsg.generated.bankstatement_model</modelPackage>
+                            <apiPackage>no.nsg.generated.bankstatements_api</apiPackage>
+                            <modelPackage>no.nsg.generated.bankstatements_model</modelPackage>
                             <configOptions>
                                 <allowUnicodeIdentifiers>true</allowUnicodeIdentifiers>
                                 <sourceFolder>src/main/java/gen</sourceFolder>
