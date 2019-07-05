@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 
@@ -69,9 +71,18 @@ public class InvoicesApiControllerTest {
     }
 
     @Test
-    public void createFinvoiceTest() throws IOException {
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    public void createFinvoiceTest() throws IOException, NoSuchAlgorithmException {
+        String original = resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8);
+        String originalChecksum = sha256Checksum(original.getBytes(StandardCharsets.UTF_8));
+
+        ResponseEntity<Void> response1 = invoicesApiController.createInvoice(httpServletRequestMock, original);
+        Assert.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+
+        ResponseEntity<Object> response2 = invoicesApiController.getInvoiceById(httpServletRequestMock, "75");
+        Assert.assertTrue(response2.getStatusCode() == HttpStatus.OK);
+        InvoicesApiControllerImpl.Invoice returnedInvoice = (InvoicesApiControllerImpl.Invoice) response2.getBody();
+        String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
+        Assert.assertEquals(originalChecksum, returnedInvoiceChecksum);
     }
 
     @Test
@@ -108,6 +119,17 @@ public class InvoicesApiControllerTest {
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
+        }
+        return sb.toString();
+    }
+
+    private String sha256Checksum(final byte[] content) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(content);
+
+        StringBuffer sb = new StringBuffer();
+        for (int i=0; i<hash.length; i++) {
+            sb.append(String.format("%02X", hash[i]));
         }
         return sb.toString();
     }
