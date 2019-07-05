@@ -44,7 +44,9 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
     </xsl:element>
   </xsl:template> 
   
+  <!--
   <xsl:param name="companyID" select="'false'"/>
+  -->
  
   <!--
   <xsl:template name="MakeSpanForCode">
@@ -78,7 +80,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
             xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01"
             xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2016-12-01" xmlns:xlink="http://www.w3.org/1999/xlink">
   <xbrll:schemaRef xlink:type="simple" xlink:href="../../../XBRL-GL-PWD-2016-12-01-fi-2018-11-06/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/>
-  <!--link to account mappings doc between the nordic countries to facilitate automated account postings in the reference implementation-->
+    <!--Link to account mappings doc between the nordic countries to facilitate automated account postings in the NSG reference implementation-->
 <xsl:variable name="ac_map" select="document('account_mapping.xml')"/> 
 
 <!--link to Universal product codes - VAT rates mappings (required to calculate the VAT in foreign trade -->
@@ -585,71 +587,6 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </gl-cor:identifierReference>
 <!--end of Seller Party-->
 
-<!--Payee party details -->
-<gl-cor:identifierReference>
-<!--BT-57--><xsl:variable name="value" select="//Invoice/cac:PayeeParty/cac:PartyIdentification/cbc:ID"/><xsl:if test="string($value)"><gl-cor:identifierCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierCode></xsl:if>
-
-<gl-cor:identifierExternalReference>
- <!--BT-58--><xsl:variable name="value" select="//Invoice/cac:PayeeParty/cac:PartyLegalEntity/cbc:CompanyID"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority contextRef="now">ytunnus</gl-cor:identifierAuthority></xsl:if>
-
-</gl-cor:identifierExternalReference>
-<!--Identifier Organization Type, organization-->
-<gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
-<!--BT-56--><xsl:variable name="value" select="//Invoice/cac:PayeeParty/cac:PartyName/cbc:Name"/><xsl:if test="string($value)"><gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription></xsl:if>
-<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">FI-P</gl-cor:identifierType></xsl:if>
-</gl-cor:identifierReference>
-<!--End of Payee Party-->
-
-
-
-<!--TaxRepresentativeParty Details-->
-<gl-cor:identifierReference>
-<!--BT-59--><xsl:variable name="value" select="//Invoice/cac:TaxRepresentativeParty/cac:PartyName/cbc:Name"/><xsl:if test="string($value)"><gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription></xsl:if>
-<gl-cor:identifierExternalReference>
- <!--BT-60--><xsl:variable name="value" select="//Invoice/cac:TaxRepresentativeParty/cac:PartyTaxScheme/cbc:CompanyID"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority contextRef="now">alvtunnus</gl-cor:identifierAuthority></xsl:if>
-
-</gl-cor:identifierExternalReference>
-
-<!--Any Party Address Details-->
-<gl-bus:identifierAddress>
-<!--BT-61--><xsl:variable name="value" select="//Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:Streetname"/><xsl:if test="string($value)"><gl-bus:identifierStreet contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierStreet></xsl:if>
-<!--BT-62--><xsl:variable name="value" select="//Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cac:AddressLine/cbc:Line"/><xsl:if test="string($value)"><gl-bus:identifierAddressStreet2 contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierAddressStreet2></xsl:if>
-<!--BT-63--><xsl:variable name="value" select="//Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:CityName"/><xsl:if test="string($value)"><gl-bus:identifierCity contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCity></xsl:if>
-
-<!--BT-66--><xsl:variable name="value" select="//Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cac:Country/cbc:IdentificationCode"/><xsl:if test="string($value)"><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
-<!--BT-64--><xsl:variable name="value" select="//Invoice/cac:TaxRepresentativeParty/cac:PostalAddress/cbc:PostalZone"/><xsl:if test="string($value)"><gl-bus:identifierZipOrPostalCode contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierZipOrPostalCode></xsl:if>
-
-</gl-bus:identifierAddress>
-<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">O</gl-cor:identifierType></xsl:if>
-</gl-cor:identifierReference>
-
-<!--DeliveryParty Details-->
-
-<gl-cor:identifierReference>
-<!--BT-67--><xsl:variable name="value" select="//Invoice/cac:Delivery/cac:DeliveryParty/cac:PartyName/cbc:Name"/><xsl:if test="string($value)"><gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription></xsl:if>
-<!--Delivery Address Details-->
-<gl-bus:identifierAddress>
-<!--BT-70--><xsl:variable name="value" select="//Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:StreetName"/><xsl:if test="string($value)"><gl-bus:identifierStreet contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierStreet></xsl:if>
-<!--BT-71--><xsl:variable name="value" select="//Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:AdditionalStreetName"/><xsl:if test="string($value)"><gl-bus:identifierAddressStreet2 contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierAddressStreet2></xsl:if>
-<!--BT-72--><xsl:variable name="value" select="//Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:CityName"/><xsl:if test="string($value)"><gl-bus:identifierCity contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCity></xsl:if>
-<!--BT-75--><xsl:variable name="value" select="//Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cac:Country/cbc:IdentificationCode"/><xsl:if test="string($value)"><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
-<!--BT-73--><xsl:variable name="value" select="//Invoice/cac:Delivery/cac:DeliveryLocation/cac:Address/cbc:PostalZone"/><xsl:if test="string($value)"><gl-bus:identifierZipOrPostalCode contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierZipOrPostalCode></xsl:if>
-
-<!--BT-68--><xsl:variable name="value" select="//Invoice/cac:Delivery/cac:DeliveryLocation/cbc:ID"/><xsl:if test="string($value)"><gl-bus:identifierAddressLocationIdentifier contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierAddressLocationIdentifier></xsl:if>
-</gl-bus:identifierAddress>
-<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">FI-D</gl-cor:identifierType></xsl:if>
-</gl-cor:identifierReference>
-
-<!--Country of origin-->
-<gl-cor:identifierReference>
-<xsl:variable name="value" select="./cac:Item/OriginCountry/cbc:IdentificationCode"/>
-<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">O</gl-cor:identifierType></xsl:if>
-<!--Country of origin Address Details-->
-<gl-bus:identifierAddress>
-<!--BT-125--><xsl:variable name="value" select="./cac:Item/OriginCountry/cbc:IdentificationCode"/><xsl:if test="string($value)"><gl-bus:identifierAddressPurpose contextRef="now">o</gl-bus:identifierAddressPurpose><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
-</gl-bus:identifierAddress>
-</gl-cor:identifierReference>
-
 <!-- Original document is an invoice -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
 <!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
@@ -660,19 +597,8 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--TODO vapauta kun tyypistys on laadittu, huom saattaa olla väärässä paikassa-->
 <!--<xsl:variable name="value" select="//InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:invoiceType contextRef="now"><xsl:value-of select="$value"/></gl-cor:invoiceType></xsl:if>-->
 
-
-
-
-<!--BT-77--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentMeansCode"/><xsl:if test="string($value)"><gl-bus:paymentMethod contextRef="now"><xsl:value-of select="$value"/></gl-bus:paymentMethod></xsl:if>
-
 <!--For the NSG reference implementation a "Header" type entry is created for the total amount for trade debtors / creditors-->
 <gl-cor:detailComment contextRef="now">Header VAT</gl-cor:detailComment>
-
-<!--BT-69--><xsl:variable name="value" select="//Invoice/cac:Delivery/cbc:ActualDeliveryDate"/><xsl:if test="string($value)"><gl-cor:shipReceivedDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:shipReceivedDate></xsl:if>
-
-<!--BT-7--><xsl:variable name="value" select="//Invoice/cbc:InvoiceDueDate"/><xsl:if test="string($value)"><gl-cor:maturityDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:maturityDate></xsl:if>
-
-<!--BT-18--><xsl:variable name="value" select="//Invoice/cac:PaymentTerms/cbc:Note"/><xsl:if test="string($value)"><gl-cor:terms contextRef="now"><xsl:value-of select="$value"/></gl-cor:terms></xsl:if>
 
 <xsl:variable name="value" select="//Invoice/cac:BillingReference/cac:InvoiceDocumentReference/cbc:ID"/><xsl:if test="string($value)">
 <gl-taf:originatingDocumentStructure>
@@ -1337,7 +1263,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <gl-cor:taxes>
 <!--BT-144--><xsl:variable name="value" select="./cac:TaxTotal/cbc:TaxAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxAmount></xsl:if>
-<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
+<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate  contextRef="now" unitRef="EUR" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:ID"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:TaxExemptionReason"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
 </gl-cor:taxes>
