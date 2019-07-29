@@ -144,6 +144,10 @@ public class ConnectionManager {
         for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/Outbound/*.xml")) {
             invoiceManager.createInvoice(resourceAsString(resource, StandardCharsets.UTF_8), connection);
         }
+
+		for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/BankStatements/*.xml")) {
+			invoiceManager.createInvoice(resourceAsString(resource, StandardCharsets.UTF_8), connection);
+		}
 	}
 
 	private String resourceAsString(final Resource resource, final Charset charset) throws IOException {
