@@ -45,12 +45,12 @@ public class TransformationTest {
 
     @Test
     public void ublTransformTest() throws SaxonApiException, UnsupportedEncodingException {
-        transformationManager.transform(getResourceAsStream("ubl/Invoice_base-example.xml"), TransformationManager.UBL_TO_XBRL_GL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("ubl/ehf-2-faktura-1.xml"), TransformationManager.UBL_TO_XBRL_GL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("ubl/ehf-3-faktura-1.xml"), TransformationManager.UBL_TO_XBRL_GL, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/Invoice_base-example.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/ehf-2-faktura-1.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/ehf-3-faktura-1.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, new ByteArrayOutputStream());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), TransformationManager.UBL_TO_XBRL_GL, baos);
+        transformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, baos);
         String result = baos.toString(StandardCharsets.UTF_8.name());
         Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
         Assert.assertTrue(result.contains("<gl-cor:documentNumber "));

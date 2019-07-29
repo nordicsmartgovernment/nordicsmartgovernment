@@ -18,9 +18,16 @@ import java.util.Map;
 @Component
 public class TransformationManager {
     private static final String XSLT_BASE = "xslt/";
-    public static final String  FINVOICE_TO_XBRL    = XSLT_BASE+"finvoice_to_xbrl.xslt";
-    public static final String  UBL_TO_XBRL_GL      = XSLT_BASE+"ubl_2_1_to_xbrl_gl.xslt";
-    public static final String  CAMT_053_TO_XBRL_GL = XSLT_BASE+"camt_053_xbrlgl.xslt";
+    public static final String FINVOICE_TO_XBRL                = XSLT_BASE+"finvoice_to_xbrl.xslt";
+    public static final String UBL_PURCHASE_INVOICE_TO_XBRL_GL = XSLT_BASE+"ubl_2_1_purchase_invoice_to_xbrl_gl.xslt";
+    public static final String UBL_SALES_INVOICE_TO_XBRL_GL    = XSLT_BASE+"ubl_2_1_sales_invoice_to_xbrl_gl.xslt";
+    public static final String CAMT_053_TO_XBRL_GL             = XSLT_BASE+"camt_053_001_08_to_xbrlgl.xslt";
+
+    public enum Direction {
+        DOESNT_MATTER,
+        PURCHASE, //inbound
+        SALES     //outbound
+    }
 
     private static Map<String, Xslt30Transformer> xsltCache = null;
     private static Processor processor = null;
@@ -51,11 +58,11 @@ public class TransformationManager {
         return xsltCache.get(xslt);
     }
 
-    public static void transform(final InputStream xmlStream, final DocumentDbo.DocumentFormat format, final OutputStream outputStream) throws SaxonApiException {
-        String xsltFile = null;
+    public static void transform(final InputStream xmlStream, final DocumentDbo.DocumentFormat format, final Direction direction, final OutputStream outputStream) throws SaxonApiException {
+        String xsltFile;
         switch (format) {
-            case UML:
-                xsltFile = UBL_TO_XBRL_GL;
+            case UML_INVOICE:
+                xsltFile = direction==Direction.SALES ? UBL_SALES_INVOICE_TO_XBRL_GL : UBL_PURCHASE_INVOICE_TO_XBRL_GL;
                 break;
 
             case FINVOICE:

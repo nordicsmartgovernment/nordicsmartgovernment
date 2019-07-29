@@ -28,7 +28,7 @@ public class DocumentDbo {
 
     public enum DocumentFormat {
         UNKNOWN,
-        UML,
+        UML_INVOICE,
         CAMT053,
         FINVOICE
     }
@@ -116,9 +116,9 @@ public class DocumentDbo {
         return original;
     }
 
-    public void setOriginalFromString(final String original) throws IOException, SAXException {
+    public void setOriginalFromString(final String original, final TransformationManager.Direction direction) throws IOException, SAXException {
         this.original = original.getBytes(StandardCharsets.UTF_8);
-        transformXbrlFromOriginal(getDocumentFormat(original));
+        transformXbrlFromOriginal(getDocumentFormat(original), direction);
         setDocumentid(getDocumentidFromXBRL());
     }
 
@@ -145,10 +145,10 @@ public class DocumentDbo {
         return xbrl;
     }
 
-    private void transformXbrlFromOriginal(DocumentFormat documentFormat) {
+    private void transformXbrlFromOriginal(DocumentFormat documentFormat, final TransformationManager.Direction direction) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
+            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, direction, baos);
             this.xbrl = baos.toString(StandardCharsets.UTF_8.name());
         } catch (SaxonApiException e) {
             LOGGER.info("Invoice failed converting to XBRL");
@@ -161,10 +161,10 @@ public class DocumentDbo {
     private DocumentFormat getDocumentFormat(final String document) {
         if (document.contains("<Finvoice ")) {
             return DocumentFormat.FINVOICE;
-        } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.001.02\"")) {
+        } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.")) {
             return DocumentFormat.CAMT053;
         } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"") || document.contains("<Invoice ")) {
-            return DocumentFormat.UML;
+            return DocumentFormat.UML_INVOICE;
         } else {
             return DocumentFormat.UNKNOWN;
         }

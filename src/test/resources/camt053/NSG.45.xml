@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08">
+  <BkToCstmrStmt>
+    <GrpHdr>
+      <MsgId>NSG.45</MsgId>
+      <CreDtTm>2019-12-26T23:59:00+02:00</CreDtTm>
+      <MsgRcpt>
+        <Nm>NSG Catering</Nm>
+        <Id>
+          <OrgId>
+            <Othr>
+              <Id>20202020</Id>
+              <SchmeNm>
+                <Cd>BANK</Cd>
+              </SchmeNm>
+            </Othr>
+          </OrgId>
+        </Id>
+      </MsgRcpt>
+      </GrpHdr>
+    <Stmt>
+      <Id>NSG.45.1</Id>
+      <LglSeqNb>55</LglSeqNb>
+      <CreDtTm>2019-12-26T23:59:00+02:00</CreDtTm>
+      <FrToDt>
+        <FrDtTm>2019-12-26T00:00:00+02:00</FrDtTm>
+        <ToDtTm>2020-01-02T23:59:59+02:00</ToDtTm>
+      </FrToDt>
+      <Acct>
+        <Id>
+          <IBAN>DK7650643711684327</IBAN>
+        </Id>
+        <Ccy>DKK</Ccy>
+        <Nm>Business account</Nm>
+        <Ownr>
+          <Nm>NSG Catering</Nm>
+          <Id>
+            <OrgId>
+              <Othr>
+                <Id>20202020</Id>
+              </Othr>
+            </OrgId>
+          </Id>
+        </Ownr>
+        <Svcr>
+          <FinInstnId>
+            <BICFI>NDEADKKK</BICFI>
+            <Nm>NORDEA BANK DANMARK A/S</Nm>
+          </FinInstnId>
+        </Svcr>
+      </Acct>
+      <Bal>
+        <Tp>
+          <CdOrPrtry>
+            <Cd>OPBD</Cd>
+          </CdOrPrtry>
+        </Tp>
+        <Amt Ccy="DKK">341530.305</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Dt>
+          <Dt>2019-12-26</Dt>
+        </Dt>
+      </Bal>
+      <Bal>
+        <Tp>
+          <CdOrPrtry>
+            <Cd>CLBD</Cd>
+          </CdOrPrtry>
+        </Tp>
+        <Amt Ccy="DKK">361175.905</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Dt>
+          <Dt>2020-01-02</Dt>
+        </Dt>
+      </Bal>
+         
+  <TxsSummry>
+        <TtlCdtNtries>          <Sum>29750</Sum>
+        </TtlCdtNtries>
+        <TtlDbtNtries>          <Sum>10104.4</Sum>
+        </TtlDbtNtries>
+      </TxsSummry><Ntry>
+        <NtryRef>00265</NtryRef>
+        <Amt Ccy="DKK">9998</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-26</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-26</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">9998</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>Danica sjavarafurdir </Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>209619691270</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>98130964</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry><Ntry>
+        <NtryRef>00266</NtryRef>
+        <Amt Ccy="DKK">106.4</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-27</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-27</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">106.4</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>Finnish lamb Oy</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>20962907</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>98130965</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry><Ntry>
+        <NtryRef>00270</NtryRef>
+        <Amt Ccy="DKK">29750</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>1</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>1</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">29750</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>NSG Catering</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>2460932</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>83691157</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry>  </Stmt>
+  </BkToCstmrStmt>
+</Document>

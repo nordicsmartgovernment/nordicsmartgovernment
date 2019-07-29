@@ -1,6 +1,7 @@
 package no.nsg.repository.invoice;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.DocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,7 @@ public class InvoiceManager {
     public Object createInvoice(final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         DocumentDbo invoice = new DocumentDbo();
         invoice.setDocumenttype(DocumentDbo.DOCUMENTTYPE_INVOICE);
-        invoice.setOriginalFromString(invoiceOriginalXml);
+        invoice.setOriginalFromString(invoiceOriginalXml, TransformationManager.Direction.PURCHASE); //TODO: Don't hardcode direction
         invoice.persist(connection);
         return invoice;
     }

@@ -72,7 +72,7 @@ public class BankstatementsApiControllerTest {
     @Ignore //Resource is imported in getBankstatementByIdTest below
     @Test
     public void createBankstatementTest() throws IOException {
-        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, resourceAsString("camt053/TI0711.1.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, resourceAsString("camt053/NSG.2.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
@@ -84,15 +84,15 @@ public class BankstatementsApiControllerTest {
 
     @Test
     public void getBankstatementByIdTest() throws IOException {
-        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, "042");
+        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, "11");
         Assert.assertTrue(response.getStatusCode() == HttpStatus.NO_CONTENT);
 
-        bankstatementsApiController.createBankStatement(httpServletRequestMock, resourceAsString("camt053/TI0711.1.xml", StandardCharsets.UTF_8));
-        response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, "042");
+        bankstatementsApiController.createBankStatement(httpServletRequestMock, resourceAsString("camt053/NSG.1.xml", StandardCharsets.UTF_8));
+        response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, "11");
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
         BankstatementsApiControllerImpl.Bankstatement bankstatement = (BankstatementsApiControllerImpl.Bankstatement) response.getBody();
-        Assert.assertEquals("042", bankstatement.documentid);
+        Assert.assertEquals("11", bankstatement.documentid);
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {

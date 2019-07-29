@@ -1,6 +1,7 @@
 package no.nsg.repository.bankstatement;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.DocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class BankstatementManager {
             try {
                 bankstatement = new DocumentDbo();
                 bankstatement.setDocumenttype(DocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
-                bankstatement.setOriginalFromString(bankstatementOriginalXml);
+                bankstatement.setOriginalFromString(bankstatementOriginalXml, TransformationManager.Direction.DOESNT_MATTER);
                 bankstatement.persist(connection);
                 connection.commit();
             } catch (SQLException | SAXException e) {
