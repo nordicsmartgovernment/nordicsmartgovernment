@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -52,7 +53,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
      */
 
     @Override
-    public ResponseEntity<Void> createBankStatement(HttpServletRequest httpServletRequest, String body) {
+    public ResponseEntity<Void> createBankStatement(Principal principal, HttpServletRequest httpServletRequest, String body) {
         Object persistedBankstatement;
         try {
             /*
@@ -78,7 +79,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     }
 
     @Override
-    public ResponseEntity<Object> getBankStatementById(HttpServletRequest httpServletRequest, String id) {
+    public ResponseEntity<Object> getBankStatementById(Principal principal, HttpServletRequest httpServletRequest, String id) {
         Bankstatement returnValue = null;
         try {
             DocumentDbo bankstatement = bankstatementManager.getBankstatementById(id);
@@ -98,7 +99,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     }
 
     @Override
-    public ResponseEntity<List<Object>> getBankStatements(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<Object>> getBankStatements(Principal principal, HttpServletRequest httpServletRequest) {
         List<Object> returnValue = new ArrayList<>();
         try {
             List<DocumentDbo> bankstatements = bankstatementManager.getBankstatements();

@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -40,6 +41,9 @@ public class TransactionsApiControllerTest {
 
     @Autowired
     InvoicesApiControllerImpl invoicesApiController;
+
+    @Mock
+    Principal principalMock;
 
     @Mock
     HttpServletRequest httpServletRequestMock;
@@ -85,7 +89,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(httpServletRequestMock);
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(principalMock, httpServletRequestMock);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Object> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -95,7 +99,7 @@ public class TransactionsApiControllerTest {
     @Test
     public void getTransactionByIdTest() {
         final String id = "77"; //Finvoice InvoiceNumber for "finvoice/finvoice 77 myynti.xml"
-        ResponseEntity<Object> response = transactionsApiController.getTransactionById(httpServletRequestMock, id);
+        ResponseEntity<Object> response = transactionsApiController.getTransactionById(principalMock, httpServletRequestMock, id);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -107,18 +111,18 @@ public class TransactionsApiControllerTest {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
 
-            ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(httpServletRequestMock);
+            ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(principalMock, httpServletRequestMock);
             if (response.getStatusCode()==HttpStatus.OK) {
                 List<Object> responseBody = response.getBody();
                 syntheticTransactionsCount = responseBody.size();
             }
 
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(principalMock, httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(principalMock, httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(principalMock, httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(principalMock, httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(principalMock, httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(principalMock, httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         }
     }
 

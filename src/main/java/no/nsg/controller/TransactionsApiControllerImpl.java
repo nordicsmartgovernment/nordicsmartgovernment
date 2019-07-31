@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 //import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -37,7 +38,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
      */
 
     @Override
-    public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, String id) {
+    public ResponseEntity<Object> getTransactionById(Principal principal, HttpServletRequest httpServletRequest, String id) {
         Object transaction;
         try {
             transaction = transactionManager.getTransactionById(id);
@@ -54,7 +55,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<List<Object>> getTransactions(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<Object>> getTransactions(Principal principal, HttpServletRequest httpServletRequest) {
         List<Object> transactions;
         try {
             transactions = transactionManager.getTransactions();
