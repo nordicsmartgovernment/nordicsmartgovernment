@@ -130,20 +130,24 @@ public class ConnectionManager {
 		}
 	}
 
-	public void importSyntheticData(final Connection connection) throws SQLException, IOException, SAXException {
+	public void importSyntheticData(final String companyId, final Connection connection) throws SQLException, IOException, SAXException {
 		final String sql = "DELETE FROM nsg.company WHERE orgno=?";
 		try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-			stmt.setString(1, "DK20202020");
+			stmt.setString(1, companyId);
 			stmt.executeUpdate();
 		}
 
 		for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/Inbound/*.xml")) {
-			invoiceManager.createInvoice(resourceAsString(resource, StandardCharsets.UTF_8), connection);
+			invoiceManager.createInvoice(companyId, resourceAsString(resource, StandardCharsets.UTF_8), connection);
 		}
 
         for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/Outbound/*.xml")) {
-            invoiceManager.createInvoice(resourceAsString(resource, StandardCharsets.UTF_8), connection);
+            invoiceManager.createInvoice(companyId, resourceAsString(resource, StandardCharsets.UTF_8), connection);
         }
+
+		for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/BankStatements/*.xml")) {
+			invoiceManager.createInvoice(companyId, resourceAsString(resource, StandardCharsets.UTF_8), connection);
+		}
 	}
 
 	private String resourceAsString(final Resource resource, final Charset charset) throws IOException {

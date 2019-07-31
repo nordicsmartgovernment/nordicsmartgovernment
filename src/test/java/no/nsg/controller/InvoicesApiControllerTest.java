@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.spring.TestPrincipal;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -25,6 +26,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -69,30 +73,43 @@ public class InvoicesApiControllerTest {
     }
 
     @Test
-    public void createFinvoiceTest() throws IOException {
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    public void createFinvoiceTest() throws IOException, NoSuchAlgorithmException {
+        Principal principal = new TestPrincipal("");
+
+        String original = resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8);
+        String originalChecksum = sha256Checksum(original.getBytes(StandardCharsets.UTF_8));
+
+        ResponseEntity<Void> response1 = invoicesApiController.createInvoice(principal, httpServletRequestMock, original);
+        Assert.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+
+        ResponseEntity<Object> response2 = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "75");
+        Assert.assertTrue(response2.getStatusCode() == HttpStatus.OK);
+        InvoicesApiControllerImpl.Invoice returnedInvoice = (InvoicesApiControllerImpl.Invoice) response2.getBody();
+        String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
+        Assert.assertEquals(originalChecksum, returnedInvoiceChecksum);
     }
 
     @Test
     public void createInvoiceTest() throws IOException {
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> response = invoicesApiController.createInvoice(new TestPrincipal("GB983294"), httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void getInvoicesTest() {
-        ResponseEntity<List<Object>> response = invoicesApiController.getInvoices(httpServletRequestMock);
+        ResponseEntity<List<Object>> response = invoicesApiController.getInvoices(new TestPrincipal(""), httpServletRequestMock);
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
     @Test
     public void getInvoiceByIdTest() throws IOException {
-        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(httpServletRequestMock, "TOSL108");
+        Principal principal = new TestPrincipal("123456785");
+
+        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "TOSL108");
         Assert.assertTrue(response.getStatusCode() == HttpStatus.NO_CONTENT);
 
-        invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
-        response = invoicesApiController.getInvoiceById(httpServletRequestMock, "TOSL108");
+        invoicesApiController.createInvoice(principal, httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
+        response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "TOSL108");
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
         InvoicesApiControllerImpl.Invoice invoice = (InvoicesApiControllerImpl.Invoice) response.getBody();
@@ -108,6 +125,17 @@ public class InvoicesApiControllerTest {
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
+        }
+        return sb.toString();
+    }
+
+    private String sha256Checksum(final byte[] content) throws NoSuchAlgorithmException {
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hash = digest.digest(content);
+
+        StringBuffer sb = new StringBuffer();
+        for (int i=0; i<hash.length; i++) {
+            sb.append(String.format("%02X", hash[i]));
         }
         return sb.toString();
     }

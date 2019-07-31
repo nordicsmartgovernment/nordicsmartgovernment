@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -52,7 +53,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
      */
 
     @Override
-    public ResponseEntity<Void> createInvoice(HttpServletRequest httpServletRequest, String body) {
+    public ResponseEntity<Void> createInvoice(Principal principal, HttpServletRequest httpServletRequest, String body) {
         Object persistedInvoice;
         try {
             /*
@@ -61,7 +62,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
             ContentCachingRequestWrapper requestCacheWrapperObject = (ContentCachingRequestWrapper) httpServletRequest;
             String invoiceOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
-            persistedInvoice = invoiceManager.createInvoice(body);
+            persistedInvoice = invoiceManager.createInvoice(principal.getName(), body);
         } catch (NoSuchElementException e) {
             LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -78,7 +79,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<Object> getInvoiceById(HttpServletRequest httpServletRequest, String id) {
+    public ResponseEntity<Object> getInvoiceById(Principal principal, HttpServletRequest httpServletRequest, String id) {
         Invoice returnValue = null;
         try {
             DocumentDbo invoice = invoiceManager.getInvoiceById(id);
@@ -98,7 +99,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<List<Object>> getInvoices(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<Object>> getInvoices(Principal principal, HttpServletRequest httpServletRequest) {
         List<Object> returnValue = new ArrayList<>();
         try {
             List<DocumentDbo> invoices = invoiceManager.getInvoices();

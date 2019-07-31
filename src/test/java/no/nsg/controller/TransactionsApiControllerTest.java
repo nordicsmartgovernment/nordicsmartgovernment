@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.spring.TestPrincipal;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
@@ -85,7 +86,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(httpServletRequestMock);
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Object> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -95,7 +96,7 @@ public class TransactionsApiControllerTest {
     @Test
     public void getTransactionByIdTest() {
         final String id = "77"; //Finvoice InvoiceNumber for "finvoice/finvoice 77 myynti.xml"
-        ResponseEntity<Object> response = transactionsApiController.getTransactionById(httpServletRequestMock, id);
+        ResponseEntity<Object> response = transactionsApiController.getTransactionById(new TestPrincipal(""), httpServletRequestMock, id);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -107,18 +108,18 @@ public class TransactionsApiControllerTest {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
 
-            ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(httpServletRequestMock);
+            ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock);
             if (response.getStatusCode()==HttpStatus.OK) {
                 List<Object> responseBody = response.getBody();
                 syntheticTransactionsCount = responseBody.size();
             }
 
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal("39937423947"), httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         }
     }
 

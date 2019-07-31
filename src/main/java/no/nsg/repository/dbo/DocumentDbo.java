@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -28,7 +29,7 @@ public class DocumentDbo {
 
     public enum DocumentFormat {
         UNKNOWN,
-        UML,
+        UML_INVOICE,
         CAMT053,
         FINVOICE
     }
@@ -117,8 +118,14 @@ public class DocumentDbo {
     }
 
     public void setOriginalFromString(final String original) throws IOException, SAXException {
+        setOriginalFromString(null, original);
+    }
+
+    public void setOriginalFromString(final String companyId, final String original) throws IOException, SAXException {
         this.original = original.getBytes(StandardCharsets.UTF_8);
-        transformXbrlFromOriginal(getDocumentFormat(original));
+        DocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
+        TransformationManager.Direction direction = getDirectionFromDocument(companyId, documentFormat, original);
+        transformXbrlFromOriginal(documentFormat, direction);
         setDocumentid(getDocumentidFromXBRL());
     }
 
@@ -145,10 +152,10 @@ public class DocumentDbo {
         return xbrl;
     }
 
-    private void transformXbrlFromOriginal(DocumentFormat documentFormat) {
+    private void transformXbrlFromOriginal(DocumentFormat documentFormat, final TransformationManager.Direction direction) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
+            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, direction, baos);
             this.xbrl = baos.toString(StandardCharsets.UTF_8.name());
         } catch (SaxonApiException e) {
             LOGGER.info("Invoice failed converting to XBRL");
@@ -161,19 +168,19 @@ public class DocumentDbo {
     private DocumentFormat getDocumentFormat(final String document) {
         if (document.contains("<Finvoice ")) {
             return DocumentFormat.FINVOICE;
-        } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.001.02\"")) {
+        } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.")) {
             return DocumentFormat.CAMT053;
         } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"") || document.contains("<Invoice ")) {
-            return DocumentFormat.UML;
+            return DocumentFormat.UML_INVOICE;
         } else {
             return DocumentFormat.UNKNOWN;
         }
     }
 
     private String getOrgnrFromXBRL() throws IOException, SAXException {
-        Document document = getXbrlAsDocument();
-        if (document != null) {
-            NodeList nodes = document.getElementsByTagName("gl-cor:identifierAuthorityCode");
+        Document parsedDocument = parseDocument(getXbrl());
+        if (parsedDocument != null) {
+            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:identifierAuthorityCode");
             if (nodes.getLength() > 0) {
                 Node child = nodes.item(0).getFirstChild();
                 if (child != null) {
@@ -182,12 +189,53 @@ public class DocumentDbo {
             }
         }
         return null;
+    }
+
+    private TransformationManager.Direction getDirectionFromDocument(final String companyId, final DocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
+        if (documentFormat != DocumentDbo.DocumentFormat.UML_INVOICE) {
+            return TransformationManager.Direction.DOESNT_MATTER;
+        }
+
+        String supplier="", customer="";
+
+        Document parsedDocument = parseDocument(document);
+        if (parsedDocument != null) {
+            Node child = parsedDocument.getElementsByTagName("cac:AccountingSupplierParty").item(0);
+            if (child instanceof Element) {
+                child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
+                if (child instanceof Element) {
+                    child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
+                    if (child != null) {
+                        supplier = child.getTextContent();
+                        if (companyId.equalsIgnoreCase(child.getTextContent())) {
+                            return TransformationManager.Direction.SALES;
+                        }
+                    }
+                }
+            }
+
+            child = parsedDocument.getElementsByTagName("cac:AccountingCustomerParty").item(0);
+            if (child instanceof Element) {
+                child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
+                if (child instanceof Element) {
+                    child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
+                    if (child != null) {
+                        customer = child.getTextContent();
+                        if (companyId.equalsIgnoreCase(child.getTextContent())) {
+                            return TransformationManager.Direction.PURCHASE;
+                        }
+                    }
+                }
+            }
+        }
+
+        throw new RuntimeException("customerId was neither supplier:"+supplier+" nor customer:"+customer);
     }
 
     private String getDocumentidFromXBRL() throws IOException, SAXException {
-        Document document = getXbrlAsDocument();
-        if (document != null) {
-            NodeList nodes = document.getElementsByTagName("gl-cor:documentNumber");
+        Document parsedDocument = parseDocument(getXbrl());
+        if (parsedDocument != null) {
+            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:documentNumber");
             if (nodes.getLength() > 0) {
                 Node child = nodes.item(0).getFirstChild();
                 if (child != null) {
@@ -198,8 +246,8 @@ public class DocumentDbo {
         return null;
     }
 
-    private Document getXbrlAsDocument() throws IOException, SAXException {
-        if (xbrl == null) {
+    private static Document parseDocument(final String document) throws IOException, SAXException {
+        if (document == null) {
             return null;
         }
 
@@ -207,13 +255,13 @@ public class DocumentDbo {
         DocumentBuilder builder;
         try {
             builder = builderFactory.newDocumentBuilder();
-            Document document;
-            try (ByteArrayInputStream bais = new ByteArrayInputStream(getXbrl().getBytes(StandardCharsets.UTF_8))) {
-                document = builder.parse(bais);
+            Document parsedDocument;
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8))) {
+                parsedDocument = builder.parse(bais);
             }
 
-            document.getDocumentElement().normalize();
-            return document;
+            parsedDocument.getDocumentElement().normalize();
+            return parsedDocument;
         } catch (ParserConfigurationException e) {
             LOGGER.error(e.getMessage());
         }

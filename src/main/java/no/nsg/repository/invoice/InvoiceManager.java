@@ -1,6 +1,7 @@
 package no.nsg.repository.invoice;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.DocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,11 +25,11 @@ public class InvoiceManager {
     private ConnectionManager connectionManager;
 
 
-    public Object createInvoice(final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public Object createInvoice(final String companyId, final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         Object invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                invoice = createInvoice(invoiceOriginalXml, connection);
+                invoice = createInvoice(companyId, invoiceOriginalXml, connection);
                 connection.commit();
             } catch (SQLException | SAXException e) {
                 try {
@@ -42,10 +43,10 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public Object createInvoice(final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public Object createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         DocumentDbo invoice = new DocumentDbo();
         invoice.setDocumenttype(DocumentDbo.DOCUMENTTYPE_INVOICE);
-        invoice.setOriginalFromString(invoiceOriginalXml);
+        invoice.setOriginalFromString(companyId, invoiceOriginalXml);
         invoice.persist(connection);
         return invoice;
     }
