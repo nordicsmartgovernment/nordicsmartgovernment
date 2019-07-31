@@ -62,7 +62,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
             ContentCachingRequestWrapper requestCacheWrapperObject = (ContentCachingRequestWrapper) httpServletRequest;
             String invoiceOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
-            persistedInvoice = invoiceManager.createInvoice(body);
+            persistedInvoice = invoiceManager.createInvoice(principal.getName(), body);
         } catch (NoSuchElementException e) {
             LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

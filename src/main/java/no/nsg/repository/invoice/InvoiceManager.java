@@ -25,11 +25,11 @@ public class InvoiceManager {
     private ConnectionManager connectionManager;
 
 
-    public Object createInvoice(final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public Object createInvoice(final String companyId, final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         Object invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                invoice = createInvoice(invoiceOriginalXml, connection);
+                invoice = createInvoice(companyId, invoiceOriginalXml, connection);
                 connection.commit();
             } catch (SQLException | SAXException e) {
                 try {
@@ -43,10 +43,10 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public Object createInvoice(final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public Object createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         DocumentDbo invoice = new DocumentDbo();
         invoice.setDocumenttype(DocumentDbo.DOCUMENTTYPE_INVOICE);
-        invoice.setOriginalFromString(invoiceOriginalXml, TransformationManager.Direction.PURCHASE); //TODO: Don't hardcode direction
+        invoice.setOriginalFromString(companyId, invoiceOriginalXml);
         invoice.persist(connection);
         return invoice;
     }

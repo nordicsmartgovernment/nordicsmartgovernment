@@ -31,7 +31,7 @@ public class BankstatementManager {
             try {
                 bankstatement = new DocumentDbo();
                 bankstatement.setDocumenttype(DocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
-                bankstatement.setOriginalFromString(bankstatementOriginalXml, TransformationManager.Direction.DOESNT_MATTER);
+                bankstatement.setOriginalFromString(bankstatementOriginalXml);
                 bankstatement.persist(connection);
                 connection.commit();
             } catch (SQLException | SAXException e) {
