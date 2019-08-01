@@ -25,6 +25,24 @@ paths:
         - transactionCollection
       description: List every transaction in the catalog
       operationId: getTransactions
+      parameters:
+        - name: organizationId
+          in: query
+          description: The id of the organization to which the invoice belongs
+          required: false
+          schema:
+            type: string
+        - name: invoiceType
+          in: query
+          description: The type of the invoice
+          required: false
+          schema:
+            type: string
+            enum:
+            - incoming
+            - outgoing
+            - all
+            default: all
       responses:
         '200':
           description: OK
