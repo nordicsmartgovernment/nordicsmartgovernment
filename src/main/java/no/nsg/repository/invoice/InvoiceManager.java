@@ -1,7 +1,6 @@
 package no.nsg.repository.invoice;
 
 import no.nsg.repository.ConnectionManager;
-import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.DocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

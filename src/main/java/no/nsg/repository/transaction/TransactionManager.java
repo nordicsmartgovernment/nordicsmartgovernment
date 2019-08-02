@@ -1,6 +1,7 @@
 package no.nsg.repository.transaction;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.dbo.TransactionDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,12 +47,41 @@ public class TransactionManager {
         return transaction;
     }
 
-    public List<Object> getTransactions() throws SQLException {
+    public List<Object> getTransactions(final String filterOrganizationId, final String filterInvoiceType) throws SQLException {
         List<Object> transactions = new ArrayList<>();
 
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT d.xbrl FROM nsg.document d, nsg.transaction t WHERE d._transactionid=t._id;";
+            String organizationFilter = "";
+            if (filterOrganizationId!=null) {
+                organizationFilter = "AND c.orgno=? ";
+            }
+
+            String invoiceTypeFilter = "";
+            if (filterInvoiceType!=null && ("incoming".equals(filterInvoiceType) || "outgoing".equals(filterInvoiceType))) {
+                invoiceTypeFilter = "AND t.direction=? ";
+            }
+
+            final String sql = "SELECT d.xbrl "
+                              +"FROM nsg.document d, nsg.transaction t, nsg.company c "
+                              +"WHERE d._transactionid=t._id "
+                                +"AND t._companyid=c._id "
+                                     +organizationFilter
+                                     +invoiceTypeFilter+";";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                int i = 0;
+                if (!organizationFilter.isEmpty()) {
+                    stmt.setString(++i, filterOrganizationId);
+                }
+                if (!invoiceTypeFilter.isEmpty()) {
+                    int direction = TransactionDbo.NO_DIRECTION;
+                    if ("incoming".equals(filterInvoiceType)) {
+                        direction = TransactionDbo.INBOUND_DIRECTION;
+                    } else if ("outgoing".equals(filterInvoiceType)) {
+                        direction = TransactionDbo.OUTBOUND_DIRECTION;
+                    }
+                    stmt.setInt(++i, direction);
+                }
+
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     String xbrl = readerToString(rs.getCharacterStream("xbrl"));

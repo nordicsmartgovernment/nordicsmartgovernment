@@ -86,11 +86,47 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock);
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<Object> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
         Assert.assertEquals(6, responseBody.size() - syntheticTransactionsCount); //one invoice, five finvoices
+    }
+
+    @Test
+    public void getOrganizationTransactionsTest() {
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, "DK20202020", null);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Object> responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        Assert.assertTrue(responseBody.size() > 0);
+    }
+
+    @Test
+    public void getInboundTransactionsTest() {
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "incoming");
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Object> responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        Assert.assertTrue(responseBody.size() > 0);
+    }
+
+    @Test
+    public void getOutboundTransactionsTest() {
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "outgoing");
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Object> responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        Assert.assertTrue(responseBody.size() > 0);
+    }
+
+    @Test
+    public void getOrganizationInboundTransactionsTest() {
+        ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, "DK20202020", "incoming");
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        List<Object> responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        Assert.assertTrue(responseBody.size() > 0);
     }
 
     @Test
@@ -108,7 +144,7 @@ public class TransactionsApiControllerTest {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
 
-            ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock);
+            ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null);
             if (response.getStatusCode()==HttpStatus.OK) {
                 List<Object> responseBody = response.getBody();
                 syntheticTransactionsCount = responseBody.size();

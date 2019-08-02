@@ -53,6 +53,9 @@ public class DocumentDbo {
     private byte[] original;
     private String xbrl;
 
+    @JsonIgnore
+    private TransformationManager.Direction direction = TransformationManager.Direction.DOESNT_MATTER;
+
 
     public DocumentDbo() {
         this._id = UNINITIALIZED;
@@ -97,6 +100,10 @@ public class DocumentDbo {
         this._transactionid = _transactionid;
     }
 
+    public int get_TransactionId() {
+        return this._transactionid;
+    }
+
     public int getDocumenttype() {
         return documenttype;
     }
@@ -124,7 +131,7 @@ public class DocumentDbo {
     public void setOriginalFromString(final String companyId, final String original) throws IOException, SAXException {
         this.original = original.getBytes(StandardCharsets.UTF_8);
         DocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
-        TransformationManager.Direction direction = getDirectionFromDocument(companyId, documentFormat, original);
+        this.direction = getDirectionFromDocument(companyId, documentFormat, original);
         transformXbrlFromOriginal(documentFormat, direction);
         setDocumentid(getDocumentidFromXBRL());
     }
@@ -175,6 +182,10 @@ public class DocumentDbo {
         } else {
             return DocumentFormat.UNKNOWN;
         }
+    }
+
+    public TransformationManager.Direction getDirection() {
+        return this.direction;
     }
 
     private String getOrgnrFromXBRL() throws IOException, SAXException {
@@ -281,6 +292,9 @@ public class DocumentDbo {
 
         CompanyDbo companyDbo = CompanyDbo.getOrCreateByOrgno(connection, orgnr);
         TransactionDbo transactionDbo = new TransactionDbo(companyDbo);
+        if (getDirection() != TransformationManager.Direction.DOESNT_MATTER) {
+            transactionDbo.setDirection(getDirection());
+        }
         transactionDbo.persist(connection);
         return transactionDbo.get_id();
     }
@@ -325,6 +339,13 @@ public class DocumentDbo {
                 stmt.setInt(6, get_id());
 
                 stmt.executeUpdate();
+            }
+
+            //Update transaction direction if changed
+            TransactionDbo transactionDbo = new TransactionDbo(connection, get_TransactionId());
+            if (transactionDbo.getDirection() != getDirection()) {
+                transactionDbo.setDirection(getDirection());
+                transactionDbo.persist(connection);
             }
         }
     }
