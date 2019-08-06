@@ -77,13 +77,13 @@ paths:
     patch:
       tags:
         - writeTransaction
-      description: Patch a trasaction
+      description: Patch a transaction
       operationId: patchTransactionById
       parameters:
         - name: id
           in: path
           required: true
-          description: The id of the Transaction
+          description: The id of the transaction
           schema:
             type: string
       responses:
