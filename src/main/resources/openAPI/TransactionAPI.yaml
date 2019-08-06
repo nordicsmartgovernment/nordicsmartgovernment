@@ -109,6 +109,9 @@ components:
       properties:
         replace:
           type: object
+          required:
+            - sel
+            - value
           properties:
             sel:
               description: reference to the element
