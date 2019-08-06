@@ -18,6 +18,8 @@ servers:
 tags:
   - name: transactionCollection
     description: transactionCollection operations
+  - name: writeTransaction
+    description: operations that writes or updates a single transcation
 paths:
   /transactions:
     get:
@@ -72,7 +74,44 @@ paths:
             application/xml:
               schema:
                 $ref: "#/components/schemas/Transaction"
+    patch:
+      tags:
+        - writeTransaction
+      description: Patch a trasaction
+      operationId: patchTransactionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The id of the Transaction
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Diff'
 components:
   schemas:
     Transaction:
       type: object
+    Diff:
+      description: The patch operation conforms to RFC 5261
+      type: object
+      properties:
+        replace:
+          type: object
+          properties:
+            sel:
+              description: reference to the element
+              type: string
+            value:
+              description: the new value of the element
