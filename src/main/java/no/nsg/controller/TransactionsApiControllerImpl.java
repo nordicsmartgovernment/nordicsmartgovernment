@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.generated.transaction_model.Diff;
 import no.nsg.repository.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,4 +71,10 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
             return new ResponseEntity<>(transactions, HttpStatus.OK);
         }
     }
+
+    @Override
+    public ResponseEntity<Object> patchTransactionById(Principal principal, HttpServletRequest httpServletRequest, String id, Diff diff) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
 }
