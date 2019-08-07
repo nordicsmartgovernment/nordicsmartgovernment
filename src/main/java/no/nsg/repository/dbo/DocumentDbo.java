@@ -54,7 +54,7 @@ public class DocumentDbo {
     private String xbrl;
 
     @JsonIgnore
-    private TransformationManager.Direction direction = TransformationManager.Direction.DOESNT_MATTER;
+    private DocumentInfo documentInfo = new DocumentInfo();
 
 
     public DocumentDbo() {
@@ -124,6 +124,14 @@ public class DocumentDbo {
         return original;
     }
 
+    public void setDocumentInfo(final DocumentInfo documentInfo) {
+        this.documentInfo = documentInfo;
+    }
+
+    public DocumentInfo getDocumentInfo() {
+        return this.documentInfo;
+    }
+
     public void setOriginalFromString(final String original) throws IOException, SAXException {
         setOriginalFromString(null, original);
     }
@@ -131,8 +139,8 @@ public class DocumentDbo {
     public void setOriginalFromString(final String companyId, final String original) throws IOException, SAXException {
         this.original = original.getBytes(StandardCharsets.UTF_8);
         DocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
-        this.direction = getDirectionFromDocument(companyId, documentFormat, original);
-        transformXbrlFromOriginal(documentFormat, direction);
+        setDocumentInfo(getDocumentInfoFromDocument(companyId, documentFormat, original));
+        transformXbrlFromOriginal(documentFormat, getDocumentInfo().getDirection());
         setDocumentid(getDocumentidFromXBRL());
     }
 
@@ -184,10 +192,6 @@ public class DocumentDbo {
         }
     }
 
-    public TransformationManager.Direction getDirection() {
-        return this.direction;
-    }
-
     private String getOrgnrFromXBRL() throws IOException, SAXException {
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
@@ -202,9 +206,11 @@ public class DocumentDbo {
         return null;
     }
 
-    private TransformationManager.Direction getDirectionFromDocument(final String companyId, final DocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
+    private DocumentInfo getDocumentInfoFromDocument(final String companyId, final DocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
+        DocumentInfo documentInfo = new DocumentInfo();
+
         if (documentFormat != DocumentDbo.DocumentFormat.UML_INVOICE) {
-            return TransformationManager.Direction.DOESNT_MATTER;
+            return documentInfo;
         }
 
         String supplier="", customer="";
@@ -219,28 +225,33 @@ public class DocumentDbo {
                     if (child != null) {
                         supplier = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
-                            return TransformationManager.Direction.SALES;
+                            documentInfo.setDirection(TransformationManager.Direction.SALES);
                         }
                     }
                 }
             }
 
             child = parsedDocument.getElementsByTagName("cac:AccountingCustomerParty").item(0);
-            if (child instanceof Element) {
+            if (child instanceof Element && documentInfo.getDirection()!=TransformationManager.Direction.SALES) {
                 child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
                 if (child instanceof Element) {
                     child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
                     if (child != null) {
                         customer = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
-                            return TransformationManager.Direction.PURCHASE;
+                            documentInfo.setDirection(TransformationManager.Direction.PURCHASE);
                         }
                     }
                 }
             }
         }
 
-        throw new RuntimeException("customerId was neither supplier:"+supplier+" nor customer:"+customer);
+        if (documentInfo.getDirection()!=TransformationManager.Direction.SALES &&
+            documentInfo.getDirection()!=TransformationManager.Direction.PURCHASE) {
+            throw new RuntimeException("customerId was neither supplier:"+supplier+" nor customer:"+customer);
+        }
+
+        return documentInfo;
     }
 
     private String getDocumentidFromXBRL() throws IOException, SAXException {
@@ -292,8 +303,8 @@ public class DocumentDbo {
 
         CompanyDbo companyDbo = CompanyDbo.getOrCreateByOrgno(connection, orgnr);
         TransactionDbo transactionDbo = new TransactionDbo(companyDbo);
-        if (getDirection() != TransformationManager.Direction.DOESNT_MATTER) {
-            transactionDbo.setDirection(getDirection());
+        if (getDocumentInfo().getDirection() != TransformationManager.Direction.DOESNT_MATTER) {
+            transactionDbo.getTransactionInfo().setDirection(getDocumentInfo().getDirection());
         }
         transactionDbo.persist(connection);
         return transactionDbo.get_id();
@@ -343,8 +354,8 @@ public class DocumentDbo {
 
             //Update transaction direction if changed
             TransactionDbo transactionDbo = new TransactionDbo(connection, get_TransactionId());
-            if (transactionDbo.getDirection() != getDirection()) {
-                transactionDbo.setDirection(getDirection());
+            if (transactionDbo.getTransactionInfo().getDirection() != getDocumentInfo().getDirection()) {
+                transactionDbo.getTransactionInfo().setDirection(getDocumentInfo().getDirection());
                 transactionDbo.persist(connection);
             }
         }
