@@ -132,7 +132,7 @@ public class ConnectionManager {
 
 	public void importSyntheticData(final String companyId, final Connection connection) throws SQLException, IOException, SAXException {
 		final String sql = "DELETE FROM nsg.company WHERE orgno=?";
-		try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			stmt.setString(1, companyId);
 			stmt.executeUpdate();
 		}

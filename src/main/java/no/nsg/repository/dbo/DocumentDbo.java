@@ -19,6 +19,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 
@@ -54,12 +57,20 @@ public class DocumentDbo {
     private String xbrl;
 
     @JsonIgnore
-    private DocumentInfo documentInfo = new DocumentInfo();
+    List<DocumentRowDbo> documentRows = new ArrayList<>();
+    @JsonIgnore
+    boolean removeOldRows = false;
+
+    @JsonIgnore
+    private TransformationManager.Direction tmpDirection = null; //Not persisted - only for forwarding info from DocumentRowDbo to TrasactionDbo
+
+    @JsonIgnore
+    private LocalDateTime tmpTransactionTime = null; //Not persisted - only for forwarding info from DocumentRowDbo to TrasactionDbo
 
 
     public DocumentDbo() {
         this._id = UNINITIALIZED;
-        _transactionid = TransactionDbo.UNINITIALIZED;
+        set_TransactionId(TransactionDbo.UNINITIALIZED);
     }
 
     public DocumentDbo(final TransactionDbo transactionDbo) {
@@ -124,14 +135,6 @@ public class DocumentDbo {
         return original;
     }
 
-    public void setDocumentInfo(final DocumentInfo documentInfo) {
-        this.documentInfo = documentInfo;
-    }
-
-    public DocumentInfo getDocumentInfo() {
-        return this.documentInfo;
-    }
-
     public void setOriginalFromString(final String original) throws IOException, SAXException {
         setOriginalFromString(null, original);
     }
@@ -139,9 +142,9 @@ public class DocumentDbo {
     public void setOriginalFromString(final String companyId, final String original) throws IOException, SAXException {
         this.original = original.getBytes(StandardCharsets.UTF_8);
         DocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
-        setDocumentInfo(getDocumentInfoFromDocument(companyId, documentFormat, original));
-        transformXbrlFromOriginal(documentFormat, getDocumentInfo().getDirection());
-        setDocumentid(getDocumentidFromXBRL());
+        setDirectionFromDocument(companyId, documentFormat, original);
+        transformXbrlFromOriginal(documentFormat, tmpDirection);
+        parseXBRL();
     }
 
     private void setOriginalAndXbrl(final InputStream original, final Reader xbrl) throws IOException {
@@ -206,11 +209,10 @@ public class DocumentDbo {
         return null;
     }
 
-    private DocumentInfo getDocumentInfoFromDocument(final String companyId, final DocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
-        DocumentInfo documentInfo = new DocumentInfo();
-
+    private void setDirectionFromDocument(final String companyId, final DocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
         if (documentFormat != DocumentDbo.DocumentFormat.UML_INVOICE) {
-            return documentInfo;
+            tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
+            return;
         }
 
         String supplier="", customer="";
@@ -225,47 +227,51 @@ public class DocumentDbo {
                     if (child != null) {
                         supplier = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
-                            documentInfo.setDirection(TransformationManager.Direction.SALES);
+                            tmpDirection = TransformationManager.Direction.SALES;
+                            return;
                         }
                     }
                 }
             }
 
             child = parsedDocument.getElementsByTagName("cac:AccountingCustomerParty").item(0);
-            if (child instanceof Element && documentInfo.getDirection()!=TransformationManager.Direction.SALES) {
+            if (child instanceof Element && tmpDirection!=TransformationManager.Direction.SALES) {
                 child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
                 if (child instanceof Element) {
                     child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
                     if (child != null) {
                         customer = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
-                            documentInfo.setDirection(TransformationManager.Direction.PURCHASE);
+                            tmpDirection = TransformationManager.Direction.PURCHASE;
+                            return;
                         }
                     }
                 }
             }
         }
 
-        if (documentInfo.getDirection()!=TransformationManager.Direction.SALES &&
-            documentInfo.getDirection()!=TransformationManager.Direction.PURCHASE) {
-            throw new RuntimeException("customerId was neither supplier:"+supplier+" nor customer:"+customer);
-        }
-
-        return documentInfo;
+        throw new RuntimeException("customerId was neither supplier:"+supplier+" nor customer:"+customer);
     }
 
-    private String getDocumentidFromXBRL() throws IOException, SAXException {
+    private void parseXBRL() throws IOException, SAXException {
+        documentRows.clear();
+        removeOldRows = true;
+
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
             NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:documentNumber");
             if (nodes.getLength() > 0) {
                 Node child = nodes.item(0).getFirstChild();
                 if (child != null) {
-                    return child.getTextContent();
+                    setDocumentid(child.getTextContent());
                 }
             }
+
+            nodes = parsedDocument.getElementsByTagName("gl-cor:entryDetail");
+            for (int i=0; i<nodes.getLength(); i++) {
+                documentRows.add(new DocumentRowDbo(parsedDocument, nodes.item(i)));
+            }
         }
-        return null;
     }
 
     private static Document parseDocument(final String document) throws IOException, SAXException {
@@ -303,9 +309,6 @@ public class DocumentDbo {
 
         CompanyDbo companyDbo = CompanyDbo.getOrCreateByOrgno(connection, orgnr);
         TransactionDbo transactionDbo = new TransactionDbo(companyDbo);
-        if (getDocumentInfo().getDirection() != TransformationManager.Direction.DOESNT_MATTER) {
-            transactionDbo.getTransactionInfo().setDirection(getDocumentInfo().getDirection());
-        }
         transactionDbo.persist(connection);
         return transactionDbo.get_id();
     }
@@ -351,13 +354,35 @@ public class DocumentDbo {
 
                 stmt.executeUpdate();
             }
+        }
 
-            //Update transaction direction if changed
-            TransactionDbo transactionDbo = new TransactionDbo(connection, get_TransactionId());
-            if (transactionDbo.getTransactionInfo().getDirection() != getDocumentInfo().getDirection()) {
-                transactionDbo.getTransactionInfo().setDirection(getDocumentInfo().getDirection());
-                transactionDbo.persist(connection);
+        //Remove old rows if we've got a new document
+        if (removeOldRows) {
+            DocumentRowDbo.deleteDocumentRows(connection, get_id());
+            removeOldRows = false;
+        }
+
+        //Persist any new document rows
+        for (DocumentRowDbo documentRowDbo : this.documentRows) {
+            if (documentRowDbo.get_id() == DocumentRowDbo.UNINITIALIZED) {
+                documentRowDbo.set_DocumentId(get_id());
+                documentRowDbo.persist(connection);
             }
+        }
+
+        //Update transaction direction if changed
+        boolean modifiedTransaction = false;
+        TransactionDbo transactionDbo = new TransactionDbo(connection, get_TransactionId());
+        if (tmpDirection!=null && transactionDbo.getDirection()!=tmpDirection) {
+            transactionDbo.setDirection(tmpDirection);
+            modifiedTransaction = true;
+        }
+        if (tmpTransactionTime!=null && transactionDbo.getTransactionTime()!=tmpTransactionTime) {
+            transactionDbo.setTransactionTime(tmpTransactionTime);
+            modifiedTransaction = true;
+        }
+        if (modifiedTransaction) {
+            transactionDbo.persist(connection);
         }
     }
 
