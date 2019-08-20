@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08">
+  <BkToCstmrStmt>
+    <GrpHdr>
+      <MsgId>NSG.44</MsgId>
+      <CreDtTm>2019-12-18T23:59:00+02:00</CreDtTm>
+      <MsgRcpt>
+        <Nm>NSG Catering</Nm>
+        <Id>
+          <OrgId>
+            <Othr>
+              <Id>20202020</Id>
+              <SchmeNm>
+                <Cd>BANK</Cd>
+              </SchmeNm>
+            </Othr>
+          </OrgId>
+        </Id>
+      </MsgRcpt>
+      </GrpHdr>
+    <Stmt>
+      <Id>NSG.44.1</Id>
+      <LglSeqNb>54</LglSeqNb>
+      <CreDtTm>2019-12-18T23:59:00+02:00</CreDtTm>
+      <FrToDt>
+        <FrDtTm>2019-12-18T00:00:00+02:00</FrDtTm>
+        <ToDtTm>2019-12-25T23:59:59+02:00</ToDtTm>
+      </FrToDt>
+      <Acct>
+        <Id>
+          <IBAN>DK7650643711684327</IBAN>
+        </Id>
+        <Ccy>DKK</Ccy>
+        <Nm>Business account</Nm>
+        <Ownr>
+          <Nm>NSG Catering</Nm>
+          <Id>
+            <OrgId>
+              <Othr>
+                <Id>20202020</Id>
+              </Othr>
+            </OrgId>
+          </Id>
+        </Ownr>
+        <Svcr>
+          <FinInstnId>
+            <BICFI>NDEADKKK</BICFI>
+            <Nm>NORDEA BANK DANMARK A/S</Nm>
+          </FinInstnId>
+        </Svcr>
+      </Acct>
+      <Bal>
+        <Tp>
+          <CdOrPrtry>
+            <Cd>OPBD</Cd>
+          </CdOrPrtry>
+        </Tp>
+        <Amt Ccy="DKK">316574.305</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Dt>
+          <Dt>2019-12-18</Dt>
+        </Dt>
+      </Bal>
+      <Bal>
+        <Tp>
+          <CdOrPrtry>
+            <Cd>CLBD</Cd>
+          </CdOrPrtry>
+        </Tp>
+        <Amt Ccy="DKK">341530.305</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Dt>
+          <Dt>2019-12-25</Dt>
+        </Dt>
+      </Bal>
+         
+  <TxsSummry>
+        <TtlCdtNtries>          <Sum>27250</Sum>
+        </TtlCdtNtries>
+        <TtlDbtNtries>          <Sum>2294</Sum>
+        </TtlDbtNtries>
+      </TxsSummry><Ntry>
+        <NtryRef>00259</NtryRef>
+        <Amt Ccy="DKK">119.5</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-18</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-18</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">119.5</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>Gryssjöns Potatis AB</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>54280601</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>98130959</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry><Ntry>
+        <NtryRef>00260</NtryRef>
+        <Amt Ccy="DKK">1145</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-19</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-19</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">1145</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>Inco CC København A/S</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>2245507</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>98130960</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry><Ntry>
+        <NtryRef>00261</NtryRef>
+        <Amt Ccy="DKK">119.5</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-20</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-20</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">119.5</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>Gryssjöns Potatis AB</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>54280608</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>98130961</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry><Ntry>
+        <NtryRef>00262</NtryRef>
+        <Amt Ccy="DKK">35</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-21</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-21</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">35</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>Supplier Organic Food Scandinavia AS</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>20196299</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>98130962</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry><Ntry>
+        <NtryRef>00263</NtryRef>
+        <Amt Ccy="DKK">875</Amt>
+        <CdtDbtInd>DBIT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-22</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-22</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">875</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>Zealand Swine</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>11680956</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>98130963</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry><Ntry>
+        <NtryRef>00264</NtryRef>
+        <Amt Ccy="DKK">27250</Amt>
+        <CdtDbtInd>CRDT</CdtDbtInd>
+        <Sts><Prtry>BOOK</Prtry></Sts>
+        <BookgDt>
+          <Dt>2019-12-23</Dt>
+        </BookgDt>
+        <ValDt>
+          <Dt>2019-12-23</Dt>
+        </ValDt> <BkTxCd> <Domn>
+            <Cd>PMNT</Cd>
+            <Fmly>
+              <Cd>RCDT</Cd>
+              <SubFmlyCd>ESCT</SubFmlyCd>
+            </Fmly>
+          </Domn>
+          <Prtry>
+            <Cd>700TILISIIRTO</Cd>
+            <Issr>FFFS</Issr>
+          </Prtry>
+</BkTxCd>        
+        <NtryDtls>
+          <TxDtls>
+            <AmtDtls>
+              <TxAmt>
+                <Amt Ccy="DKK">27250</Amt>
+              </TxAmt>
+            </AmtDtls>
+            <RltdPties>
+              <Cdtr><Pty>
+                <Nm>NSG Catering</Nm>
+              </Pty></Cdtr>
+            </RltdPties><RmtInf>
+               <Strd><RfrdDocInf><Nb>2460931</Nb></RfrdDocInf>
+                <CdtrRefInf>
+                  <Tp>
+                    <CdOrPrtry>
+                      <Cd>SCOR</Cd>
+                    </CdOrPrtry>
+                  </Tp>
+                  <Ref>45271945</Ref>
+                </CdtrRefInf>
+              </Strd>
+            </RmtInf>          </TxDtls>
+        </NtryDtls>
+      </Ntry>  </Stmt>
+  </BkToCstmrStmt>
+</Document>
