@@ -5,3 +5,10 @@ postgres:
     dbo_password: ${NSG_POSTGRES_DBO_PASSWORD:password}
     user: ${NSG_POSTGRES_USER:postgres}
     password: ${NSG_POSTGRES_PASSWORD:password}
+
+server:
+  compression:
+    enabled: true
+    mime-types: application/xml,application/json,text/plain
+  http2:
+    enabled: true
