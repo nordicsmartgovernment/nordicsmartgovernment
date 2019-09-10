@@ -1,7 +1,7 @@
 package no.nsg.controller;
 
 import no.nsg.repository.bankstatement.BankstatementManager;
-import no.nsg.repository.dbo.DocumentDbo;
+import no.nsg.repository.dbo.BusinessDocumentDbo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +82,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     public ResponseEntity<Object> getBankStatementById(Principal principal, HttpServletRequest httpServletRequest, String id) {
         Bankstatement returnValue = null;
         try {
-            DocumentDbo bankstatement = bankstatementManager.getBankstatementById(id);
+            BusinessDocumentDbo bankstatement = bankstatementManager.getBankstatementById(id);
             if (bankstatement != null) {
                 returnValue = new Bankstatement(bankstatement.getDocumentid(), bankstatement.getOriginal());
             }
@@ -102,8 +102,8 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     public ResponseEntity<List<Object>> getBankStatements(Principal principal, HttpServletRequest httpServletRequest) {
         List<Object> returnValue = new ArrayList<>();
         try {
-            List<DocumentDbo> bankstatements = bankstatementManager.getBankstatements();
-            for (DocumentDbo bankstatement : bankstatements) {
+            List<BusinessDocumentDbo> bankstatements = bankstatementManager.getBankstatements();
+            for (BusinessDocumentDbo bankstatement : bankstatements) {
                 returnValue.add(new Bankstatement(bankstatement.getDocumentid(), bankstatement.getOriginal()));
             }
         } catch (Exception e) {

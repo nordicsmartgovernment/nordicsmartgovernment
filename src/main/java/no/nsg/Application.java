@@ -50,6 +50,7 @@ public class Application {
                 liquibase.update(new Contexts(), new LabelExpression());
                 LOGGER.info("Liquibase synced OK.");
                 connectionManager.createRegularUser(connection);
+                connectionManager.initializeCaches(connection);
                 connectionManager.importSyntheticData("DK20202020", connection);
                 LOGGER.info("Synthetic data imported OK.");
                 connection.commit();

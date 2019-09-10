@@ -1,5 +1,7 @@
 package no.nsg.repository;
 
+import no.nsg.repository.dbo.AccountDbo;
+import no.nsg.repository.dbo.CurrencyDbo;
 import no.nsg.repository.invoice.InvoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -128,6 +130,11 @@ public class ConnectionManager {
 		} catch (Exception e) {
 			throw new SQLException(e);
 		}
+	}
+
+	public void initializeCaches(final Connection connection) throws SQLException {
+		AccountDbo.initializeAccountCache(connection);
+		CurrencyDbo.initializeCurrencyCache(connection);
 	}
 
 	public void importSyntheticData(final String companyId, final Connection connection) throws SQLException, IOException, SAXException {

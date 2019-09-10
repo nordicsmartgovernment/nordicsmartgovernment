@@ -22,47 +22,40 @@ public class TransactionDbo {
     private int _id;
 
     @JsonIgnore
-    private int _companyid;
-
-    @JsonIgnore
-    private TransformationManager.Direction direction = TransformationManager.Direction.DOESNT_MATTER;
+    private int _id_transactionset;
 
     @JsonIgnore
     private LocalDateTime transactionTime;
 
+    @JsonIgnore
+    private TransformationManager.Direction direction = TransformationManager.Direction.DOESNT_MATTER;
 
 
-    public TransactionDbo(final CompanyDbo companyDbo) {
-        this._id = UNINITIALIZED;
-        set_CompanyId(companyDbo == null ? CompanyDbo.UNINITIALIZED : companyDbo.get_id());
+    public TransactionDbo() {
+        this(null);
     }
 
-    public TransactionDbo(final Connection connection, final int _id) throws SQLException {
-        if (_id == UNINITIALIZED) {
+    public TransactionDbo(final TransactionSetDbo transactionSetDbo) {
+        this._id = UNINITIALIZED;
+        set_TransactionSetId(transactionSetDbo == null ? TransactionSetDbo.UNINITIALIZED : transactionSetDbo.get_id());
+    }
+
+    public TransactionDbo(final Connection connection, final int id) throws SQLException {
+        if (id == UNINITIALIZED) {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT _companyid, direction, transactiontime FROM nsg.transaction WHERE _id=?";
+        final String sql = "SELECT _id_transactionset, transactiontime, direction FROM nsg.transaction WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, _id);
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
                 throw new NoSuchElementException();
             }
 
-            this._id = _id;
-            set_CompanyId(rs.getInt("_companyid"));
-            if (rs.wasNull()) {
-                set_CompanyId(CompanyDbo.UNINITIALIZED);
-            }
+            this._id = id;
 
-            Integer tmpDirection;
-            tmpDirection = rs.getInt("direction");
-            if (rs.wasNull()) {
-                tmpDirection = null;
-            }
-
-            setDirection(intToDirection(tmpDirection));
+            set_TransactionSetId(rs.getInt("_id_transactionset"));
 
             Timestamp tmpTime = rs.getTimestamp("transactiontime");
             if (!rs.wasNull()) {
@@ -70,27 +63,35 @@ public class TransactionDbo {
             } else {
                 setTransactionTime(null);
             }
+
+            Integer tmpDirection;
+            tmpDirection = rs.getInt("direction");
+            if (rs.wasNull()) {
+                tmpDirection = null;
+            }
+            setDirection(intToDirection(tmpDirection));
+
         }
+    }
+
+    public static TransactionDbo create(final Connection connection, final String orgnr, final String transactionSetName) throws SQLException {
+        CompanyDbo companyDbo = CompanyDbo.getOrCreateByOrgno(connection, orgnr);
+        TransactionSetDbo transactionSetDbo = TransactionSetDbo.getOrCreateByCompanyAndName(connection, companyDbo, transactionSetName);
+        TransactionDbo transactionDbo = new TransactionDbo(transactionSetDbo);
+        transactionDbo.persist(connection);
+        return transactionDbo;
     }
 
     public int get_id() {
         return this._id;
     }
 
-    public void set_CompanyId(final int _companyId) {
-        this._companyid = _companyId;
+    private void set_TransactionSetId(final int _transactionSetId) {
+        this._id_transactionset = _transactionSetId;
     }
 
-    public int get_CompanyId() {
-        return this._companyid;
-    }
-
-    public void setDirection(final TransformationManager.Direction direction) {
-        this.direction = direction;
-    }
-
-    public TransformationManager.Direction getDirection() {
-        return direction;
+    private int get_TransactionSetId() {
+        return this._id_transactionset;
     }
 
     public void setTransactionTime(final LocalDateTime transactionTime) {
@@ -101,27 +102,35 @@ public class TransactionDbo {
         return this.transactionTime;
     }
 
+    public void setDirection(final TransformationManager.Direction direction) {
+        this.direction = direction;
+    }
+
+    public TransformationManager.Direction getDirection() {
+        return direction;
+    }
+
     public void persist(final Connection connection) throws SQLException {
         if (get_id() == UNINITIALIZED) {
-            final String sql = "INSERT INTO nsg.transaction (_companyid, direction, transactiontime) VALUES (?,?,?)";
+            final String sql = "INSERT INTO nsg.transaction (_id_transactionset, transactiontime, direction) VALUES (?,?,?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                if (get_CompanyId() == CompanyDbo.UNINITIALIZED) {
+                if (get_TransactionSetId() == TransactionSetDbo.UNINITIALIZED) {
                     stmt.setNull(1, Types.INTEGER);
                 } else {
-                    stmt.setInt(1, get_CompanyId());
+                    stmt.setInt(1, get_TransactionSetId());
+                }
+
+                if (getTransactionTime() == null) {
+                    stmt.setNull(2, Types.TIMESTAMP);
+                } else {
+                    stmt.setTimestamp(2, Timestamp.valueOf(getTransactionTime()));
                 }
 
                 Integer tmpDirection = directionToInt(getDirection());
                 if (tmpDirection == null) {
-                    stmt.setNull(2, Types.INTEGER);
+                    stmt.setNull(3, Types.INTEGER);
                 } else {
-                    stmt.setInt(2, tmpDirection);
-                }
-
-                if (getTransactionTime() == null) {
-                    stmt.setNull(3, Types.TIMESTAMP);
-                } else {
-                    stmt.setTimestamp(3, Timestamp.valueOf(getTransactionTime()));
+                    stmt.setInt(3, tmpDirection);
                 }
 
                 stmt.executeUpdate();
@@ -132,25 +141,25 @@ public class TransactionDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.transaction SET _companyid=?, direction=?, transactiontime=? WHERE _id=?";
+            final String sql = "UPDATE nsg.transaction SET _id_transactionset=?, transactiontime=?, direction=? WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                if (get_CompanyId() == CompanyDbo.UNINITIALIZED) {
+                if (get_TransactionSetId() == TransactionSetDbo.UNINITIALIZED) {
                     stmt.setNull(1, Types.INTEGER);
                 } else {
-                    stmt.setInt(1, get_CompanyId());
+                    stmt.setInt(1, get_TransactionSetId());
+                }
+
+                if (getTransactionTime() == null) {
+                    stmt.setNull(2, Types.TIMESTAMP);
+                } else {
+                    stmt.setTimestamp(2, Timestamp.valueOf(getTransactionTime()));
                 }
 
                 Integer tmpDirection = directionToInt(getDirection());
                 if (tmpDirection == null) {
-                    stmt.setNull(2, Types.INTEGER);
+                    stmt.setNull(3, Types.INTEGER);
                 } else {
-                    stmt.setInt(2, tmpDirection);
-                }
-
-                if (getTransactionTime() == null) {
-                    stmt.setNull(3, Types.TIMESTAMP);
-                } else {
-                    stmt.setTimestamp(3, Timestamp.valueOf(getTransactionTime()));
+                    stmt.setInt(3, tmpDirection);
                 }
 
                 stmt.setInt(4, get_id());

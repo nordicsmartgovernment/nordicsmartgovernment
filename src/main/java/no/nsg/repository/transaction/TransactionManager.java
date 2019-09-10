@@ -26,7 +26,7 @@ public class TransactionManager {
         String transaction = null;
 
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT d.xbrl FROM nsg.document d, nsg.transaction t WHERE d._transactionid=t._id AND d.documentid=?;";
+            final String sql = "SELECT d.xbrl FROM nsg.businessdocument d, nsg.transaction t WHERE d._id_transaction=t._id AND d.documentid=?;";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setString(1, id);
                 ResultSet rs = stmt.executeQuery();
@@ -62,9 +62,10 @@ public class TransactionManager {
             }
 
             final String sql = "SELECT d.xbrl "
-                              +"FROM nsg.document d, nsg.transaction t, nsg.company c "
-                              +"WHERE d._transactionid=t._id "
-                                +"AND t._companyid=c._id "
+                              +"FROM nsg.businessdocument d, nsg.transaction t, nsg.transactionset ts, nsg.company c "
+                              +"WHERE d._id_transaction=t._id "
+                               +"AND t._id_transactionset=ts._id "
+                               +"AND ts._id_company=c._id "
                                      +organizationFilter
                                      +invoiceTypeFilter+";";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {

@@ -1,8 +1,7 @@
 package no.nsg.repository.bankstatement;
 
 import no.nsg.repository.ConnectionManager;
-import no.nsg.repository.TransformationManager;
-import no.nsg.repository.dbo.DocumentDbo;
+import no.nsg.repository.dbo.BusinessDocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
@@ -26,11 +25,11 @@ public class BankstatementManager {
 
 
     public Object createBankstatement(final String bankstatementOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
-        DocumentDbo bankstatement;
+        BusinessDocumentDbo bankstatement;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                bankstatement = new DocumentDbo();
-                bankstatement.setDocumenttype(DocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
+                bankstatement = new BusinessDocumentDbo();
+                bankstatement.setDocumenttype(BusinessDocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
                 bankstatement.setOriginalFromString(bankstatementOriginalXml);
                 bankstatement.persist(connection);
                 connection.commit();
@@ -46,12 +45,12 @@ public class BankstatementManager {
         return bankstatement;
     }
 
-    public DocumentDbo getBankstatementById(final String id) throws SQLException {
-        DocumentDbo bankstatement = null;
+    public BusinessDocumentDbo getBankstatementById(final String id) throws SQLException {
+        BusinessDocumentDbo bankstatement = null;
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 try {
-                    bankstatement = new DocumentDbo(connection, DocumentDbo.findInternalId(connection, id));
+                    bankstatement = new BusinessDocumentDbo(connection, BusinessDocumentDbo.findInternalId(connection, id));
                 } catch (NoSuchElementException|NumberFormatException|IOException e) {
                 }
                 connection.commit();
@@ -67,17 +66,17 @@ public class BankstatementManager {
         return bankstatement;
     }
 
-    public List<DocumentDbo> getBankstatements() throws SQLException {
-        List<DocumentDbo> bankstatements = new ArrayList<>();
+    public List<BusinessDocumentDbo> getBankstatements() throws SQLException {
+        List<BusinessDocumentDbo> bankstatements = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT _id FROM nsg.document WHERE documenttype=?";
+            final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, DocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
+                stmt.setInt(1, BusinessDocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
 
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     try {
-                        bankstatements.add(new DocumentDbo(connection, rs.getInt("_id")));
+                        bankstatements.add(new BusinessDocumentDbo(connection, rs.getInt("_id")));
                     } catch (NoSuchElementException|IOException e) {
                     }
                 }

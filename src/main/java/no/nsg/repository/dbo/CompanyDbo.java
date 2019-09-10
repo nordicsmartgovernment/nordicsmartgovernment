@@ -21,21 +21,21 @@ public class CompanyDbo {
         this._id = UNINITIALIZED;
     }
 
-    public CompanyDbo(final Connection connection, final int _id) throws SQLException {
-        if (_id == UNINITIALIZED) {
+    public CompanyDbo(final Connection connection, final int id) throws SQLException {
+        if (id== UNINITIALIZED) {
             throw new NoSuchElementException();
         }
 
         final String sql = "SELECT orgno FROM nsg.company WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, _id);
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
                 throw new NoSuchElementException();
             }
 
-            this._id = _id;
-            this.orgno = rs.getString("orgno");
+            this._id = id;
+            setOrgno(rs.getString("orgno"));
         }
     }
 
@@ -47,9 +47,13 @@ public class CompanyDbo {
         this.orgno = orgno;
     }
 
+    public String getOrgno() {
+        return this.orgno;
+    }
+
     public static CompanyDbo getOrCreateByOrgno(final Connection connection, final String orgno) throws SQLException {
         try {
-            int id = findByOrgno(connection, orgno);
+            int id = CompanyDbo.findByOrgno(connection, orgno);
             return new CompanyDbo(connection, id);
         } catch (NoSuchElementException e) {
             CompanyDbo newCompany = new CompanyDbo();
@@ -76,7 +80,7 @@ public class CompanyDbo {
             final String sql = "INSERT INTO nsg.company (orgno) " +
                                       "VALUES (?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                stmt.setString(1, this.orgno);
+                stmt.setString(1, getOrgno());
 
                 stmt.executeUpdate();
 
@@ -88,7 +92,7 @@ public class CompanyDbo {
         } else {
             final String sql = "UPDATE nsg.company SET orgno=? WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, this.orgno);
+                stmt.setString(1, getOrgno());
                 stmt.setInt(2, get_id());
 
                 stmt.executeUpdate();

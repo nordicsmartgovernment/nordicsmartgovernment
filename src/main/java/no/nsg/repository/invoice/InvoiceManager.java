@@ -1,7 +1,7 @@
 package no.nsg.repository.invoice;
 
 import no.nsg.repository.ConnectionManager;
-import no.nsg.repository.dbo.DocumentDbo;
+import no.nsg.repository.dbo.BusinessDocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
@@ -43,15 +43,15 @@ public class InvoiceManager {
     }
 
     public Object createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
-        DocumentDbo invoice = new DocumentDbo();
-        invoice.setDocumenttype(DocumentDbo.DOCUMENTTYPE_INVOICE);
+        BusinessDocumentDbo invoice = new BusinessDocumentDbo();
+        invoice.setDocumenttype(BusinessDocumentDbo.DOCUMENTTYPE_INVOICE);
         invoice.setOriginalFromString(companyId, invoiceOriginalXml);
         invoice.persist(connection);
         return invoice;
     }
 
-    public DocumentDbo getInvoiceById(final String id) throws SQLException {
-        DocumentDbo invoice = null;
+    public BusinessDocumentDbo getInvoiceById(final String id) throws SQLException {
+        BusinessDocumentDbo invoice = null;
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 try {
@@ -71,12 +71,12 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public DocumentDbo getInvoiceById(final String id, final Connection connection) throws SQLException, IOException {
-        return new DocumentDbo(connection, DocumentDbo.findInternalId(connection, id));
+    public BusinessDocumentDbo getInvoiceById(final String id, final Connection connection) throws SQLException, IOException {
+        return new BusinessDocumentDbo(connection, BusinessDocumentDbo.findInternalId(connection, id));
     }
 
-    public List<DocumentDbo> getInvoices() throws SQLException {
-        List<DocumentDbo> invoices = new ArrayList<>();
+    public List<BusinessDocumentDbo> getInvoices() throws SQLException {
+        List<BusinessDocumentDbo> invoices = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 invoices = getInvoices(connection);
@@ -93,17 +93,17 @@ public class InvoiceManager {
         return invoices;
     }
 
-    public List<DocumentDbo> getInvoices(final Connection connection) throws SQLException {
-        List<DocumentDbo> invoices = new ArrayList<>();
+    public List<BusinessDocumentDbo> getInvoices(final Connection connection) throws SQLException {
+        List<BusinessDocumentDbo> invoices = new ArrayList<>();
 
-        final String sql = "SELECT _id FROM nsg.document WHERE documenttype=?";
+        final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, DocumentDbo.DOCUMENTTYPE_INVOICE);
+            stmt.setInt(1, BusinessDocumentDbo.DOCUMENTTYPE_INVOICE);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 try {
-                    invoices.add(new DocumentDbo(connection, rs.getInt("_id")));
+                    invoices.add(new BusinessDocumentDbo(connection, rs.getInt("_id")));
                 } catch (NoSuchElementException|IOException e) {
                 }
             }

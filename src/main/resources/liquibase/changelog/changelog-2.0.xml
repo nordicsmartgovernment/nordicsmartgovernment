@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd">
+
+    <changeSet author="extfrg" id="2.0-0">
+        <sql endDelimiter=";">
+            CREATE SCHEMA IF NOT EXISTS nsg
+        </sql>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-1">
+        <createTable tableName="company" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="company_pk"/>
+            </column>
+            <column name="orgno" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-2">
+        <createTable tableName="transactionset" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="transactionset_pk"/>
+            </column>
+            <column name="_id_company" type="INT"/>
+            <column name="name" type="TEXT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-3">
+        <addForeignKeyConstraint baseColumnNames="_id_company" baseTableName="transactionset" baseTableSchemaName="nsg"
+                                 constraintName="nsg_ts_c_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="company" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-4">
+        <createTable tableName="transaction" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="transaction_pk"/>
+            </column>
+            <column name="_id_transactionset" type="INT"/>
+            <column name="transactiontime" type="TIMESTAMP"><constraints nullable="true"/></column>
+            <column name="direction" type="INT"><constraints nullable="true"/></column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-5">
+        <addForeignKeyConstraint baseColumnNames="_id_transactionset" baseTableName="transaction" baseTableSchemaName="nsg"
+                                 constraintName="nsg_t_ts_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="transactionset" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-6">
+        <createTable tableName="businessdocument" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="businessdocument_pk"/>
+            </column>
+            <column name="_id_transaction" type="INT"/>
+            <column name="_id_journal" type="INT"><constraints nullable="true"/></column>
+            <column name="documenttype" type="INT"><constraints nullable="true"/></column>
+            <column name="documentid" type="TEXT"><constraints nullable="true"/></column>
+            <column name="original" type="bytea"><constraints nullable="true"/></column>
+            <column name="xbrl" type="CLOB"><constraints nullable="true"/></column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-7">
+        <addForeignKeyConstraint baseColumnNames="_id_transaction" baseTableName="businessdocument" baseTableSchemaName="nsg"
+                                 constraintName="nsg_bd_t_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="transaction" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-8">
+        <createTable tableName="journal" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="journal_pk"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-9">
+        <addForeignKeyConstraint baseColumnNames="_id_journal" baseTableName="businessdocument" baseTableSchemaName="nsg"
+                                 constraintName="nsg_bd_j_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="journal" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-10">
+        <createTable tableName="generalledger" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="generalledger_pk"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-11">
+        <createTable tableName="entry" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="entry_pk"/>
+            </column>
+            <column name="_id_businessdocument" type="INT"/>
+            <column name="_id_journal" type="INT"><constraints nullable="true"/></column>
+            <column name="_id_account" type="INT"><constraints nullable="true"/></column>
+            <column name="_id_currency" type="INT"><constraints nullable="true"/></column>
+            <column name="amount" type="FLOAT"><constraints nullable="true"/></column>
+            <column name="vat" type="FLOAT"><constraints nullable="true"/></column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-12">
+        <addForeignKeyConstraint baseColumnNames="_id_businessdocument" baseTableName="entry" baseTableSchemaName="nsg"
+                                 constraintName="nsg_e_bd_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="businessdocument" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-13">
+        <addForeignKeyConstraint baseColumnNames="_id_journal" baseTableName="entry" baseTableSchemaName="nsg"
+                                 constraintName="nsg_e_j_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="journal" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-14">
+        <createTable tableName="account" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="account_pk"/>
+            </column>
+            <column name="account" type="TEXT"></column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-15">
+        <addForeignKeyConstraint baseColumnNames="_id_account" baseTableName="entry" baseTableSchemaName="nsg"
+                                 constraintName="nsg_e_a_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="account" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-16">
+        <createTable tableName="currency" schemaName="nsg">
+            <column autoIncrement="true" name="_id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="currency_pk"/>
+            </column>
+            <column name="currency" type="TEXT"></column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-17">
+        <addUniqueConstraint columnNames="currency" tableName="currency" schemaName="nsg"
+                                 constraintName="nsg_c_c_unique"/>
+    </changeSet>
+
+    <changeSet author="extfrg" id="2.0-18">
+        <addForeignKeyConstraint baseColumnNames="_id_currency" baseTableName="entry" baseTableSchemaName="nsg"
+                                 constraintName="nsg_e_c_fk" onDelete="CASCADE" onUpdate="CASCADE"
+                                 referencedColumnNames="_id" referencedTableName="currency" referencedTableSchemaName="nsg"/>
+    </changeSet>
+
+</databaseChangeLog>

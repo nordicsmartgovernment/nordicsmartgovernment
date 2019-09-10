@@ -27,8 +27,8 @@ import java.util.NoSuchElementException;
 
 @Component
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
-public class DocumentDbo {
-    private static Logger LOGGER = LoggerFactory.getLogger(DocumentDbo.class);
+public class BusinessDocumentDbo {
+    private static Logger LOGGER = LoggerFactory.getLogger(BusinessDocumentDbo.class);
 
     public enum DocumentFormat {
         UNKNOWN,
@@ -46,58 +46,77 @@ public class DocumentDbo {
     private int _id;
 
     @JsonIgnore
-    private int _transactionid;
+    private int _id_transaction;
 
     @JsonIgnore
-    private int documenttype;
+    private int _id_journal;
+
+    @JsonIgnore
+    private Integer documenttype;
 
     private String documentid;
 
     private byte[] original;
+
     private String xbrl;
 
     @JsonIgnore
-    List<DocumentRowDbo> documentRows = new ArrayList<>();
-    @JsonIgnore
-    boolean removeOldRows = false;
-
-    @JsonIgnore
-    private TransformationManager.Direction tmpDirection = null; //Not persisted - only for forwarding info from DocumentRowDbo to TrasactionDbo
+    private TransformationManager.Direction tmpDirection = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
 
     @JsonIgnore
     private LocalDateTime tmpTransactionTime = null; //Not persisted - only for forwarding info from DocumentRowDbo to TrasactionDbo
 
+    @JsonIgnore
+    List<EntryDbo> entryRows = new ArrayList<>();
+    @JsonIgnore
+    boolean removeOldEntries = false;
 
-    public DocumentDbo() {
+
+    public BusinessDocumentDbo() {
         this._id = UNINITIALIZED;
         set_TransactionId(TransactionDbo.UNINITIALIZED);
+        set_JournalId(JournalDbo.UNINITIALIZED);
     }
 
-    public DocumentDbo(final TransactionDbo transactionDbo) {
+    public BusinessDocumentDbo(final TransactionDbo transactionDbo) {
         this._id = UNINITIALIZED;
         set_TransactionId(transactionDbo == null ? TransactionDbo.UNINITIALIZED : transactionDbo.get_id());
+        set_JournalId(JournalDbo.UNINITIALIZED);
     }
 
-    public DocumentDbo(final Connection connection, final int _id) throws SQLException, IOException {
-        if (_id == UNINITIALIZED) {
+    public BusinessDocumentDbo(final JournalDbo journalDbo) {
+        this._id = UNINITIALIZED;
+        set_TransactionId(TransactionDbo.UNINITIALIZED);
+        set_JournalId(journalDbo == null ? JournalDbo.UNINITIALIZED : journalDbo.get_id());
+    }
+
+    public BusinessDocumentDbo(final Connection connection, final int id) throws SQLException, IOException {
+        if (id == UNINITIALIZED) {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT _transactionid, documenttype, documentid, original, xbrl FROM nsg.document WHERE _id=?";
+        final String sql = "SELECT _id_transaction, _id_journal, documenttype, documentid, original, xbrl FROM nsg.businessdocument WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, _id);
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (!rs.next()) {
                 throw new NoSuchElementException();
             }
 
-            this._id = _id;
-            set_TransactionId(rs.getInt("_transactionid"));
+            this._id = id;
+
+            set_TransactionId(rs.getInt("_id_transaction"));
+
+            set_JournalId(rs.getInt("_id_journal"));
             if (rs.wasNull()) {
-                set_TransactionId(TransactionDbo.UNINITIALIZED);
+                set_JournalId(TransactionDbo.UNINITIALIZED);
             }
 
             setDocumenttype(rs.getInt("documenttype"));
+            if (rs.wasNull()) {
+                setDocumenttype(null);
+            }
+
             setDocumentid(rs.getString("documentid"));
             setOriginalAndXbrl(rs.getBinaryStream("original"), rs.getCharacterStream("xbrl"));
         }
@@ -107,16 +126,28 @@ public class DocumentDbo {
         return this._id;
     }
 
-    public void set_TransactionId(final int _transactionid) {
-        this._transactionid = _transactionid;
+    public void set_TransactionId(final int _id_transaction) {
+        this._id_transaction = _id_transaction;
     }
 
-    public int get_TransactionId() {
-        return this._transactionid;
+    private int get_TransactionId() {
+        return this._id_transaction;
     }
 
-    public int getDocumenttype() {
+    public void set_JournalId(final int _id_journal) {
+        this._id_journal = _id_journal;
+    }
+
+    private int get_JournalId() {
+        return this._id_journal;
+    }
+
+    public Integer getDocumenttype() {
         return documenttype;
+    }
+
+    public void setDocumenttype(final Integer documenttype) {
+        this.documenttype = documenttype;
     }
 
     public void setDocumentid(final String documentid) {
@@ -125,10 +156,6 @@ public class DocumentDbo {
 
     public String getDocumentid() {
         return documentid;
-    }
-
-    public void setDocumenttype(final int documenttype) {
-        this.documenttype = documenttype;
     }
 
     public byte[] getOriginal() {
@@ -141,7 +168,7 @@ public class DocumentDbo {
 
     public void setOriginalFromString(final String companyId, final String original) throws IOException, SAXException {
         this.original = original.getBytes(StandardCharsets.UTF_8);
-        DocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
+        BusinessDocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
         setDirectionFromDocument(companyId, documentFormat, original);
         transformXbrlFromOriginal(documentFormat, tmpDirection);
         parseXBRL();
@@ -209,8 +236,8 @@ public class DocumentDbo {
         return null;
     }
 
-    private void setDirectionFromDocument(final String companyId, final DocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
-        if (documentFormat != DocumentDbo.DocumentFormat.UML_INVOICE) {
+    private void setDirectionFromDocument(final String companyId, final BusinessDocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
+        if (documentFormat != BusinessDocumentDbo.DocumentFormat.UML_INVOICE) {
             tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
             return;
         }
@@ -254,8 +281,8 @@ public class DocumentDbo {
     }
 
     private void parseXBRL() throws IOException, SAXException {
-        documentRows.clear();
-        removeOldRows = true;
+        entryRows.clear();
+        removeOldEntries = (get_id()!=BusinessDocumentDbo.UNINITIALIZED); //Remove old entries unless there can't possibly be any
 
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
@@ -269,7 +296,7 @@ public class DocumentDbo {
 
             nodes = parsedDocument.getElementsByTagName("gl-cor:entryDetail");
             for (int i=0; i<nodes.getLength(); i++) {
-                documentRows.add(new DocumentRowDbo(parsedDocument, nodes.item(i)));
+                entryRows.add(new EntryDbo(parsedDocument, nodes.item(i)));
             }
         }
     }
@@ -296,41 +323,56 @@ public class DocumentDbo {
         return null;
     }
 
-    private int initializeTransaction(final Connection connection) throws SQLException, IOException, SAXException {
-        if (_transactionid != TransactionDbo.UNINITIALIZED) {
-            return _transactionid;
+    private TransactionDbo getOrInitializeTransaction(final Connection connection, final String transactionSetName) throws SQLException, IOException, SAXException {
+        if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
+            return new TransactionDbo(connection, get_TransactionId());
         }
 
         String orgnr = getOrgnrFromXBRL();
         if (orgnr == null) {
             LOGGER.info("Couldn't find XBRL organizationIdentifier");
-            return TransactionDbo.UNINITIALIZED;
+            return null;
         }
 
-        CompanyDbo companyDbo = CompanyDbo.getOrCreateByOrgno(connection, orgnr);
-        TransactionDbo transactionDbo = new TransactionDbo(companyDbo);
-        transactionDbo.persist(connection);
-        return transactionDbo.get_id();
+        TransactionDbo transactionDbo = TransactionDbo.create(connection, orgnr, transactionSetName);
+        set_TransactionId(transactionDbo.get_id());
+        return transactionDbo;
     }
 
     public void persist(final Connection connection) throws SQLException, IOException, SAXException {
-        if (_transactionid == TransactionDbo.UNINITIALIZED) {
-            if ((_transactionid = initializeTransaction(connection)) == TransactionDbo.UNINITIALIZED) {
-                throw new NoSuchElementException();
-            }
+        TransactionDbo transactionDbo = getOrInitializeTransaction(connection, TransactionSetDbo.DEFAULT_NAME);
+        if (transactionDbo==null | transactionDbo.get_id()==TransactionDbo.UNINITIALIZED) {
+            throw new NoSuchElementException();
         }
 
         if (get_id() == UNINITIALIZED) {
-            final String sql = "INSERT INTO nsg.document (_transactionid, documenttype, documentid, original, xbrl) " +
-                                      "VALUES (?,?,?,?,?)";
+            final String sql = "INSERT INTO nsg.businessdocument (_id_transaction, _id_journal, documenttype, documentid, original, xbrl) " +
+                                      "VALUES (?,?,?,?,?,?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
                  Reader xbrlReader = new StringReader(xbrl)) {
-                stmt.setInt(1, _transactionid);
-                stmt.setInt(2, getDocumenttype());
-                stmt.setString(3, getDocumentid());
-                stmt.setBinaryStream(4, originalBais, originalBais.available());
-                stmt.setCharacterStream(5, xbrlReader);
+
+                if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
+                    stmt.setInt(1, get_TransactionId());
+                } else {
+                    stmt.setNull(1, Types.INTEGER);
+                }
+
+                if (get_JournalId() != JournalDbo.UNINITIALIZED) {
+                    stmt.setInt(2, get_JournalId());
+                } else {
+                    stmt.setNull(2, Types.INTEGER);
+                }
+
+                if (getDocumenttype() != null) {
+                    stmt.setInt(3, getDocumenttype());
+                } else {
+                    stmt.setNull(3, Types.INTEGER);
+                }
+
+                stmt.setString(4, getDocumentid());
+                stmt.setBinaryStream(5, originalBais, originalBais.available());
+                stmt.setCharacterStream(6, xbrlReader);
 
                 stmt.executeUpdate();
 
@@ -340,39 +382,55 @@ public class DocumentDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.document SET _transactionid=?, documenttype=?, documentid=?, original=?, xbrl=?) "+
+            final String sql = "UPDATE nsg.businessdocument SET _id_transaction=?, _id_journal=?, documenttype=?, documentid=?, original=?, xbrl=?) "+
                                                 "WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
                  Reader xbrlReader = new StringReader(xbrl)) {
-                stmt.setInt(1, _transactionid);
-                stmt.setInt(2, getDocumenttype());
-                stmt.setString(3, getDocumentid());
-                stmt.setBinaryStream(4, originalBais, originalBais.available());
-                stmt.setCharacterStream(5, xbrlReader);
-                stmt.setInt(6, get_id());
+
+                if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
+                    stmt.setInt(1, get_TransactionId());
+                } else {
+                    stmt.setNull(1, Types.INTEGER);
+                }
+
+                if (get_JournalId() != JournalDbo.UNINITIALIZED) {
+                    stmt.setInt(2, get_JournalId());
+                } else {
+                    stmt.setNull(2, Types.INTEGER);
+                }
+
+                if (getDocumenttype() != null) {
+                    stmt.setInt(3, getDocumenttype());
+                } else {
+                    stmt.setNull(3, Types.INTEGER);
+                }
+
+                stmt.setString(4, getDocumentid());
+                stmt.setBinaryStream(5, originalBais, originalBais.available());
+                stmt.setCharacterStream(6, xbrlReader);
+                stmt.setInt(7, get_id());
 
                 stmt.executeUpdate();
             }
         }
 
         //Remove old rows if we've got a new document
-        if (removeOldRows) {
-            DocumentRowDbo.deleteDocumentRows(connection, get_id());
-            removeOldRows = false;
+        if (removeOldEntries) {
+            EntryDbo.deleteDocumentRows(connection, this);
+            removeOldEntries = false;
         }
 
         //Persist any new document rows
-        for (DocumentRowDbo documentRowDbo : this.documentRows) {
-            if (documentRowDbo.get_id() == DocumentRowDbo.UNINITIALIZED) {
-                documentRowDbo.set_DocumentId(get_id());
-                documentRowDbo.persist(connection);
+        for (EntryDbo entryDbo : this.entryRows) {
+            if (entryDbo.get_id() == EntryDbo.UNINITIALIZED) {
+                entryDbo.set_BusinessDocumentId(get_id());
+                entryDbo.persist(connection);
             }
         }
 
-        //Update transaction direction if changed
+        //Update transaction if direction or transaction time is changed
         boolean modifiedTransaction = false;
-        TransactionDbo transactionDbo = new TransactionDbo(connection, get_TransactionId());
         if (tmpDirection!=null && transactionDbo.getDirection()!=tmpDirection) {
             transactionDbo.setDirection(tmpDirection);
             modifiedTransaction = true;
@@ -387,7 +445,7 @@ public class DocumentDbo {
     }
 
     public static int findInternalId(final Connection connection, final String id) throws SQLException {
-        final String sql = "SELECT _id FROM nsg.document WHERE documentid=?";
+        final String sql = "SELECT _id FROM nsg.businessdocument WHERE documentid=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, id);
             ResultSet rs = stmt.executeQuery();

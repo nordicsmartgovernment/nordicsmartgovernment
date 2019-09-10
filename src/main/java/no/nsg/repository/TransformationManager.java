@@ -2,7 +2,7 @@ package no.nsg.repository;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.s9api.*;
-import no.nsg.repository.dbo.DocumentDbo;
+import no.nsg.repository.dbo.BusinessDocumentDbo;
 import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 
@@ -58,7 +58,7 @@ public class TransformationManager {
         return xsltCache.get(xslt);
     }
 
-    public static void transform(final InputStream xmlStream, final DocumentDbo.DocumentFormat format, final Direction direction, final OutputStream outputStream) throws SaxonApiException {
+    public static void transform(final InputStream xmlStream, final BusinessDocumentDbo.DocumentFormat format, final Direction direction, final OutputStream outputStream) throws SaxonApiException {
         String xsltFile;
         switch (format) {
             case UML_INVOICE:
