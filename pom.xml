@@ -197,7 +197,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/openAPI/BankStatementAPI.yaml</inputSpec>
-                            <validateSpec>true</validateSpec>
+                            <skipValidateSpec>false</skipValidateSpec>
                             <generatorName>spring</generatorName>
                             <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
@@ -224,7 +224,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/openAPI/InnvoiceAPI.yaml</inputSpec>
-                            <validateSpec>true</validateSpec>
+                            <skipValidateSpec>false</skipValidateSpec>
                             <generatorName>spring</generatorName>
                             <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
@@ -251,7 +251,7 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/openAPI/TransactionAPI.yaml</inputSpec>
-                            <validateSpec>true</validateSpec>
+                            <skipValidateSpec>false</skipValidateSpec>
                             <generatorName>spring</generatorName>
                             <templateDirectory>${project.basedir}/src/main/resources/openAPI/openapi-generator-maven-plugin/templates/JavaSpring</templateDirectory>
                             <output>${project.build.directory}/generated-sources/openapi</output>
