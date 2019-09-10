@@ -108,7 +108,9 @@ public class InvoicesApiControllerTest {
         ResponseEntity<Object> response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "TOSL108");
         Assert.assertTrue(response.getStatusCode() == HttpStatus.NO_CONTENT);
 
-        invoicesApiController.createInvoice(principal, httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(principal, httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
+        Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
+
         response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "TOSL108");
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
