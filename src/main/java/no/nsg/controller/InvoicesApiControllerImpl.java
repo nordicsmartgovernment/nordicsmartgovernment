@@ -1,6 +1,6 @@
 package no.nsg.controller;
 
-import no.nsg.repository.dbo.BusinessDocumentDbo;
+import no.nsg.repository.dbo.DocumentDbo;
 import no.nsg.repository.invoice.InvoiceManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-//force build 87878787 905u7349057u3490
+//force build 3434343 675747780798789798
 
 @Controller
 public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.InvoicesApi {
@@ -83,7 +83,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     public ResponseEntity<Object> getInvoiceById(Principal principal, HttpServletRequest httpServletRequest, String id) {
         Invoice returnValue = null;
         try {
-            BusinessDocumentDbo invoice = invoiceManager.getInvoiceById(id);
+            DocumentDbo invoice = invoiceManager.getInvoiceById(id);
             if (invoice != null) {
                 returnValue = new Invoice(invoice.getDocumentid(), invoice.getOriginal());
             }
@@ -103,8 +103,8 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     public ResponseEntity<List<Object>> getInvoices(Principal principal, HttpServletRequest httpServletRequest) {
         List<Object> returnValue = new ArrayList<>();
         try {
-            List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices();
-            for (BusinessDocumentDbo invoice : invoices) {
+            List<DocumentDbo> invoices = invoiceManager.getInvoices();
+            for (DocumentDbo invoice : invoices) {
                 returnValue.add(new Invoice(invoice.getDocumentid(), invoice.getOriginal()));
             }
         } catch (Exception e) {
