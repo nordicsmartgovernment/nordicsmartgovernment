@@ -98,6 +98,7 @@ paths:
         content:
           application/xml:
             schema:
+              type: string
               $ref: '#/components/schemas/Diff'
 components:
   schemas:
@@ -105,16 +106,4 @@ components:
       type: object
     Diff:
       description: The patch operation conforms to RFC 5261
-      type: object
-      properties:
-        replace:
-          type: object
-          required:
-            - sel
-            - value
-          properties:
-            sel:
-              description: reference to the element
-              type: string
-            value:
-              description: the new value of the element
+      type: string

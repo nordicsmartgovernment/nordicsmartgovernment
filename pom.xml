@@ -57,6 +57,12 @@
             <version>9.9.1-4</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.dnault</groupId>
+            <artifactId>xml-patch</artifactId>
+            <version>0.3.1</version>
+        </dependency>
+
         <!-- Database -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -188,7 +194,7 @@
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>4.1.1</version>
+                <version>4.1.2</version>
                 <executions>
                     <execution>
                         <id>BankStatementsAPI</id>
@@ -213,6 +219,8 @@
                                 <library>spring-boot</library>
                                 <delegatePattern>false</delegatePattern>
                             </configOptions>
+                            <generateApiTests>true</generateApiTests>
+                            <generateModelTests>true</generateModelTests>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                         </configuration>
@@ -240,6 +248,8 @@
                                 <library>spring-boot</library>
                                 <delegatePattern>false</delegatePattern>
                             </configOptions>
+                            <generateApiTests>true</generateApiTests>
+                            <generateModelTests>true</generateModelTests>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                         </configuration>
@@ -267,6 +277,8 @@
                                 <library>spring-boot</library>
                                 <delegatePattern>false</delegatePattern>
                             </configOptions>
+                            <generateApiTests>true</generateApiTests>
+                            <generateModelTests>true</generateModelTests>
                             <generateSupportingFiles>true</generateSupportingFiles>
                             <supportingFilesToGenerate>ApiUtil.java</supportingFilesToGenerate>
                         </configuration>
