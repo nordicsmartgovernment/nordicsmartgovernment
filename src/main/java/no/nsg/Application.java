@@ -51,7 +51,7 @@ public class Application {
                 LOGGER.info("Liquibase synced OK.");
                 connectionManager.createRegularUser(connection);
                 connectionManager.initializeCaches(connection);
-                connectionManager.importSyntheticData("DK20202020", connection);
+                connectionManager.importSyntheticData(connection);
                 LOGGER.info("Synthetic data imported OK.");
                 connection.commit();
             } catch (LiquibaseException | SQLException | IOException | SAXException e) {
