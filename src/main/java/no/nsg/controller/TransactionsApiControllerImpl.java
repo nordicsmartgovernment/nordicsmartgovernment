@@ -1,6 +1,6 @@
 package no.nsg.controller;
 
-import no.nsg.generated.transaction_model.Diff;
+import com.github.dnault.xmlpatch.PatchException;
 import no.nsg.repository.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +73,23 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<Object> patchTransactionById(Principal principal, HttpServletRequest httpServletRequest, String id, Diff diff) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Object> patchTransactionById(Principal principal, HttpServletRequest httpServletRequest, String id, String patchXml) {
+        Object transaction;
+        try {
+            transaction = transactionManager.patchTransactionById(id, patchXml);
+        } catch (PatchException e) {
+            LOGGER.error("PATCH_PATCHTRANSACTION patch failed:", e);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (Exception e) {
+            LOGGER.error("PATCH_PATCHTRANSACTION failed:", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (transaction==null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(transaction, HttpStatus.OK);
+        }
     }
 
 }

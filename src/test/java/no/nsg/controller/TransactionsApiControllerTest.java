@@ -140,6 +140,22 @@ public class TransactionsApiControllerTest {
         Assert.assertTrue(xbrl.contains("<xbrli:xbrl "));
     }
 
+    @Test
+    public void patchTransactionByIdTest() {
+        final String id = "75"; //Finvoice InvoiceNumber for "finvoice/finvoice 75 myynti.xml"
+
+        String patchXml = "<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\">\n" +
+                            "<replace sel=\"xbrli:xbrl/xbrli:context/xbrli:entity/xbrli:identifier/text()\">Patched!</replace>\n" +
+                          "</diff>";
+
+        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(new TestPrincipal(""), httpServletRequestMock, id, patchXml);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Object responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+        String xbrl = (String)responseBody;
+        Assert.assertTrue(xbrl.contains("Patched!"));
+    }
+
     private void initializeInvoiceData() throws IOException {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;

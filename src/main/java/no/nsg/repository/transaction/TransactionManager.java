@@ -1,12 +1,14 @@
 package no.nsg.repository.transaction;
 
+import com.github.dnault.xmlpatch.Patcher;
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.dbo.TransactionDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -102,6 +104,29 @@ public class TransactionManager {
         }
 
         return transactions;
+    }
+
+    public Object patchTransactionById(final String id, final String patchXml) throws SQLException, IOException {
+        String transaction = null;
+
+        try (Connection connection = connectionManager.getConnection()) {
+            int documentId = BusinessDocumentDbo.findInternalId(connection, id);
+            if (documentId == BusinessDocumentDbo.UNINITIALIZED) {
+                connection.commit();
+                return null;
+            }
+            BusinessDocumentDbo original = new BusinessDocumentDbo(connection, documentId);
+
+            ByteArrayInputStream originalIS = new ByteArrayInputStream(original.getXbrl().getBytes(StandardCharsets.UTF_8));
+            ByteArrayInputStream diffIS = new ByteArrayInputStream(patchXml.getBytes(StandardCharsets.UTF_8));
+            OutputStream result = new ByteArrayOutputStream();
+            Patcher.patch(originalIS, diffIS, result);
+            transaction = result.toString();
+
+            connection.commit();
+        }
+
+        return transaction;
     }
 
     private String readerToString(final Reader xbrlReader) {

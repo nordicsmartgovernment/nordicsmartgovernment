@@ -7,18 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.xml.sax.SAXException;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.sql.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 
 @Component
@@ -137,34 +136,77 @@ public class ConnectionManager {
 		CurrencyDbo.initializeCurrencyCache(connection);
 	}
 
-	public void importSyntheticData(final String companyId, final Connection connection) throws SQLException, IOException, SAXException {
+	public void importSyntheticData(final Connection connection) throws SQLException, IOException, SAXException {
+		ClassLoader loader = ConnectionManager.class.getClassLoader();
+		try (InputStream is = loader.getResourceAsStream("SyntheticData/");
+			 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+			String filename;
+			while ((filename = br.readLine()) != null) {
+				importSyntheticData(filename, connection);
+			}
+		}
+	}
+
+	public void importSyntheticData(final String filename, final Connection connection) throws SQLException, IOException, SAXException {
+		if (filename==null || (filename.length()<=".zip".length()) || !filename.endsWith(".zip")) {
+			return;
+		}
+
+		LOGGER.info("Importing synthetic data "+filename);
+		Instant start = Instant.now();
+		Instant lastLogged = start;
+		long importCount = 0;
+
+		String companyId = filename.substring(0, filename.length()-".zip".length());
+
 		final String sql = "DELETE FROM nsg.company WHERE orgno=?";
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			stmt.setString(1, companyId);
 			stmt.executeUpdate();
 		}
 
-		for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/Inbound/*.xml")) {
-			invoiceManager.createInvoice(companyId, resourceAsString(resource, StandardCharsets.UTF_8), connection);
-		}
+		ClassLoader loader = ConnectionManager.class.getClassLoader();
+		try (InputStream is = loader.getResourceAsStream("SyntheticData/"+filename);
+			 ZipInputStream zis = new ZipInputStream(new BufferedInputStream(is))) {
+			ZipEntry ze;
 
-        for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/Outbound/*.xml")) {
-            invoiceManager.createInvoice(companyId, resourceAsString(resource, StandardCharsets.UTF_8), connection);
-        }
+			String xmlDocument;
+			byte[] buffer = new byte[10*1024];
+			int bytesRead;
+			while ((ze = zis.getNextEntry()) != null) {
+				if (ze.isDirectory() || ze.getSize()<=0) {
+					continue;
+				}
 
-		for (Resource resource : resourceResolver.getResources("classpath*:SyntheticData/BankStatements/*.xml")) {
-			invoiceManager.createInvoice(companyId, resourceAsString(resource, StandardCharsets.UTF_8), connection);
-		}
-	}
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				while ((bytesRead = zis.read(buffer)) >= 0) {
+					baos.write(buffer, 0, bytesRead);
+				}
+				xmlDocument = baos.toString();
 
-	private String resourceAsString(final Resource resource, final Charset charset) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		String line;
-		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.getInputStream(), charset))) {
-			while ((line = bufferedReader.readLine()) != null) {
-				sb.append(line);
+				if (ze.getName().startsWith(companyId+"/purchase_invoices/")) {
+					invoiceManager.createInvoice(companyId, xmlDocument, connection);
+				} else if (ze.getName().startsWith(companyId+"/sales_invoices/")) {
+					invoiceManager.createInvoice(companyId, xmlDocument, connection);
+				} else if (ze.getName().startsWith(companyId+"/bank_statements/")) {
+					invoiceManager.createInvoice(companyId, xmlDocument, connection);
+				} else if (ze.getName().startsWith(companyId+"/orders/")) {
+					invoiceManager.createInvoice(companyId, xmlDocument, connection);
+				} else if (ze.getName().startsWith(companyId+"/receipts/")) {
+					invoiceManager.createInvoice(companyId, xmlDocument, connection);
+				} else if (ze.getName().startsWith(companyId+"/other/")) {
+					invoiceManager.createInvoice(companyId, xmlDocument, connection);
+				}
+
+				importCount++;
+				Instant now = Instant.now();
+				if (ChronoUnit.SECONDS.between(lastLogged, now) > 10) {
+					LOGGER.info("Imported " + importCount + " files in " + ChronoUnit.SECONDS.between(start, now) + " seconds");
+					lastLogged = now;
+				}
 			}
 		}
-		return sb.toString();
+		LOGGER.info("Finished importing " + importCount + " files from " + filename + " in " + (ChronoUnit.MILLIS.between(start, Instant.now()) / 1000.0) + " seconds");
 	}
+
 }
