@@ -153,6 +153,9 @@ public class ConnectionManager {
 		}
 
 		LOGGER.info("Importing synthetic data "+filename);
+		Instant start = Instant.now();
+		Instant lastLogged = start;
+		long importCount = 0;
 
 		String companyId = filename.substring(0, filename.length()-".zip".length());
 
@@ -175,8 +178,6 @@ public class ConnectionManager {
 					continue;
 				}
 
-				Instant start = Instant.now();
-
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				while ((bytesRead = zis.read(buffer)) >= 0) {
 					baos.write(buffer, 0, bytesRead);
@@ -197,10 +198,15 @@ public class ConnectionManager {
 					invoiceManager.createInvoice(companyId, xmlDocument, connection);
 				}
 
-				Instant end = Instant.now();
-				LOGGER.info("Imported " + ze.getName() + " ("+ze.getSize()+" bytes) in " + (ChronoUnit.MILLIS.between(start, end)/1000.0) + " seconds");
+				importCount++;
+				Instant now = Instant.now();
+				if (ChronoUnit.SECONDS.between(lastLogged, now) > 10) {
+					LOGGER.info("Imported " + importCount + " files in " + ChronoUnit.SECONDS.between(start, now) + " seconds");
+					lastLogged = now;
+				}
 			}
 		}
+		LOGGER.info("Finished importing " + importCount + " files from " + filename + " in " + (ChronoUnit.MILLIS.between(start, Instant.now()) / 1000.0) + " seconds");
 	}
 
 }
