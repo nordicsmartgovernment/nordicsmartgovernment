@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.xml.sax.SAXException;
@@ -45,9 +44,18 @@ public class ConnectionManager {
 
 	//For synthetic data
 	@Autowired
-	ResourcePatternResolver resourceResolver;
-	@Autowired
 	private InvoiceManager invoiceManager;
+
+	enum SyntheticDataStatus {
+		UNINITIALIZED,
+		IMPORTING,
+		IMPORTED
+	}
+	private static SyntheticDataStatus syntheticDataIsImported = SyntheticDataStatus.UNINITIALIZED;
+	private static final Object syntheticDataIsImportedLock = new Object();
+
+	private static boolean databaseIsReady = false;
+	private static final Object databaseIsReadyLock = new Object();
 
 
 	public Connection getConnection() throws SQLException {
@@ -56,6 +64,15 @@ public class ConnectionManager {
 
 	public Connection getConnection(final boolean requireDboPermissions) throws SQLException {
 		try {
+			synchronized (ConnectionManager.databaseIsReadyLock) {
+				while (!ConnectionManager.databaseIsReady && !requireDboPermissions) {
+					try {
+						ConnectionManager.databaseIsReadyLock.wait();
+					} catch (InterruptedException e) {
+					}
+				}
+			}
+
 			String username = null;
 			String password = null;
 			if (requireDboPermissions) {
@@ -136,7 +153,65 @@ public class ConnectionManager {
 		CurrencyDbo.initializeCurrencyCache(connection);
 	}
 
-	public void importSyntheticData(final Connection connection) throws SQLException, IOException, SAXException {
+	public void setDatabaseIsReady() {
+		synchronized (ConnectionManager.databaseIsReadyLock) {
+			if (!ConnectionManager.databaseIsReady) {
+				ConnectionManager.databaseIsReady = true;
+				threadedImportSyntheticData();
+			}
+			ConnectionManager.databaseIsReadyLock.notifyAll();
+		}
+	}
+
+	private void threadedImportSyntheticData() {
+		new Thread(() -> {
+			//Return if we are already importing/imported. If not, set status to importing and import
+			synchronized (ConnectionManager.syntheticDataIsImportedLock) {
+				if (ConnectionManager.syntheticDataIsImported != SyntheticDataStatus.UNINITIALIZED) {
+					return;
+				}
+				ConnectionManager.syntheticDataIsImported = SyntheticDataStatus.IMPORTING;
+			}
+
+			//Import synthetic data. Set status to imported when done
+			try (Connection connection = getConnection()) {
+				try {
+					importSyntheticData(connection);
+					connection.commit();
+					LOGGER.info("Synthetic data imported OK.");
+				} catch (SQLException | SAXException | IOException e) {
+					try {
+						LOGGER.error("Importing synthetic data failed: " + e.getMessage());
+						connection.rollback();
+						throw new SQLException(e);
+					} catch (SQLException e2) {
+						LOGGER.error("Rollback after fail failed: " + e2.getMessage());
+						throw new SQLException(e2);
+					}
+				}
+			} catch (SQLException e) {
+				LOGGER.error("Getting connection for synthetic data import failed: " + e.getMessage());
+			} finally {
+				synchronized (ConnectionManager.syntheticDataIsImportedLock) {
+					ConnectionManager.syntheticDataIsImported = SyntheticDataStatus.IMPORTED;
+					ConnectionManager.syntheticDataIsImportedLock.notifyAll();
+				}
+			}
+		}).start();
+	}
+
+	public static void waitUntilSyntheticDataIsImported() {
+		synchronized (ConnectionManager.syntheticDataIsImportedLock) {
+			while (ConnectionManager.syntheticDataIsImported != SyntheticDataStatus.IMPORTED) {
+				try {
+					ConnectionManager.syntheticDataIsImportedLock.wait();
+				} catch (InterruptedException e) {
+				}
+			}
+		}
+	}
+
+	private void importSyntheticData(final Connection connection) throws SQLException, IOException, SAXException {
 		ClassLoader loader = ConnectionManager.class.getClassLoader();
 		try (InputStream is = loader.getResourceAsStream("SyntheticData/");
 			 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
@@ -147,7 +222,7 @@ public class ConnectionManager {
 		}
 	}
 
-	public void importSyntheticData(final String filename, final Connection connection) throws SQLException, IOException, SAXException {
+	private void importSyntheticData(final String filename, final Connection connection) throws SQLException, IOException, SAXException {
 		if (filename==null || (filename.length()<=".zip".length()) || !filename.endsWith(".zip")) {
 			return;
 		}
@@ -206,6 +281,7 @@ public class ConnectionManager {
 				}
 			}
 		}
+
 		LOGGER.info("Finished importing " + importCount + " files from " + filename + " in " + (ChronoUnit.MILLIS.between(start, Instant.now()) / 1000.0) + " seconds");
 	}
 

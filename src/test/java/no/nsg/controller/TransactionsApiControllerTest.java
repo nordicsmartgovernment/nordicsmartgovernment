@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.repository.ConnectionManager;
 import no.nsg.spring.TestPrincipal;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.*;
@@ -159,6 +160,8 @@ public class TransactionsApiControllerTest {
     private void initializeInvoiceData() throws IOException {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
+
+            ConnectionManager.waitUntilSyntheticDataIsImported();
 
             ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null);
             if (response.getStatusCode()==HttpStatus.OK) {
