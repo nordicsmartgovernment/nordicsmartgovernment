@@ -2,6 +2,7 @@ package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.dnault.xmlpatch.Patcher;
 import net.sf.saxon.s9api.SaxonApiException;
 import no.nsg.repository.TransformationManager;
 import org.slf4j.Logger;
@@ -171,7 +172,7 @@ public class BusinessDocumentDbo {
         BusinessDocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
         setDirectionFromDocument(companyId, documentFormat, original);
         transformXbrlFromOriginal(documentFormat, tmpDirection);
-        parseXBRL();
+        parseXbrl();
     }
 
     private void setOriginalAndXbrl(final InputStream original, final Reader xbrl) throws IOException {
@@ -280,7 +281,17 @@ public class BusinessDocumentDbo {
         throw new RuntimeException("customerId was neither supplier:"+supplier+" nor customer:"+customer);
     }
 
-    private void parseXBRL() throws IOException, SAXException {
+    public String patchXbrl(final String patchXml) throws IOException, SAXException {
+        ByteArrayInputStream originalIS = new ByteArrayInputStream(getXbrl().getBytes(StandardCharsets.UTF_8));
+        ByteArrayInputStream diffIS = new ByteArrayInputStream(patchXml.getBytes(StandardCharsets.UTF_8));
+        OutputStream result = new ByteArrayOutputStream();
+        Patcher.patch(originalIS, diffIS, result);
+        this.xbrl = result.toString();
+        parseXbrl();
+        return getXbrl();
+    }
+
+    private void parseXbrl() throws IOException, SAXException {
         entryRows.clear();
         removeOldEntries = (get_id()!=BusinessDocumentDbo.UNINITIALIZED); //Remove old entries unless there can't possibly be any
 
@@ -382,7 +393,7 @@ public class BusinessDocumentDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.businessdocument SET _id_transaction=?, _id_journal=?, documenttype=?, documentid=?, original=?, xbrl=?) "+
+            final String sql = "UPDATE nsg.businessdocument SET _id_transaction=?, _id_journal=?, documenttype=?, documentid=?, original=?, xbrl=? "+
                                                 "WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
