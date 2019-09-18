@@ -1,11 +1,9 @@
 package no.nsg.controller;
 
+import no.nsg.repository.ConnectionManager;
 import no.nsg.spring.TestPrincipal;
 import no.nsg.testcategories.ServiceTest;
-import org.junit.Assert;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -43,6 +41,9 @@ public class BankstatementsApiControllerTest {
     @Autowired
     BankstatementsApiControllerImpl bankstatementsApiController;
 
+    @Autowired
+    ConnectionManager connectionManager;
+
     @ClassRule
     public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
             .withDatabaseName("integration-tests-db")
@@ -63,6 +64,11 @@ public class BankstatementsApiControllerTest {
                     "postgres.nsg.password=" + postgreSQLContainer.getPassword()
             ).applyTo(configurableApplicationContext.getEnvironment());
         }
+    }
+
+    @Before
+    public void before() throws IOException {
+        connectionManager.waitUntilSyntheticDataIsImported();
     }
 
     @Test

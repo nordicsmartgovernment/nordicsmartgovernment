@@ -80,7 +80,7 @@ public class TransformationManager {
         transform(xmlStream, xsltFile, outputStream);
     }
 
-    public static void transform(final InputStream xmlStream, final String xslt, final OutputStream outputStream) throws SaxonApiException {
+    public static synchronized void transform(final InputStream xmlStream, final String xslt, final OutputStream outputStream) throws SaxonApiException {
         Xslt30Transformer transformer = getStylesheetExecutable(xslt);
         Source source = new StreamSource(xmlStream);
         Serializer destination = processor.newSerializer(outputStream);

@@ -51,11 +51,11 @@ public class ConnectionManager {
 		IMPORTING,
 		IMPORTED
 	}
-	private static SyntheticDataStatus syntheticDataIsImported = SyntheticDataStatus.UNINITIALIZED;
-	private static final Object syntheticDataIsImportedLock = new Object();
+	private SyntheticDataStatus syntheticDataIsImported = SyntheticDataStatus.UNINITIALIZED;
+	private final Object syntheticDataIsImportedLock = new Object();
 
-	private static boolean databaseIsReady = false;
-	private static final Object databaseIsReadyLock = new Object();
+	private boolean databaseIsReady = false;
+	private final Object databaseIsReadyLock = new Object();
 
 
 	public Connection getConnection() throws SQLException {
@@ -64,10 +64,10 @@ public class ConnectionManager {
 
 	public Connection getConnection(final boolean requireDboPermissions) throws SQLException {
 		try {
-			synchronized (ConnectionManager.databaseIsReadyLock) {
-				while (!ConnectionManager.databaseIsReady && !requireDboPermissions) {
+			synchronized (this.databaseIsReadyLock) {
+				while (!this.databaseIsReady && !requireDboPermissions) {
 					try {
-						ConnectionManager.databaseIsReadyLock.wait();
+						this.databaseIsReadyLock.wait();
 					} catch (InterruptedException e) {
 					}
 				}
@@ -154,23 +154,23 @@ public class ConnectionManager {
 	}
 
 	public void setDatabaseIsReady() {
-		synchronized (ConnectionManager.databaseIsReadyLock) {
-			if (!ConnectionManager.databaseIsReady) {
-				ConnectionManager.databaseIsReady = true;
+		synchronized (this.databaseIsReadyLock) {
+			if (!this.databaseIsReady) {
+				this.databaseIsReady = true;
 				threadedImportSyntheticData();
 			}
-			ConnectionManager.databaseIsReadyLock.notifyAll();
+			this.databaseIsReadyLock.notifyAll();
 		}
 	}
 
 	private void threadedImportSyntheticData() {
 		new Thread(() -> {
 			//Return if we are already importing/imported. If not, set status to importing and import
-			synchronized (ConnectionManager.syntheticDataIsImportedLock) {
-				if (ConnectionManager.syntheticDataIsImported != SyntheticDataStatus.UNINITIALIZED) {
+			synchronized (this.syntheticDataIsImportedLock) {
+				if (this.syntheticDataIsImported != SyntheticDataStatus.UNINITIALIZED) {
 					return;
 				}
-				ConnectionManager.syntheticDataIsImported = SyntheticDataStatus.IMPORTING;
+				this.syntheticDataIsImported = SyntheticDataStatus.IMPORTING;
 			}
 
 			//Import synthetic data. Set status to imported when done
@@ -192,19 +192,19 @@ public class ConnectionManager {
 			} catch (SQLException e) {
 				LOGGER.error("Getting connection for synthetic data import failed: " + e.getMessage());
 			} finally {
-				synchronized (ConnectionManager.syntheticDataIsImportedLock) {
-					ConnectionManager.syntheticDataIsImported = SyntheticDataStatus.IMPORTED;
-					ConnectionManager.syntheticDataIsImportedLock.notifyAll();
+				synchronized (this.syntheticDataIsImportedLock) {
+					this.syntheticDataIsImported = SyntheticDataStatus.IMPORTED;
+					this.syntheticDataIsImportedLock.notifyAll();
 				}
 			}
 		}).start();
 	}
 
-	public static void waitUntilSyntheticDataIsImported() {
-		synchronized (ConnectionManager.syntheticDataIsImportedLock) {
-			while (ConnectionManager.syntheticDataIsImported != SyntheticDataStatus.IMPORTED) {
+	public void waitUntilSyntheticDataIsImported() {
+		synchronized (this.syntheticDataIsImportedLock) {
+			while (this.syntheticDataIsImported != SyntheticDataStatus.IMPORTED) {
 				try {
-					ConnectionManager.syntheticDataIsImportedLock.wait();
+					this.syntheticDataIsImportedLock.wait();
 				} catch (InterruptedException e) {
 				}
 			}

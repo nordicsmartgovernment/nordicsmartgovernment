@@ -37,14 +37,17 @@ import java.util.List;
 public class TransactionsApiControllerTest {
     private static Logger LOGGER = LoggerFactory.getLogger(TransactionsApiControllerTest.class);
 
+    @Mock
+    HttpServletRequest httpServletRequestMock;
+
     @Autowired
     TransactionsApiControllerImpl transactionsApiController;
 
     @Autowired
     InvoicesApiControllerImpl invoicesApiController;
 
-    @Mock
-    HttpServletRequest httpServletRequestMock;
+    @Autowired
+    ConnectionManager connectionManager;
 
     private boolean hasInitializedInvoiceData = false;
     private int syntheticTransactionsCount = 0;
@@ -161,7 +164,7 @@ public class TransactionsApiControllerTest {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
 
-            ConnectionManager.waitUntilSyntheticDataIsImported();
+            connectionManager.waitUntilSyntheticDataIsImported();
 
             ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null);
             if (response.getStatusCode()==HttpStatus.OK) {
