@@ -20,9 +20,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.servlet.DispatcherServlet;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -34,6 +32,7 @@ public class Application {
 
     @Autowired
     private ConnectionManager connectionManager;
+
 
     @Bean(name = DispatcherServletAutoConfiguration.DEFAULT_DISPATCHER_SERVLET_BEAN_NAME)
     public DispatcherServlet dispatcherServlet() {
@@ -51,10 +50,9 @@ public class Application {
                 LOGGER.info("Liquibase synced OK.");
                 connectionManager.createRegularUser(connection);
                 connectionManager.initializeCaches(connection);
-                connectionManager.importSyntheticData(connection);
-                LOGGER.info("Synthetic data imported OK.");
                 connection.commit();
-            } catch (LiquibaseException | SQLException | IOException | SAXException e) {
+                connectionManager.setDatabaseIsReady();
+            } catch (LiquibaseException | SQLException e) {
                 try {
                     LOGGER.error("Initializing DB failed: "+e.getMessage());
                     connection.rollback();

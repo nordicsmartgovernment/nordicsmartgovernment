@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.repository.ConnectionManager;
 import no.nsg.spring.TestPrincipal;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.*;
@@ -36,14 +37,17 @@ import java.util.List;
 public class TransactionsApiControllerTest {
     private static Logger LOGGER = LoggerFactory.getLogger(TransactionsApiControllerTest.class);
 
+    @Mock
+    HttpServletRequest httpServletRequestMock;
+
     @Autowired
     TransactionsApiControllerImpl transactionsApiController;
 
     @Autowired
     InvoicesApiControllerImpl invoicesApiController;
 
-    @Mock
-    HttpServletRequest httpServletRequestMock;
+    @Autowired
+    ConnectionManager connectionManager;
 
     private boolean hasInitializedInvoiceData = false;
     private int syntheticTransactionsCount = 0;
@@ -159,6 +163,8 @@ public class TransactionsApiControllerTest {
     private void initializeInvoiceData() throws IOException {
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
+
+            connectionManager.waitUntilSyntheticDataIsImported();
 
             ResponseEntity<List<Object>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null);
             if (response.getStatusCode()==HttpStatus.OK) {
