@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +56,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
 
     @Override
     public ResponseEntity<Void> createBankStatement(Principal principal, HttpServletRequest httpServletRequest, String body) {
-        Object persistedBankstatement;
+        BusinessDocumentDbo persistedBankstatement;
         try {
             /*
             // If we do not get the bankstatement xml as string (as in, Spring Boot deserializes it to something else),
@@ -74,7 +76,8 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
         if (persistedBankstatement==null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/bankStatements/{id}").buildAndExpand(persistedBankstatement.getDocumentid()).toUri();
+            return ResponseEntity.created(location).build();
         }
     }
 

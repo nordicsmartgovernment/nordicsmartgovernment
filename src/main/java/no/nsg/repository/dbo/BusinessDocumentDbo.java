@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 
 @Component
@@ -75,18 +76,21 @@ public class BusinessDocumentDbo {
 
     public BusinessDocumentDbo() {
         this._id = UNINITIALIZED;
+        generateDocumentid();
         set_TransactionId(TransactionDbo.UNINITIALIZED);
         set_JournalId(JournalDbo.UNINITIALIZED);
     }
 
     public BusinessDocumentDbo(final TransactionDbo transactionDbo) {
         this._id = UNINITIALIZED;
+        generateDocumentid();
         set_TransactionId(transactionDbo == null ? TransactionDbo.UNINITIALIZED : transactionDbo.get_id());
         set_JournalId(JournalDbo.UNINITIALIZED);
     }
 
     public BusinessDocumentDbo(final JournalDbo journalDbo) {
         this._id = UNINITIALIZED;
+        generateDocumentid();
         set_TransactionId(TransactionDbo.UNINITIALIZED);
         set_JournalId(journalDbo == null ? JournalDbo.UNINITIALIZED : journalDbo.get_id());
     }
@@ -151,8 +155,14 @@ public class BusinessDocumentDbo {
         this.documenttype = documenttype;
     }
 
-    public void setDocumentid(final String documentid) {
+    private void setDocumentid(final String documentid) {
         this.documentid = documentid;
+    }
+
+    private void generateDocumentid() {
+        if (getDocumentid() == null) {
+            this.documentid = UUID.randomUUID().toString();
+        }
     }
 
     public String getDocumentid() {
@@ -297,15 +307,7 @@ public class BusinessDocumentDbo {
 
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
-            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:documentNumber");
-            if (nodes.getLength() > 0) {
-                Node child = nodes.item(0).getFirstChild();
-                if (child != null) {
-                    setDocumentid(child.getTextContent());
-                }
-            }
-
-            nodes = parsedDocument.getElementsByTagName("gl-cor:entryDetail");
+            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:entryDetail");
             for (int i=0; i<nodes.getLength(); i++) {
                 entryRows.add(new EntryDbo(parsedDocument, nodes.item(i)));
             }

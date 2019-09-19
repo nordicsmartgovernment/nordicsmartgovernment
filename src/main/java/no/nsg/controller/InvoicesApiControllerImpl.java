@@ -9,9 +9,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
 
     @Override
     public ResponseEntity<Void> createInvoice(Principal principal, HttpServletRequest httpServletRequest, String body) {
-        Object persistedInvoice;
+        BusinessDocumentDbo persistedInvoice;
         try {
             /*
             // If we do not get the invoice xml as string (as in, Spring Boot deserializes it to something else),
@@ -75,7 +77,8 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
         if (persistedInvoice==null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/invoices/{id}").buildAndExpand(persistedInvoice.getDocumentid()).toUri();
+            return ResponseEntity.created(location).build();
         }
     }
 

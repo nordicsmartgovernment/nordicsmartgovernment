@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -134,25 +135,17 @@ public class TransactionsApiControllerTest {
     }
 
     @Test
-    public void getTransactionByIdTest() {
-        final String id = "77"; //Finvoice InvoiceNumber for "finvoice/finvoice 77 myynti.xml"
-        ResponseEntity<Object> response = transactionsApiController.getTransactionById(new TestPrincipal(""), httpServletRequestMock, id);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
-        String xbrl = (String)responseBody;
-        Assert.assertTrue(xbrl.contains("<xbrli:xbrl "));
-    }
-
-    @Test
-    public void patchTransactionByIdTest() {
-        final String id = "75"; //Finvoice InvoiceNumber for "finvoice/finvoice 75 myynti.xml"
+    public void patchTransactionByIdTest() throws IOException {
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+        Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
+        URI location = createResponse.getHeaders().getLocation();
+        String[] paths = location.getPath().split("/");
+        String createdId = paths[paths.length-1];
 
         String patchXml = "<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\">\n" +
                             "<replace sel=\"xbrli:xbrl/xbrli:context/xbrli:entity/xbrli:identifier/text()\">Patched!</replace>\n" +
                           "</diff>";
-
-        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(new TestPrincipal(""), httpServletRequestMock, id, patchXml);
+        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(new TestPrincipal(""), httpServletRequestMock, createdId, patchXml);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);

@@ -23,6 +23,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
@@ -94,15 +95,17 @@ public class BankstatementsApiControllerTest {
     public void getBankstatementByIdTest() throws IOException {
         Principal principal = new TestPrincipal("");
 
-        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(principal, httpServletRequestMock, "111234");
-        Assert.assertTrue(response.getStatusCode() == HttpStatus.NO_CONTENT);
+        ResponseEntity<Void> createResponse = bankstatementsApiController.createBankStatement(principal, httpServletRequestMock, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
+        Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
+        URI location = createResponse.getHeaders().getLocation();
+        String[] paths = location.getPath().split("/");
+        String createdId = paths[paths.length-1];
 
-        bankstatementsApiController.createBankStatement(principal, httpServletRequestMock, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
-        response = bankstatementsApiController.getBankStatementById(principal, httpServletRequestMock, "111234");
+        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(principal, httpServletRequestMock, createdId);
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
         BankstatementsApiControllerImpl.Bankstatement bankstatement = (BankstatementsApiControllerImpl.Bankstatement) response.getBody();
-        Assert.assertEquals("111234", bankstatement.documentid);
+        Assert.assertEquals(createdId, bankstatement.documentid);
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {
