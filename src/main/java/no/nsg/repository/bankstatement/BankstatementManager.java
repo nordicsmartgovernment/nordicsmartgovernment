@@ -24,7 +24,7 @@ public class BankstatementManager {
     private ConnectionManager connectionManager;
 
 
-    public Object createBankstatement(final String bankstatementOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createBankstatement(final String bankstatementOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo bankstatement;
         try (Connection connection = connectionManager.getConnection()) {
             try {

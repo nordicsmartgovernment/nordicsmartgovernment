@@ -26,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -89,10 +90,13 @@ public class InvoicesApiControllerTest {
         String original = resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8);
         String originalChecksum = sha256Checksum(original.getBytes(StandardCharsets.UTF_8));
 
-        ResponseEntity<Void> response1 = invoicesApiController.createInvoice(principal, httpServletRequestMock, original);
-        Assert.assertEquals(HttpStatus.CREATED, response1.getStatusCode());
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(principal, httpServletRequestMock, original);
+        Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
+        URI location = createResponse.getHeaders().getLocation();
+        String[] paths = location.getPath().split("/");
+        String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response2 = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "75");
+        ResponseEntity<Object> response2 = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, createdId);
         Assert.assertTrue(response2.getStatusCode() == HttpStatus.OK);
         InvoicesApiControllerImpl.Invoice returnedInvoice = (InvoicesApiControllerImpl.Invoice) response2.getBody();
         String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
@@ -115,17 +119,17 @@ public class InvoicesApiControllerTest {
     public void getInvoiceByIdTest() throws IOException {
         Principal principal = new TestPrincipal("123456785");
 
-        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "TOSL108");
-        Assert.assertTrue(response.getStatusCode() == HttpStatus.NO_CONTENT);
-
         ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(principal, httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
+        URI location = createResponse.getHeaders().getLocation();
+        String[] paths = location.getPath().split("/");
+        String createdId = paths[paths.length-1];
 
-        response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, "TOSL108");
+        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, createdId);
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
         InvoicesApiControllerImpl.Invoice invoice = (InvoicesApiControllerImpl.Invoice) response.getBody();
-        Assert.assertEquals("TOSL108", invoice.documentid);
+        Assert.assertEquals(createdId, invoice.documentid);
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {

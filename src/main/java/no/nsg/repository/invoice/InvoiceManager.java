@@ -24,8 +24,8 @@ public class InvoiceManager {
     private ConnectionManager connectionManager;
 
 
-    public Object createInvoice(final String companyId, final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
-        Object invoice;
+    public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+        BusinessDocumentDbo invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 invoice = createInvoice(companyId, invoiceOriginalXml, connection);
@@ -42,7 +42,7 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public Object createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo invoice = new BusinessDocumentDbo();
         invoice.setDocumenttype(BusinessDocumentDbo.DOCUMENTTYPE_INVOICE);
         invoice.setOriginalFromString(companyId, invoiceOriginalXml);
