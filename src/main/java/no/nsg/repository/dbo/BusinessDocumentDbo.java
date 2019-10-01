@@ -182,7 +182,13 @@ public class BusinessDocumentDbo {
         BusinessDocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
         setDirectionFromDocument(companyId, documentFormat, original);
         transformXbrlFromOriginal(documentFormat, tmpDirection);
-        parseXbrl();
+        insertDocumentIdInXbrlDocument();
+    }
+
+    private void insertDocumentIdInXbrlDocument() throws IOException, SAXException {
+        patchXbrl("<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\">" +
+                    "<add pos=\"prepend\" sel=\"xbrli:xbrl/xbrli:context/xbrli:entity\">\n         <documentid>"+getDocumentid()+"</documentid></add>" +
+                  "</diff>");
     }
 
     private void setOriginalAndXbrl(final InputStream original, final Reader xbrl) throws IOException {
