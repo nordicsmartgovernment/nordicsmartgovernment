@@ -186,8 +186,8 @@ public class BusinessDocumentDbo {
     }
 
     private void insertDocumentIdInXbrlDocument() throws IOException, SAXException {
-        patchXbrl("<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\">" +
-                    "<add pos=\"prepend\" sel=\"xbrli:xbrl/xbrli:context/xbrli:entity\">\n         <documentid>"+getDocumentid()+"</documentid></add>" +
+        patchXbrl("<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2015-03-25\">" +
+                    "<add pos=\"prepend\" sel=\"xbrli:xbrl/gl-cor:accountingEntries/gl-cor:documentInfo\">\n         <gl-cor:uniqueID>"+getDocumentid()+"</gl-cor:uniqueID></add>" +
                   "</diff>");
     }
 
