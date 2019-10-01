@@ -2,7 +2,7 @@
 <xbrli:xbrl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xmlns:gl-plt="http://www.xbrl.org/int/gl/plt/2015-03-25"
             xmlns:xbrll="http://www.xbrl.org/2003/linkbase"
-            xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2015-03-25"
+            xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2016-12-01"
             xmlns:iso639="http://www.xbrl.org/2005/iso639"
             xmlns:gl-taf="http://www.xbrl.org/int/gl/taf/2015-03-25"
             xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01"

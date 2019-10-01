@@ -186,7 +186,7 @@ public class BusinessDocumentDbo {
     }
 
     private void insertDocumentIdInXbrlDocument() throws IOException, SAXException {
-        patchXbrl("<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2015-03-25\">" +
+        patchXbrl("<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2016-12-01\">" +
                     "<add pos=\"prepend\" sel=\"xbrli:xbrl/gl-cor:accountingEntries/gl-cor:documentInfo\">\n         <gl-cor:uniqueID>"+getDocumentid()+"</gl-cor:uniqueID></add>" +
                   "</diff>");
     }
@@ -301,8 +301,12 @@ public class BusinessDocumentDbo {
         ByteArrayInputStream originalIS = new ByteArrayInputStream(getXbrl().getBytes(StandardCharsets.UTF_8));
         ByteArrayInputStream diffIS = new ByteArrayInputStream(patchXml.getBytes(StandardCharsets.UTF_8));
         OutputStream result = new ByteArrayOutputStream();
-        Patcher.patch(originalIS, diffIS, result);
-        this.xbrl = result.toString();
+        try {
+            Patcher.patch(originalIS, diffIS, result);
+            this.xbrl = result.toString();
+        } catch (Exception e) {
+            LOGGER.info("Patching failed: "+e.getMessage());
+        }
         parseXbrl();
         return getXbrl();
     }
