@@ -294,7 +294,7 @@ public class BusinessDocumentDbo {
             }
         }
 
-        throw new RuntimeException("customerId was neither supplier:"+supplier+" nor customer:"+customer);
+        throw new RuntimeException("customerId was neither supplier: \""+supplier+"\" nor customer: \""+customer+"\"");
     }
 
     public String patchXbrl(final String patchXml) throws IOException, SAXException {
@@ -364,7 +364,7 @@ public class BusinessDocumentDbo {
 
     public void persist(final Connection connection) throws SQLException, IOException, SAXException {
         TransactionDbo transactionDbo = getOrInitializeTransaction(connection, TransactionSetDbo.DEFAULT_NAME);
-        if (transactionDbo==null | transactionDbo.get_id()==TransactionDbo.UNINITIALIZED) {
+        if (transactionDbo==null || transactionDbo.get_id()==TransactionDbo.UNINITIALIZED) {
             throw new NoSuchElementException();
         }
 
@@ -373,7 +373,7 @@ public class BusinessDocumentDbo {
                                       "VALUES (?,?,?,?,?,?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
-                 Reader xbrlReader = new StringReader(xbrl)) {
+                 Reader xbrlReader = new StringReader(getXbrl())) {
 
                 if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
                     stmt.setInt(1, get_TransactionId());
@@ -409,7 +409,7 @@ public class BusinessDocumentDbo {
                                                 "WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
-                 Reader xbrlReader = new StringReader(xbrl)) {
+                 Reader xbrlReader = new StringReader(getXbrl())) {
 
                 if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
                     stmt.setInt(1, get_TransactionId());
