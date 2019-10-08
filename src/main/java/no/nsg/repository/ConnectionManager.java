@@ -58,6 +58,8 @@ public class ConnectionManager {
 		IMPORTING,
 		IMPORTED
 	}
+	private long LOCAL_BUILD_SYNTHETICDATA_LENGTH_LIMIT = 512*1024; //Skip files larger than 0.5MB when building locally
+
 	private SyntheticDataStatus syntheticDataIsImported = SyntheticDataStatus.UNINITIALIZED;
 	private final Object syntheticDataIsImportedLock = new Object();
 
@@ -226,7 +228,7 @@ public class ConnectionManager {
 				fileStream.forEach(x -> {
 					try {
 						importSyntheticData(new File(x.toString()).getName(), connection);
-					} catch (SQLException|IOException|SAXException e) {
+					} catch (SQLException|IOException|SAXException|URISyntaxException e) {
 						throw new RuntimeException(e);
 					}
 				});
@@ -236,7 +238,7 @@ public class ConnectionManager {
 				fileStream.forEach(x -> {
 					try {
 						importSyntheticData(x.toFile().getName(), connection);
-					} catch (SQLException|IOException|SAXException e) {
+					} catch (SQLException|IOException|SAXException|URISyntaxException e) {
 						throw new RuntimeException(e);
 					}
 				});
@@ -244,7 +246,7 @@ public class ConnectionManager {
 		}
 	}
 
-	private void importSyntheticData(final String filename, final Connection connection) throws SQLException, IOException, SAXException {
+	private void importSyntheticData(final String filename, final Connection connection) throws SQLException, IOException, SAXException, URISyntaxException {
 		if (filename==null || (filename.length()<=".zip".length()) || !filename.endsWith(".zip")) {
 			return;
 		}
@@ -262,9 +264,20 @@ public class ConnectionManager {
 			stmt.executeUpdate();
 		}
 
+		URI uri = ConnectionManager.class.getResource("/").toURI();
+		boolean isLocalBuild = !uri.getScheme().equals("jar");
+
 		ClassLoader loader = ConnectionManager.class.getClassLoader();
 		try (InputStream is = loader.getResourceAsStream("SyntheticData/"+filename);
 			 ZipInputStream zis = new ZipInputStream(new BufferedInputStream(is))) {
+			if (isLocalBuild) {
+				long length = loader.getResource("SyntheticData/"+filename).openConnection().getContentLengthLong();
+				if (length > LOCAL_BUILD_SYNTHETICDATA_LENGTH_LIMIT) {
+					LOGGER.info("Skipping " + filename + " because of size. " + length + ">" + LOCAL_BUILD_SYNTHETICDATA_LENGTH_LIMIT);
+					return;
+				}
+			}
+
 			ZipEntry ze;
 
 			String xmlDocument;
@@ -275,27 +288,32 @@ public class ConnectionManager {
 					continue;
 				}
 
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				while ((bytesRead = zis.read(buffer)) >= 0) {
-					baos.write(buffer, 0, bytesRead);
-				}
-				xmlDocument = baos.toString();
+				try {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					while ((bytesRead = zis.read(buffer)) >= 0) {
+						baos.write(buffer, 0, bytesRead);
+					}
+					xmlDocument = baos.toString();
 
-				if (ze.getName().startsWith(companyId+"/purchase_invoices/")) {
-					invoiceManager.createInvoice(companyId, xmlDocument, connection);
-				} else if (ze.getName().startsWith(companyId+"/sales_invoices/")) {
-					invoiceManager.createInvoice(companyId, xmlDocument, connection);
-				} else if (ze.getName().startsWith(companyId+"/bank_statements/")) {
-					invoiceManager.createInvoice(companyId, xmlDocument, connection);
-				} else if (ze.getName().startsWith(companyId+"/orders/")) {
-					invoiceManager.createInvoice(companyId, xmlDocument, connection);
-				} else if (ze.getName().startsWith(companyId+"/receipts/")) {
-					invoiceManager.createInvoice(companyId, xmlDocument, connection);
-				} else if (ze.getName().startsWith(companyId+"/other/")) {
-					invoiceManager.createInvoice(companyId, xmlDocument, connection);
+					if (ze.getName().startsWith(companyId + "/purchase_invoices/")) {
+						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+					} else if (ze.getName().startsWith(companyId + "/sales_invoices/")) {
+						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+					} else if (ze.getName().startsWith(companyId + "/bank_statements/")) {
+						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+					} else if (ze.getName().startsWith(companyId + "/orders/")) {
+						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+					} else if (ze.getName().startsWith(companyId + "/receipts/")) {
+						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+					} else if (ze.getName().startsWith(companyId + "/other/")) {
+						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+					}
+
+					importCount++;
+				} catch (Exception e) {
+					LOGGER.info("Not importing document " + ze.getName() + " : " + e.getMessage());
 				}
 
-				importCount++;
 				Instant now = Instant.now();
 				if (ChronoUnit.SECONDS.between(lastLogged, now) > 10) {
 					LOGGER.info("Imported " + importCount + " files in " + ChronoUnit.SECONDS.between(start, now) + " seconds");
