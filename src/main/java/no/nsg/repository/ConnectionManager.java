@@ -12,9 +12,16 @@ import org.springframework.util.StringUtils;
 import org.xml.sax.SAXException;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -179,7 +186,7 @@ public class ConnectionManager {
 					importSyntheticData(connection);
 					connection.commit();
 					LOGGER.info("Synthetic data imported OK.");
-				} catch (SQLException | SAXException | IOException e) {
+				} catch (SQLException | IOException | URISyntaxException | RuntimeException e) {
 					try {
 						LOGGER.error("Importing synthetic data failed: " + e.getMessage());
 						connection.rollback();
@@ -211,13 +218,28 @@ public class ConnectionManager {
 		}
 	}
 
-	private void importSyntheticData(final Connection connection) throws SQLException, IOException, SAXException {
-		ClassLoader loader = ConnectionManager.class.getClassLoader();
-		try (InputStream is = loader.getResourceAsStream("SyntheticData/");
-			 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-			String filename;
-			while ((filename = br.readLine()) != null) {
-				importSyntheticData(filename, connection);
+	private void importSyntheticData(final Connection connection) throws URISyntaxException, IOException {
+		URI uri = ConnectionManager.class.getResource("/").toURI();
+		if (uri.getScheme().equals("jar")) {
+			try (java.nio.file.FileSystem fileSystem = java.nio.file.FileSystems.newFileSystem(uri, Collections.emptyMap());
+				 Stream<Path> fileStream = Files.list(fileSystem.getPath("/BOOT-INF/classes/SyntheticData/"))) {
+				fileStream.forEach(x -> {
+					try {
+						importSyntheticData(new File(x.toString()).getName(), connection);
+					} catch (SQLException|IOException|SAXException e) {
+						throw new RuntimeException(e);
+					}
+				});
+			}
+		} else {
+			try (Stream<Path> fileStream = Files.list(Paths.get("target/classes/SyntheticData/"))) {
+				fileStream.forEach(x -> {
+					try {
+						importSyntheticData(x.toFile().getName(), connection);
+					} catch (SQLException|IOException|SAXException e) {
+						throw new RuntimeException(e);
+					}
+				});
 			}
 		}
 	}
