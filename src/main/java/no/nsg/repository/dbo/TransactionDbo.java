@@ -7,6 +7,7 @@ import no.nsg.repository.TransformationManager;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
@@ -24,6 +25,8 @@ public class TransactionDbo {
     @JsonIgnore
     private int _id_transactionset;
 
+    private String transactionid;
+
     @JsonIgnore
     private LocalDateTime transactionTime;
 
@@ -37,6 +40,7 @@ public class TransactionDbo {
 
     public TransactionDbo(final TransactionSetDbo transactionSetDbo) {
         this._id = UNINITIALIZED;
+        generateTransactionid();
         set_TransactionSetId(transactionSetDbo == null ? TransactionSetDbo.UNINITIALIZED : transactionSetDbo.get_id());
     }
 
@@ -45,7 +49,7 @@ public class TransactionDbo {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT _id_transactionset, transactiontime, direction FROM nsg.transaction WHERE _id=?";
+        final String sql = "SELECT _id_transactionset, transactionid, transactiontime, direction FROM nsg.transaction WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -56,6 +60,8 @@ public class TransactionDbo {
             this._id = id;
 
             set_TransactionSetId(rs.getInt("_id_transactionset"));
+
+            setTransactionid(rs.getString("transactionid"));
 
             Timestamp tmpTime = rs.getTimestamp("transactiontime");
             if (!rs.wasNull()) {
@@ -94,6 +100,20 @@ public class TransactionDbo {
         return this._id_transactionset;
     }
 
+    private void setTransactionid(final String transactionid) {
+        this.transactionid = transactionid;
+    }
+
+    private void generateTransactionid() {
+        if (getTransactionid() == null) {
+            this.transactionid = UUID.randomUUID().toString();
+        }
+    }
+
+    public String getTransactionid() {
+        return transactionid;
+    }
+
     public void setTransactionTime(final LocalDateTime transactionTime) {
         this.transactionTime = transactionTime;
     }
@@ -112,7 +132,7 @@ public class TransactionDbo {
 
     public void persist(final Connection connection) throws SQLException {
         if (get_id() == UNINITIALIZED) {
-            final String sql = "INSERT INTO nsg.transaction (_id_transactionset, transactiontime, direction) VALUES (?,?,?)";
+            final String sql = "INSERT INTO nsg.transaction (_id_transactionset, transactionid, transactiontime, direction) VALUES (?,?,?,?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 if (get_TransactionSetId() == TransactionSetDbo.UNINITIALIZED) {
                     stmt.setNull(1, Types.INTEGER);
@@ -120,17 +140,19 @@ public class TransactionDbo {
                     stmt.setInt(1, get_TransactionSetId());
                 }
 
+                stmt.setString(2, getTransactionid());
+
                 if (getTransactionTime() == null) {
-                    stmt.setNull(2, Types.TIMESTAMP);
+                    stmt.setNull(3, Types.TIMESTAMP);
                 } else {
-                    stmt.setTimestamp(2, Timestamp.valueOf(getTransactionTime()));
+                    stmt.setTimestamp(3, Timestamp.valueOf(getTransactionTime()));
                 }
 
                 Integer tmpDirection = directionToInt(getDirection());
                 if (tmpDirection == null) {
-                    stmt.setNull(3, Types.INTEGER);
+                    stmt.setNull(4, Types.INTEGER);
                 } else {
-                    stmt.setInt(3, tmpDirection);
+                    stmt.setInt(4, tmpDirection);
                 }
 
                 stmt.executeUpdate();
@@ -141,7 +163,7 @@ public class TransactionDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.transaction SET _id_transactionset=?, transactiontime=?, direction=? WHERE _id=?";
+            final String sql = "UPDATE nsg.transaction SET _id_transactionset=?, transactionid=?, transactiontime=?, direction=? WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 if (get_TransactionSetId() == TransactionSetDbo.UNINITIALIZED) {
                     stmt.setNull(1, Types.INTEGER);
@@ -149,20 +171,22 @@ public class TransactionDbo {
                     stmt.setInt(1, get_TransactionSetId());
                 }
 
+                stmt.setString(2, getTransactionid());
+
                 if (getTransactionTime() == null) {
-                    stmt.setNull(2, Types.TIMESTAMP);
+                    stmt.setNull(3, Types.TIMESTAMP);
                 } else {
-                    stmt.setTimestamp(2, Timestamp.valueOf(getTransactionTime()));
+                    stmt.setTimestamp(3, Timestamp.valueOf(getTransactionTime()));
                 }
 
                 Integer tmpDirection = directionToInt(getDirection());
                 if (tmpDirection == null) {
-                    stmt.setNull(3, Types.INTEGER);
+                    stmt.setNull(4, Types.INTEGER);
                 } else {
-                    stmt.setInt(3, tmpDirection);
+                    stmt.setInt(4, tmpDirection);
                 }
 
-                stmt.setInt(4, get_id());
+                stmt.setInt(5, get_id());
 
                 stmt.executeUpdate();
             }
