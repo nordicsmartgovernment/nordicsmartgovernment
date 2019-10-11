@@ -40,16 +40,6 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
 
     BankstatementsApiControllerImpl() {}
 
-    @GetMapping(value="bankStatements/ping", produces={"text/plain"})
-    public ResponseEntity<String> getPing() {
-        return ResponseEntity.ok("pong");
-    }
-
-    @GetMapping(value="bankStatements/ready")
-    public ResponseEntity getReady() {
-        return ResponseEntity.ok().build();
-    }
-
     /*
      * generated API implementation
      */

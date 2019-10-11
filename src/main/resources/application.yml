@@ -12,3 +12,7 @@ server:
     mime-types: application/xml,application/json,text/plain
   http2:
     enabled: true
+
+logging:
+  level:
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE

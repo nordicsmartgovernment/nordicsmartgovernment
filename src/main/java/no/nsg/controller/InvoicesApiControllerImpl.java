@@ -41,16 +41,6 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
 
     InvoicesApiControllerImpl() {}
 
-    @GetMapping(value="invoices/ping", produces={"text/plain"})
-    public ResponseEntity<String> getPing() {
-        return ResponseEntity.ok("pong");
-    }
-
-    @GetMapping(value="invoices/ready")
-    public ResponseEntity getReady() {
-        return ResponseEntity.ok().build();
-    }
-
     /*
      * generated API implementation
      */
