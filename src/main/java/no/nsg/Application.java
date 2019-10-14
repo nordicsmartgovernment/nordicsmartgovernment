@@ -13,6 +13,7 @@ import no.nsg.spring.CachableDispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ExitCodeExceptionMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
@@ -68,7 +69,16 @@ public class Application {
         }
     }
 
+    @Bean
+    ExitCodeExceptionMapper exitCodeExceptionMapper() {
+        return exception -> {
+            LOGGER.info("Exited because of: " + exception.getMessage(), exception);
+            return 1;
+        };
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+        LOGGER.info("Exited normally");
     }
 }
