@@ -78,7 +78,12 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-        LOGGER.info("Exited normally");
+        try {
+            SpringApplication.run(Application.class, args);
+        } catch (Throwable e) {
+            LOGGER.info("run exited because of: " + e.getMessage(), e);
+        } finally {
+            LOGGER.info("Finally exited");
+        }
     }
 }
