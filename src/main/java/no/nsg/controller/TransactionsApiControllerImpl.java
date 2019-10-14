@@ -24,12 +24,12 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     @Autowired
     private TransactionManager transactionManager;
 
-    @GetMapping(value="ping", produces={"text/plain"})
+    @GetMapping(value="transactions/ping", produces={"text/plain"})
     public ResponseEntity<String> getPing() {
         return ResponseEntity.ok("pong");
     }
 
-    @GetMapping(value="ready")
+    @GetMapping(value="transactions/ready")
     public ResponseEntity getReady() {
         return ResponseEntity.ok().build();
     }
