@@ -17,6 +17,9 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
@@ -324,7 +327,7 @@ public class BusinessDocumentDbo {
         }
     }
 
-    private static Document parseDocument(final String document) throws IOException, SAXException {
+    public static Document parseDocument(final String document) throws IOException, SAXException {
         if (document == null) {
             return null;
         }
@@ -344,6 +347,20 @@ public class BusinessDocumentDbo {
             LOGGER.error(e.getMessage());
         }
         return null;
+    }
+
+    public static String documentToString(final Document document) {
+        try {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            StringWriter stringWriter = new StringWriter();
+            transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
+            return stringWriter.toString();
+        } catch (TransformerException e) {
+            LOGGER.info("documentToString failed: " + e.getMessage());
+            return null;
+        }
     }
 
     private TransactionDbo getOrInitializeTransaction(final Connection connection, final String transactionSetName) throws SQLException, IOException, SAXException {

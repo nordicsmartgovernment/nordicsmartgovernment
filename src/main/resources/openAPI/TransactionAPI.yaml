@@ -28,15 +28,21 @@ paths:
       description: List every transaction in the catalog
       operationId: getTransactions
       parameters:
+        - name: documentId
+          in: query
+          description: Filter transactions by document id
+          required: false
+          schema:
+            type: string
         - name: organizationId
           in: query
-          description: The id of the organization to which the invoice belongs
+          description: Filter transactions by organization id
           required: false
           schema:
             type: string
         - name: invoiceType
           in: query
-          description: The type of the invoice
+          description: Filter transactions by the type of the invoice
           required: false
           schema:
             type: string
@@ -49,16 +55,16 @@ paths:
         '200':
           description: OK
           content:
-            application/xml:
+            application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Transaction"
+                  type: string
   /transactions/{id}:
     get:
       tags:
         - transactionCollection
-      description: Get a transaction by id
+      description: Get a transaction by transaction id
       operationId: getTransactionById
       parameters:
         - name: id

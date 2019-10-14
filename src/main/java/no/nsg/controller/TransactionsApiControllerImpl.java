@@ -24,12 +24,12 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     @Autowired
     private TransactionManager transactionManager;
 
-    @GetMapping(value="transactions/ping", produces={"text/plain"})
+    @GetMapping(value="ping", produces={"text/plain"})
     public ResponseEntity<String> getPing() {
         return ResponseEntity.ok("pong");
     }
 
-    @GetMapping(value="transactions//ready")
+    @GetMapping(value="ready")
     public ResponseEntity getReady() {
         return ResponseEntity.ok().build();
     }
@@ -39,10 +39,10 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
      */
 
     @Override
-    public ResponseEntity<Object> getTransactionById(Principal principal, HttpServletRequest httpServletRequest, String id) {
-        Object transaction;
+    public ResponseEntity<Object> getTransactionById(Principal principal, HttpServletRequest httpServletRequest, String transactionId) {
+        String transaction;
         try {
-            transaction = transactionManager.getTransactionById(id);
+            transaction = transactionManager.getTransactionDocument(transactionId);
         } catch (Exception e) {
             LOGGER.error("GET_GETTRANSACTION failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -56,19 +56,19 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<List<Object>> getTransactions(Principal principal, HttpServletRequest httpServletRequest, String filterOrganizationId, String finterInvoiceType) {
-        List<Object> transactions;
+    public ResponseEntity<List<String>> getTransactions(Principal principal, HttpServletRequest httpServletRequest, String filterDocumentId, String filterOrganizationId, String finterInvoiceType) {
+        List<String> transactionIds;
         try {
-            transactions = transactionManager.getTransactions(filterOrganizationId, finterInvoiceType);
+            transactionIds = transactionManager.getTransactionIds(filterDocumentId, filterOrganizationId, finterInvoiceType);
         } catch (Exception e) {
             LOGGER.error("GET_GETTRANSACTIONS failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (transactions==null || transactions.isEmpty()) {
+        if (transactionIds==null || transactionIds.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(transactions, HttpStatus.OK);
+            return new ResponseEntity<>(transactionIds, HttpStatus.OK);
         }
     }
 
