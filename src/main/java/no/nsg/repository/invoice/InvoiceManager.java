@@ -1,6 +1,7 @@
 package no.nsg.repository.invoice;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.DocumentType;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -44,7 +45,7 @@ public class InvoiceManager {
 
     public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo invoice = new BusinessDocumentDbo();
-        invoice.setDocumenttype(BusinessDocumentDbo.DOCUMENTTYPE_INVOICE);
+        invoice.setDocumenttype(DocumentType.Type.INVOICE);
         invoice.setOriginalFromString(companyId, invoiceOriginalXml);
         invoice.persist(connection);
         return invoice;
@@ -96,9 +97,11 @@ public class InvoiceManager {
     public List<BusinessDocumentDbo> getInvoices(final Connection connection) throws SQLException {
         List<BusinessDocumentDbo> invoices = new ArrayList<>();
 
-        final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=?";
+        final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=? OR documenttype=? OR documenttype=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, BusinessDocumentDbo.DOCUMENTTYPE_INVOICE);
+            stmt.setInt(1, DocumentType.toInt(DocumentType.Type.INVOICE));
+            stmt.setInt(2, DocumentType.toInt(DocumentType.Type.SALES_INVOICE));
+            stmt.setInt(3, DocumentType.toInt(DocumentType.Type.PURCHASE_INVOICE));
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {

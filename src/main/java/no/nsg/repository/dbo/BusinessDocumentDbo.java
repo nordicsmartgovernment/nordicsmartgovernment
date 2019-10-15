@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.dnault.xmlpatch.Patcher;
 import net.sf.saxon.s9api.SaxonApiException;
+import no.nsg.repository.DocumentType;
 import no.nsg.repository.TransformationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,6 @@ public class BusinessDocumentDbo {
 
     public static final int UNINITIALIZED = 0;
 
-    public static final int DOCUMENTTYPE_INVOICE = 1;
-    public static final int DOCUMENTTYPE_BANKSTATEMENT = 2;
-
     @JsonIgnore
     private int _id;
 
@@ -57,7 +55,7 @@ public class BusinessDocumentDbo {
     private int _id_journal;
 
     @JsonIgnore
-    private Integer documenttype;
+    private DocumentType.Type documenttype;
 
     private String documentid;
 
@@ -120,7 +118,7 @@ public class BusinessDocumentDbo {
                 set_JournalId(TransactionDbo.UNINITIALIZED);
             }
 
-            setDocumenttype(rs.getInt("documenttype"));
+            setDocumenttype(DocumentType.fromInteger(rs.getInt("documenttype")));
             if (rs.wasNull()) {
                 setDocumenttype(null);
             }
@@ -150,11 +148,11 @@ public class BusinessDocumentDbo {
         return this._id_journal;
     }
 
-    public Integer getDocumenttype() {
+    public DocumentType.Type getDocumenttype() {
         return documenttype;
     }
 
-    public void setDocumenttype(final Integer documenttype) {
+    public void setDocumenttype(final DocumentType.Type documenttype) {
         this.documenttype = documenttype;
     }
 
@@ -405,7 +403,7 @@ public class BusinessDocumentDbo {
                 }
 
                 if (getDocumenttype() != null) {
-                    stmt.setInt(3, getDocumenttype());
+                    stmt.setInt(3, DocumentType.toInt(getDocumenttype()));
                 } else {
                     stmt.setNull(3, Types.INTEGER);
                 }
@@ -441,7 +439,7 @@ public class BusinessDocumentDbo {
                 }
 
                 if (getDocumenttype() != null) {
-                    stmt.setInt(3, getDocumenttype());
+                    stmt.setInt(3, DocumentType.toInt(getDocumenttype()));
                 } else {
                     stmt.setNull(3, Types.INTEGER);
                 }
