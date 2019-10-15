@@ -69,21 +69,7 @@ public class Application {
         }
     }
 
-    @Bean
-    ExitCodeExceptionMapper exitCodeExceptionMapper() {
-        return exception -> {
-            LOGGER.info("Exited because of: " + exception.getMessage(), exception);
-            return 1;
-        };
-    }
-
     public static void main(String[] args) {
-        try {
-            SpringApplication.run(Application.class, args);
-        } catch (Throwable e) {
-            LOGGER.info("run exited because of: " + e.getMessage(), e);
-        } finally {
-            LOGGER.info("Finally exited");
-        }
+        SpringApplication.run(Application.class, args);
     }
 }
