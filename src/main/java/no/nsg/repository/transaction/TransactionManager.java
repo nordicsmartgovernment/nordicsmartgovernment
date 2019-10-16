@@ -45,14 +45,15 @@ public class TransactionManager {
                 invoiceTypeFilter = "AND t.direction=? ";
             }
 
-            final String sql = "SELECT t.transactionid "
+            final String sql = "SELECT DISTINCT t.transactionid "
                     +"FROM nsg.businessdocument d, nsg.transaction t, nsg.transactionset ts, nsg.company c "
                     +"WHERE d._id_transaction=t._id "
                     +"AND t._id_transactionset=ts._id "
                     +"AND ts._id_company=c._id "
                     +documentFilter
                     +organizationFilter
-                    +invoiceTypeFilter+";";
+                    +invoiceTypeFilter+
+                    "ORDER BY t.transactionid;";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 int i = 0;
                 if (!documentFilter.isEmpty()) {
@@ -132,31 +133,7 @@ public class TransactionManager {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     if (transactionDocument == null) {
-                        String transactionXbrl =
-                                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                                "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:fn=\"http://www.w3.org/2005/02/xpath-functions\" xmlns:gl-bus=\"http://www.xbrl.org/int/gl/bus/2015-03-25\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2016-12-01\" xmlns:gl-cor-fi=\"http://www.xbrl.org/int/gl/cor/fi/2017-01-01\" xmlns:gl-muc=\"http://www.xbrl.org/int/gl/muc/2015-03-25\" xmlns:gl-plt=\"http://www.xbrl.org/int/gl/plt/2015-03-25\" xmlns:gl-rapko=\"http://www.xbrl.org/int/gl/rapko/2015-07-01\" xmlns:gl-taf=\"http://www.xbrl.org/int/gl/taf/2015-03-25\" xmlns:iso4217=\"http://www.xbrl.org/2003/iso4217\" xmlns:iso639=\"http://www.xbrl.org/2005/iso639\" xmlns:ix=\"http://www.xbrl.org/2008/inlineXBRL\" xmlns:ixt=\"http://www.xbrl.org/inlineXBRL/transformation/2010-04-20\" xmlns:link=\"http://www.xbrl.org/2003/linkbase\" xmlns:xbrll=\"http://www.xbrl.org/2003/linkbase\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.xbrl.org/int/gl/plt/2015-03-25 ../../../taxonomies/XBRL-GL-REC-2017-01-01-fi/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd\">" +
-                                " <gl-cor:accountingEntries>\n" +
-                                "  <gl-cor:documentInfo>\n" +
-                                "   <gl-cor:entriesType contextRef=\"now\">journal</gl-cor:entriesType>\n" +
-                                "   <gl-cor:creationDate contextRef=\"now\">2019-07-12+03:00</gl-cor:creationDate>\n" +
-                                "   <gl-muc:defaultCurrency contextRef=\"now\">DKK</gl-muc:defaultCurrency>\n" +
-                                "  </gl-cor:documentInfo>\n" +
-                                "  <gl-cor:entityInformation>\n" +
-                                "   <gl-bus:organizationIdentifiers>\n" +
-                                "    <gl-bus:organizationIdentifier contextRef=\"now\">"+rs.getString("orgno")+"</gl-bus:organizationIdentifier>\n" +
-                                "   </gl-bus:organizationIdentifiers>\n" +
-                                "   <gl-bus:organizationAddress>\n" +
-                                "    <gl-bus:organizationAddressName contextRef=\"now\">{companyName}</gl-bus:organizationAddressName> \n" +
-                                "   </gl-bus:organizationAddress>\n" +
-                                "   <gl-bus:contactInformation>\n" +
-                                "    <gl-bus:contactPhone/>\n" +
-                                "    <gl-bus:contactFax/>\n" +
-                                "    <gl-bus:contactEMail/>\n" +
-                                "   </gl-bus:contactInformation>\n" +
-                                "  </gl-cor:entityInformation>\n" +
-                                " </gl-cor:accountingEntries>\n" +
-                                "</xbrli:xbrl>\n";
-                        transactionDocument = BusinessDocumentDbo.parseDocument(transactionXbrl);
+                        transactionDocument = createEmptyXbrlGlDocument(rs.getString("orgno"));
                         accountingEntry = transactionDocument.getElementsByTagName("gl-cor:accountingEntries").item(0);
                     }
 
@@ -171,6 +148,11 @@ public class TransactionManager {
                     }
                 }
                 connection.commit();
+
+                //In case we didn't find any documents, return an empty XBRL-GL document
+                if (transactionDocument == null) {
+                    transactionDocument = createEmptyXbrlGlDocument(null);
+                }
             } catch (SQLException e) {
                 try {
                     connection.rollback();
@@ -181,6 +163,37 @@ public class TransactionManager {
             }
         }
         return BusinessDocumentDbo.documentToString(transactionDocument);
+    }
+
+    private Document createEmptyXbrlGlDocument(final String companyId) throws IOException, SAXException {
+        String transactionXbrl =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:fn=\"http://www.w3.org/2005/02/xpath-functions\" xmlns:gl-bus=\"http://www.xbrl.org/int/gl/bus/2015-03-25\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2016-12-01\" xmlns:gl-cor-fi=\"http://www.xbrl.org/int/gl/cor/fi/2017-01-01\" xmlns:gl-muc=\"http://www.xbrl.org/int/gl/muc/2015-03-25\" xmlns:gl-plt=\"http://www.xbrl.org/int/gl/plt/2015-03-25\" xmlns:gl-rapko=\"http://www.xbrl.org/int/gl/rapko/2015-07-01\" xmlns:gl-taf=\"http://www.xbrl.org/int/gl/taf/2015-03-25\" xmlns:iso4217=\"http://www.xbrl.org/2003/iso4217\" xmlns:iso639=\"http://www.xbrl.org/2005/iso639\" xmlns:ix=\"http://www.xbrl.org/2008/inlineXBRL\" xmlns:ixt=\"http://www.xbrl.org/inlineXBRL/transformation/2010-04-20\" xmlns:link=\"http://www.xbrl.org/2003/linkbase\" xmlns:xbrll=\"http://www.xbrl.org/2003/linkbase\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.xbrl.org/int/gl/plt/2015-03-25 ../../../taxonomies/XBRL-GL-REC-2017-01-01-fi/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd\">" +
+                        " <gl-cor:accountingEntries>\n" +
+                        "  <gl-cor:documentInfo>\n" +
+                        "   <gl-cor:entriesType contextRef=\"now\">journal</gl-cor:entriesType>\n" +
+                        "   <gl-cor:creationDate contextRef=\"now\">2019-07-12+03:00</gl-cor:creationDate>\n" +
+                        "   <gl-muc:defaultCurrency contextRef=\"now\">DKK</gl-muc:defaultCurrency>\n" +
+                        "  </gl-cor:documentInfo>\n" +
+                        "  <gl-cor:entityInformation>\n" +
+                        "   <gl-bus:organizationIdentifiers>\n";
+
+        if (companyId!=null) {
+            transactionXbrl += "    <gl-bus:organizationIdentifier contextRef=\"now\">" + companyId + "</gl-bus:organizationIdentifier>\n";
+        }
+
+        transactionXbrl +=
+                        "   </gl-bus:organizationIdentifiers>\n" +
+                        "   <gl-bus:organizationAddress/>\n" +
+                        "   <gl-bus:contactInformation>\n" +
+                        "    <gl-bus:contactPhone/>\n" +
+                        "    <gl-bus:contactFax/>\n" +
+                        "    <gl-bus:contactEMail/>\n" +
+                        "   </gl-bus:contactInformation>\n" +
+                        "  </gl-cor:entityInformation>\n" +
+                        " </gl-cor:accountingEntries>\n" +
+                        "</xbrli:xbrl>\n";
+        return BusinessDocumentDbo.parseDocument(transactionXbrl);
     }
 
     public List<Object> getTransactions(final String filterOrganizationId, final String filterInvoiceType) throws SQLException {
