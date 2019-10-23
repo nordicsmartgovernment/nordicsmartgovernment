@@ -46,7 +46,7 @@ public class InvoiceManager {
     public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo invoice = new BusinessDocumentDbo();
         invoice.setDocumenttype(DocumentType.Type.INVOICE);
-        invoice.setOriginalFromString(companyId, invoiceOriginalXml);
+        invoice.setOriginalFromString(companyId, invoiceOriginalXml); //Will also set direction
         invoice.persist(connection);
         return invoice;
     }
