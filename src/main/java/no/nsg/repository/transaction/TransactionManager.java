@@ -89,13 +89,13 @@ public class TransactionManager {
         return transactionIds;
     }
 
-    public Object getTransactionById(final String id) throws SQLException {
+    public Object getTransactionByDocumentId(final String documentId) throws SQLException {
         String transaction = null;
 
         try (Connection connection = connectionManager.getConnection()) {
             final String sql = "SELECT d.xbrl FROM nsg.businessdocument d, nsg.transaction t WHERE d._id_transaction=t._id AND d.documentid=?;";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, id);
+                stmt.setString(1, documentId);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     transaction = readerToString(rs.getCharacterStream("xbrl"));
