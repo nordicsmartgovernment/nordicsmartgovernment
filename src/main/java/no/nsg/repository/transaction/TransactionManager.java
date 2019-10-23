@@ -1,6 +1,7 @@
 package no.nsg.repository.transaction;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.dbo.TransactionDbo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,13 +158,13 @@ public class TransactionManager {
                                 " </gl-cor:accountingEntries>\n" +
                                 "</xbrli:xbrl>\n";
                         transactionDocument = BusinessDocumentDbo.parseDocument(transactionXbrl);
-                        accountingEntry = transactionDocument.getElementsByTagName("gl-cor:accountingEntries").item(0);
+                        accountingEntry = transactionDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "accountingEntries").item(0);
                     }
 
                     String xbrl = readerToString(rs.getCharacterStream("xbrl"));
                     if (xbrl != null) {
                         Document document = BusinessDocumentDbo.parseDocument(xbrl);
-                        NodeList documentEntryHeaders = document.getElementsByTagName("gl-cor:entryHeader");
+                        NodeList documentEntryHeaders = document.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryHeader");
                         for (int headerIndex=0; headerIndex<documentEntryHeaders.getLength(); headerIndex++) {
                             Node entryHeader = documentEntryHeaders.item(headerIndex);
                             accountingEntry.appendChild(transactionDocument.importNode(entryHeader, true));

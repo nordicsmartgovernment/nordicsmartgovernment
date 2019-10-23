@@ -243,7 +243,7 @@ public class BusinessDocumentDbo {
     private String getOrgnrFromXBRL() throws IOException, SAXException {
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
-            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:identifierAuthorityCode");
+            NodeList nodes = parsedDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS,"identifierAuthorityCode");
             if (nodes.getLength() > 0) {
                 Node child = nodes.item(0).getFirstChild();
                 if (child != null) {
@@ -264,11 +264,11 @@ public class BusinessDocumentDbo {
 
         Document parsedDocument = parseDocument(document);
         if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagName("cac:AccountingSupplierParty").item(0);
+            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS,"AccountingSupplierParty").item(0);
             if (child instanceof Element) {
-                child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
+                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
                 if (child instanceof Element) {
-                    child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
+                    child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
                         supplier = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
@@ -279,11 +279,11 @@ public class BusinessDocumentDbo {
                 }
             }
 
-            child = parsedDocument.getElementsByTagName("cac:AccountingCustomerParty").item(0);
+            child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingCustomerParty").item(0);
             if (child instanceof Element && tmpDirection!=TransformationManager.Direction.SALES) {
-                child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
+                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
                 if (child instanceof Element) {
-                    child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
+                    child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
                         customer = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
@@ -318,7 +318,7 @@ public class BusinessDocumentDbo {
 
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
-            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:entryDetail");
+            NodeList nodes = parsedDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryDetail");
             for (int i=0; i<nodes.getLength(); i++) {
                 entryRows.add(new EntryDbo(parsedDocument, nodes.item(i)));
             }
@@ -331,6 +331,7 @@ public class BusinessDocumentDbo {
         }
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory.setNamespaceAware(true);
         DocumentBuilder builder;
         try {
             builder = builderFactory.newDocumentBuilder();
