@@ -2,6 +2,7 @@ package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nsg.repository.TransformationManager;
 import org.w3c.dom.*;
 
 import java.sql.*;
@@ -97,7 +98,7 @@ public class EntryDbo {
             throw new RuntimeException("Node is not an Element!");
         }
 
-        NodeList nodes = ((Element)node).getElementsByTagName("gl-cor:accountMainID");
+        NodeList nodes = ((Element)node).getElementsByTagNameNS(TransformationManager.GL_COR_NS, "accountMainID");
         if (nodes.getLength() > 0) {
             Node accountValueNode = nodes.item(0).getFirstChild();
             if (accountValueNode != null) {
@@ -105,7 +106,7 @@ public class EntryDbo {
             }
         }
 
-        nodes = ((Element)node).getElementsByTagName("gl-cor:amount");
+        nodes = ((Element)node).getElementsByTagNameNS(TransformationManager.GL_COR_NS, "amount");
         if (nodes.getLength() > 0) {
             Node amountNode = nodes.item(0);
             Node amountValueNode = amountNode.getFirstChild();
@@ -118,7 +119,7 @@ public class EntryDbo {
             }
         }
 
-        nodes = ((Element)node).getElementsByTagName("gl-cor:taxAmount");
+        nodes = ((Element)node).getElementsByTagNameNS(TransformationManager.GL_COR_NS, "taxAmount");
         if (nodes.getLength() > 0) {
             Node vatNode = nodes.item(0);
             Node vatValueNode = vatNode.getFirstChild();
@@ -134,7 +135,7 @@ public class EntryDbo {
             Node referenceNode = attributes.getNamedItem("unitRef");
             if (referenceNode != null) {
                 String referenceValue = referenceNode.getTextContent();
-                NodeList unitNodes = document.getElementsByTagName("xbrli:unit");
+                NodeList unitNodes = document.getElementsByTagNameNS(TransformationManager.XBRLI_NS, "unit");
                 for (int i=0; i<unitNodes.getLength(); i++) {
                     Node unitNode = unitNodes.item(i);
                     NamedNodeMap unitAttributes = unitNode.getAttributes();

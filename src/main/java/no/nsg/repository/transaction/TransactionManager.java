@@ -1,6 +1,7 @@
 package no.nsg.repository.transaction;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.dbo.TransactionDbo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,13 +91,13 @@ public class TransactionManager {
         return transactionIds;
     }
 
-    public Object getTransactionById(final String id) throws SQLException {
+    public Object getTransactionByDocumentId(final String documentId) throws SQLException {
         String transaction = null;
 
         try (Connection connection = connectionManager.getConnection()) {
             final String sql = "SELECT d.xbrl FROM nsg.businessdocument d, nsg.transaction t WHERE d._id_transaction=t._id AND d.documentid=?;";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, id);
+                stmt.setString(1, documentId);
                 ResultSet rs = stmt.executeQuery();
                 if (rs.next()) {
                     transaction = readerToString(rs.getCharacterStream("xbrl"));
@@ -134,13 +135,13 @@ public class TransactionManager {
                 while (rs.next()) {
                     if (transactionDocument == null) {
                         transactionDocument = createEmptyXbrlGlDocument(rs.getString("orgno"));
-                        accountingEntry = transactionDocument.getElementsByTagName("gl-cor:accountingEntries").item(0);
+                        accountingEntry = transactionDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS,"accountingEntries").item(0);
                     }
 
                     String xbrl = readerToString(rs.getCharacterStream("xbrl"));
                     if (xbrl != null) {
                         Document document = BusinessDocumentDbo.parseDocument(xbrl);
-                        NodeList documentEntryHeaders = document.getElementsByTagName("gl-cor:entryHeader");
+                        NodeList documentEntryHeaders = document.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryHeader");
                         for (int headerIndex=0; headerIndex<documentEntryHeaders.getLength(); headerIndex++) {
                             Node entryHeader = documentEntryHeaders.item(headerIndex);
                             accountingEntry.appendChild(transactionDocument.importNode(entryHeader, true));

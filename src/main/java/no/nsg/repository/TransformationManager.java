@@ -29,6 +29,11 @@ public class TransformationManager {
         SALES     //outbound
     }
 
+    public static final String CAC_NS    = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+    public static final String CBC_NS    = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
+    public static final String GL_COR_NS = "http://www.xbrl.org/int/gl/cor/2016-12-01";
+    public static final String XBRLI_NS  = "http://www.xbrl.org/2003/instance";
+
     private static Map<String, Xslt30Transformer> xsltCache = null;
     private static Processor processor = null;
     private static XsltCompiler compiler = null;

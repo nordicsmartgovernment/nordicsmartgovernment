@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.github.dnault.xmlpatch.Patcher;
 import net.sf.saxon.s9api.SaxonApiException;
+import no.nsg.repository.DocumentType;
 import no.nsg.repository.TransformationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,6 @@ public class BusinessDocumentDbo {
 
     public static final int UNINITIALIZED = 0;
 
-    public static final int DOCUMENTTYPE_INVOICE = 1;
-    public static final int DOCUMENTTYPE_BANKSTATEMENT = 2;
-
     @JsonIgnore
     private int _id;
 
@@ -57,7 +55,7 @@ public class BusinessDocumentDbo {
     private int _id_journal;
 
     @JsonIgnore
-    private Integer documenttype;
+    private DocumentType.Type documenttype;
 
     private String documentid;
 
@@ -120,7 +118,7 @@ public class BusinessDocumentDbo {
                 set_JournalId(TransactionDbo.UNINITIALIZED);
             }
 
-            setDocumenttype(rs.getInt("documenttype"));
+            setDocumenttype(DocumentType.fromInteger(rs.getInt("documenttype")));
             if (rs.wasNull()) {
                 setDocumenttype(null);
             }
@@ -150,11 +148,11 @@ public class BusinessDocumentDbo {
         return this._id_journal;
     }
 
-    public Integer getDocumenttype() {
+    public DocumentType.Type getDocumenttype() {
         return documenttype;
     }
 
-    public void setDocumenttype(final Integer documenttype) {
+    public void setDocumenttype(final DocumentType.Type documenttype) {
         this.documenttype = documenttype;
     }
 
@@ -245,7 +243,7 @@ public class BusinessDocumentDbo {
     private String getOrgnrFromXBRL() throws IOException, SAXException {
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
-            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:identifierAuthorityCode");
+            NodeList nodes = parsedDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS,"identifierAuthorityCode");
             if (nodes.getLength() > 0) {
                 Node child = nodes.item(0).getFirstChild();
                 if (child != null) {
@@ -266,11 +264,11 @@ public class BusinessDocumentDbo {
 
         Document parsedDocument = parseDocument(document);
         if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagName("cac:AccountingSupplierParty").item(0);
+            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS,"AccountingSupplierParty").item(0);
             if (child instanceof Element) {
-                child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
+                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
                 if (child instanceof Element) {
-                    child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
+                    child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
                         supplier = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
@@ -281,11 +279,11 @@ public class BusinessDocumentDbo {
                 }
             }
 
-            child = parsedDocument.getElementsByTagName("cac:AccountingCustomerParty").item(0);
+            child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingCustomerParty").item(0);
             if (child instanceof Element && tmpDirection!=TransformationManager.Direction.SALES) {
-                child = ((Element)child).getElementsByTagName("cac:PartyLegalEntity").item(0);
+                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
                 if (child instanceof Element) {
-                    child = ((Element)child).getElementsByTagName("cbc:CompanyID").item(0);
+                    child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
                         customer = child.getTextContent();
                         if (companyId.equalsIgnoreCase(child.getTextContent())) {
@@ -320,7 +318,7 @@ public class BusinessDocumentDbo {
 
         Document parsedDocument = parseDocument(getXbrl());
         if (parsedDocument != null) {
-            NodeList nodes = parsedDocument.getElementsByTagName("gl-cor:entryDetail");
+            NodeList nodes = parsedDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryDetail");
             for (int i=0; i<nodes.getLength(); i++) {
                 entryRows.add(new EntryDbo(parsedDocument, nodes.item(i)));
             }
@@ -333,6 +331,7 @@ public class BusinessDocumentDbo {
         }
 
         DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory.setNamespaceAware(true);
         DocumentBuilder builder;
         try {
             builder = builderFactory.newDocumentBuilder();
@@ -405,7 +404,7 @@ public class BusinessDocumentDbo {
                 }
 
                 if (getDocumenttype() != null) {
-                    stmt.setInt(3, getDocumenttype());
+                    stmt.setInt(3, DocumentType.toInt(getDocumenttype()));
                 } else {
                     stmt.setNull(3, Types.INTEGER);
                 }
@@ -441,7 +440,7 @@ public class BusinessDocumentDbo {
                 }
 
                 if (getDocumenttype() != null) {
-                    stmt.setInt(3, getDocumenttype());
+                    stmt.setInt(3, DocumentType.toInt(getDocumenttype()));
                 } else {
                     stmt.setNull(3, Types.INTEGER);
                 }

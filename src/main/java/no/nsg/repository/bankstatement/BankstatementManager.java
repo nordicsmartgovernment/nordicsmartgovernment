@@ -1,6 +1,7 @@
 package no.nsg.repository.bankstatement;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.DocumentType;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ public class BankstatementManager {
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 bankstatement = new BusinessDocumentDbo();
-                bankstatement.setDocumenttype(BusinessDocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
+                bankstatement.setDocumenttype(DocumentType.Type.BANK_STATEMENT);
                 bankstatement.setOriginalFromString(bankstatementOriginalXml);
                 bankstatement.persist(connection);
                 connection.commit();
@@ -71,7 +72,7 @@ public class BankstatementManager {
         try (Connection connection = connectionManager.getConnection()) {
             final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setInt(1, BusinessDocumentDbo.DOCUMENTTYPE_BANKSTATEMENT);
+                stmt.setInt(1, DocumentType.toInt(DocumentType.Type.BANK_STATEMENT));
 
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
