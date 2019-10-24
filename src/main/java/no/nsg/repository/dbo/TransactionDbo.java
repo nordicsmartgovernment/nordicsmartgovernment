@@ -17,6 +17,7 @@ public class TransactionDbo {
     public static final int NO_DIRECTION = 0;
     public static final int OUTBOUND_DIRECTION = 1;
     public static final int INBOUND_DIRECTION = 2;
+    public static final int UNKNOWN_DIRECTION = 3;
 
 
     @JsonIgnore
@@ -201,6 +202,7 @@ public class TransactionDbo {
         switch(direction) {
             case INBOUND_DIRECTION: return TransformationManager.Direction.PURCHASE;
             case OUTBOUND_DIRECTION: return TransformationManager.Direction.SALES;
+            case UNKNOWN_DIRECTION: return TransformationManager.Direction.DONT_KNOW;
             default: return TransformationManager.Direction.DOESNT_MATTER;
         }
     }
@@ -213,6 +215,7 @@ public class TransactionDbo {
         switch(direction) {
             case PURCHASE: return INBOUND_DIRECTION;
             case SALES: return OUTBOUND_DIRECTION;
+            case DONT_KNOW: return UNKNOWN_DIRECTION;
             default: return NO_DIRECTION;
         }
     }

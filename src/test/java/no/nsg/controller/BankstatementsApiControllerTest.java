@@ -86,6 +86,12 @@ public class BankstatementsApiControllerTest {
     }
 
     @Test
+    public void createInvalidBankstatementTest() throws IOException {
+        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(new TestPrincipal(""), httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
     public void getBankstatementsTest() {
         ResponseEntity<List<Object>> response = bankstatementsApiController.getBankStatements(new TestPrincipal(""), httpServletRequestMock);
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);

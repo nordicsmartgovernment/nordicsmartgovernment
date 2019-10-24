@@ -260,6 +260,11 @@ public class BusinessDocumentDbo {
             return;
         }
 
+        if (companyId == null) {
+            tmpDirection = TransformationManager.Direction.DONT_KNOW;
+            return;
+        }
+
         String supplier="", customer="";
 
         Document parsedDocument = parseDocument(document);

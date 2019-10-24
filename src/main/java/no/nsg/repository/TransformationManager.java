@@ -25,6 +25,7 @@ public class TransformationManager {
 
     public enum Direction {
         DOESNT_MATTER,
+        DONT_KNOW,
         PURCHASE, //inbound
         SALES     //outbound
     }
