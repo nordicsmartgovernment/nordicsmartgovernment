@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="Utf-8"?>
+<map:Mapping xmlns:map="http://www.nsg.org/map">
+<map:rate source="DKK" targetCountry="DK">1</map:rate>	
+<map:rate source="DKK" targetCountry="IS">18.650</map:rate>	
+<map:rate source="DKK" targetCountry="SE">1.423</map:rate>	
+<map:rate source="DKK" targetCountry="FI">0.133</map:rate>	
+<map:rate source="DKK" targetCountry="NO">1.331</map:rate>
+<map:rate source="ISK" targetCountry="DK">0.055</map:rate>	
+<map:rate source="ISK" targetCountry="IS">1</map:rate>	
+<map:rate source="ISK" targetCountry="SE">0.079</map:rate>	
+<map:rate source="ISK" targetCountry="FI">0.007</map:rate>	
+<map:rate source="ISK" targetCountry="NO">0.073</map:rate>
+<map:rate source="SEK" targetCountry="DK">0.699</map:rate>	
+<map:rate source="SEK" targetCountry="IS">12.707</map:rate>	
+<map:rate source="SEK" targetCountry="SE">1</map:rate>	
+<map:rate source="SEK" targetCountry="FI">0.094</map:rate>	
+<map:rate source="SEK" targetCountry="NO">0.931</map:rate>
+<map:rate source="EUR" targetCountry="DK">7.464</map:rate>	
+<map:rate source="EUR" targetCountry="IS">135.612</map:rate>	
+<map:rate source="EUR" targetCountry="SE">10.672</map:rate>	
+<map:rate source="EUR" targetCountry="FI">1</map:rate>	
+<map:rate source="EUR" targetCountry="NO">9.935</map:rate>
+<map:rate source="NOK" targetCountry="DK">0.751</map:rate>	
+<map:rate source="NOK" targetCountry="IS">13.652</map:rate>	
+<map:rate source="NOK" targetCountry="SE">1.074</map:rate>	
+<map:rate source="NOK" targetCountry="FI">0.101</map:rate>	
+<map:rate source="NOK" targetCountry="NO">1</map:rate>
+
+
+   
+</map:Mapping>

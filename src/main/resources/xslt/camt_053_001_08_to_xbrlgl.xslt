@@ -39,7 +39,7 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 
 
  <xsl:template match='/'>
-<xbrli:xbrl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.xbrl.org/int/gl/plt/2015-03-25 ../../../taxonomies/XBRL-GL-REC-2017-01-01-fi/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xmlns:gl-plt="http://www.xbrl.org/int/gl/plt/2015-03-25" xmlns:xbrll="http://www.xbrl.org/2003/linkbase" xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2016-12-01" xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01" xmlns:iso639="http://www.xbrl.org/2005/iso639" xmlns:gl-taf="http://www.xbrl.org/int/gl/taf/2015-03-25" xmlns:gl-muc="http://www.xbrl.org/int/gl/muc/2015-03-25" xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:iso4217="http://www.xbrl.org/2003/iso4217" xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2015-03-25" xmlns:xlink="http://www.w3.org/1999/xlink">
+<xbrli:xbrl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.xbrl.org/int/gl/plt/2016-12-01 ../../../taxonomies/XBRL-GL-REC-2017-01-01-fi/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xmlns:gl-plt="http://www.xbrl.org/int/gl/plt/2016-12-01" xmlns:xbrll="http://www.xbrl.org/2003/linkbase" xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2016-12-01" xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01" xmlns:iso639="http://www.xbrl.org/2005/iso639" xmlns:gl-taf="http://www.xbrl.org/int/gl/taf/2016-12-01" xmlns:gl-muc="http://www.xbrl.org/int/gl/muc/2016-12-01" xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:iso4217="http://www.xbrl.org/2003/iso4217" xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2016-12-01" xmlns:xlink="http://www.w3.org/1999/xlink">
   <xbrll:schemaRef xlink:type="simple" xlink:href="../../../taxonomies/XBRL-GL-REC-2017-01-01-fi/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/>
   
     <!--Link to account mappings doc between the nordic countries to facilitate automated account postings in the NSG reference implementation-->
@@ -71,8 +71,8 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 
 <!--document information tuple-->
 <gl-cor:documentInfo>
-<!--generating journal entries -->
-<gl-cor:entriesType contextRef="now">journal</gl-cor:entriesType>
+<!--generating entries -->
+<gl-cor:entriesType contextRef="now">entries</gl-cor:entriesType>
 
 
 
@@ -243,6 +243,7 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 
 <gl-cor:documentType contextRef="now">finance-charge</gl-cor:documentType>
 
+
 <xsl:variable name="value" select="//BkToCstmrStmt[1]/Stmt/LglSeqNb"/>
  <xsl:choose>
  <xsl:when test="not(string($value))">
@@ -260,14 +261,24 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
             <xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
             </xsl:when>
             <xsl:otherwise>
+			<!--
             <gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
+			-->
             </xsl:otherwise>
         </xsl:choose>
     </xsl:when>
-    <xsl:otherwise><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:otherwise>
+    <xsl:otherwise>
+	<!--
+	<gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:otherwise>
+	-->
+	</xsl:otherwise>
     </xsl:choose>
 </xsl:when>
-<xsl:otherwise><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:otherwise>
+<xsl:otherwise>
+<!--
+<gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
+-->
+</xsl:otherwise>
 </xsl:choose>
 
 
@@ -886,14 +897,24 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
             <!--prio 3-->
             <!-- ISO Index:  2.1  -->
 			<xsl:variable name="value" select="//BkToCstmrStmt[1]/Stmt/Id"/>
-            <xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+            <xsl:if test="string($value)">
+			<!--
+			<gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
+			-->
+			</xsl:if>
             </xsl:when>
             <xsl:otherwise>
+			<!--
             <gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
+			-->
             </xsl:otherwise>
         </xsl:choose>
     </xsl:when>
-    <xsl:otherwise><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:otherwise>
+    <xsl:otherwise>
+	<!--
+	<gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
+	-->
+	</xsl:otherwise>
     </xsl:choose>
 </xsl:when>
 <xsl:otherwise><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:otherwise>

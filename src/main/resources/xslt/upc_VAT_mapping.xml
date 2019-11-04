@@ -1,20 +1,69 @@
 <?xml version="1.0" encoding="Utf-8"?>
 <map:Mapping xmlns:map="http://www.nsg.org/map">
 <map:Map>
-<map:UPC>123</map:UPC>
-<map:VatRate country="FI">14</map:VatRate>
-<map:VatRate country="SE">24</map:VatRate>
-<map:VatRate country="NO">34</map:VatRate>
-<map:VatRate country="IS">54</map:VatRate>
-<map:VatRate country="DK">64</map:VatRate>
-</map:Map>
+<map:UPC>50111523</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
 <map:Map>
-<map:UPC>12344321</map:UPC>
-<map:VatRate country="FI">4</map:VatRate>
-<map:VatRate country="SE">8</map:VatRate>
-<map:VatRate country="NO">10</map:VatRate>
-<map:VatRate country="IS">12</map:VatRate>
-<map:VatRate country="DK">14</map:VatRate>
-</map:Map>
-   
+<map:UPC>50121500</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50405700</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>56101700</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>90101603</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50111514</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50111514</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50121537</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50405702</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50412501</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50413315</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50412300</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50405615</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50405323</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50131701</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50131701</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50221300</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50171551</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50171553</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50111523</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50111514</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50121537</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50131701</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50131701</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50131623</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50413315</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50405615</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50404615</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50411916</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50405702</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50221300</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+<map:Map>
+<map:UPC>50131802</map:UPC><map:VatRate country="DK">25</map:VatRate></map:Map>
+
+
 </map:Mapping>

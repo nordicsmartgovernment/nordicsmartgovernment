@@ -48,28 +48,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
   <xsl:param name="companyID" select="'false'"/>
   -->
  
-  <!--
-  <xsl:template name="MakeSpanForCode">
- 
-    <xsl:element name="Languagecode">
-      <xsl:value-of select="$lookupDoc/Languages/Language[@code = '555']/Name/text()" />
-    </xsl:element>
-  </xsl:template>
-  
-  <xsl:template match="Invoice">
-    <xsl:element name="Data">
-      <xsl:element name="Name">
-        <xsl:value-of select="//cbc:UBLVersionID/text()"/>
-      </xsl:element>
-      <xsl:call-template name="MakeSpanForCode">
-      </xsl:call-template>
-    </xsl:element>
-  </xsl:template>
-  -->
-
-
- <xsl:template match='/'>
- <!--<xsl:variable name="lookupDoc" select="document('account_mapping.xml')" />-->
+  <xsl:template match='/'>
 <xbrli:xbrl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.xbrl.org/int/gl/plt/2016-12-01 ../../../XBRL-GL-PWD-2016-12-01-fi-2018-11-06/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xmlns:xbrll="http://www.xbrl.org/2003/linkbase"   xmlns:iso4217="http://www.xbrl.org/2003/iso4217" xmlns:gl-cor-fi="http://www.xbrl.org/int/gl/cor/fi/2017-01-01" xmlns:gl-plt="http://www.xbrl.org/int/gl/plt/2016-12-01"
             xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2016-12-01"
             xmlns:iso639="http://www.xbrl.org/2005/iso639"
@@ -83,8 +62,17 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
     <!--Link to account mappings doc between the nordic countries to facilitate automated account postings in the NSG reference implementation-->
 <xsl:variable name="ac_map" select="document('account_mapping.xml')"/> 
 
-<!--link to Universal product codes - VAT rates mappings (required to calculate the VAT in foreign trade -->
+<!--link to product category codes - VAT rates mappings (required to calculate the VAT in foreign trade -->
 <xsl:variable name="upc_map" select="document('upc_VAT_mapping.xml')"/> 
+
+<!--link to currency country mapping - required to calculate to amounts in home currency when creating the accounting entries in foreign trade -->
+<xsl:variable name="cur_map" select="document('currency_country_mapping.xml')"/> 
+
+<!--getting the currency factor that is used to multiple all the monetary amounts in the accounting entries. In domestic trade the factor shall always be 1 but in foreign trade a simple fixed currency rate mapping doc is provided to calculate the currency transformation.-->
+<xsl:variable name="buyer_cc" select="//Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode/text()"/>
+<xsl:variable name="seller_cur" select="//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount/@currencyID"/>
+<!--[@source=$seller_cur and @targetCountry=$buyer_cc]-->
+<xsl:variable name="cur_factor" select="$cur_map//map:rate[@source=$seller_cur and @targetCountry=$buyer_cc][1]"/> 
 
   <xbrli:context id="now">
     <xbrli:entity>
@@ -111,11 +99,9 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!--document information tuple-->
 <gl-cor:documentInfo>
-<!--generating journal entries --><gl-cor:entriesType contextRef="now">journal</gl-cor:entriesType>
+<!--generating entries --><gl-cor:entriesType contextRef="now">entries</gl-cor:entriesType>
 <!--current time--><gl-cor:creationDate contextRef="now"><xsl:value-of select="current-date()"/></gl-cor:creationDate>
 <!--BT-15--><xsl:variable name="value" select="//Invoice/cbc:Note"/><xsl:if test="string($value)"><gl-cor:entriesComment contextRef="now"><xsl:value-of select="$value"/></gl-cor:entriesComment></xsl:if>
-<!--BT-23--><xsl:variable name="value" select="//Invoice/cac:InvoicePeriod/cbc:StartDate"/><xsl:if test="string($value)"><gl-cor:periodCoveredStart contextRef="now"><xsl:value-of select="$value"/></gl-cor:periodCoveredStart></xsl:if>
-<!--BT-24--><xsl:variable name="value" select="//Invoice/cac:InvoicePeriod/cbc:EndDate"/><xsl:if test="string($value)"><gl-cor:periodCoveredEnd contextRef="now"><xsl:value-of select="$value"/></gl-cor:periodCoveredEnd></xsl:if>
 
 
 </gl-cor:documentInfo>
@@ -169,7 +155,6 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </gl-cor:entityInformation>
 
 
-<!--TODO split handling for purchase and sales invoices-->
 
 <gl-cor:entryHeader>
 <!--puchase invoice, entry from purchase journal-->
@@ -184,13 +169,13 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!-- For NSG 3 reference implementation default accounts are used on Header type entries where all are considered as entries of the "Trade creditors, short term account"-->
 
 <!--Account tuples-->
-<!-- The finnish acount to be used is "29060" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
+<!-- The finnish acount to be used is "290601" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">29060</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the short term trade creditors.-->
-<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='29060']/parent::gl-cor:entryDetail/child::gl-cor:account">
+<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='290601']/parent::gl-cor:entryDetail/child::gl-cor:account">
 <xsl:if test="gl-cor:mainAccountTypeDescription/text() != 'FI'">
  <gl-cor:account>
 		 <gl-cor:accountMainID contextRef="now"><xsl:value-of select="./gl-cor:accountMainID/text()"/></gl-cor:accountMainID>
@@ -201,7 +186,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!--For the Header type entry the amount is the total VAT included amount for the invoice-->
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
-<!--BT-122--><xsl:variable name="value" select="//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value*(-1)"/></gl-cor:amount></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 
 <!--Identifier refrence tuples-->
@@ -375,7 +360,11 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Original document is an invoice -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -460,8 +449,8 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--Entry Header tuple ends-->
 
 
-<!--Header VAT entries (created automatically for the NSG reference implementation-->
-<xsl:variable name="buyer_cc" select="//Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode/text()"/>
+<!--Header VAT entries (created automatically for the NSG reference implementation)-->
+
 <xsl:variable name="seller_cc" select="//Invoice/cac:AccountingSupplierParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode/text()"/>
 <!--For NSG reference implementation the assumption is made that all invoice rows have the same tax category-->
 <xsl:variable name="tax_c" select="//cac:TaxTotal/cac:TaxSubtotal/cac:TaxCategory/cbc:ID/text()"/>
@@ -473,7 +462,6 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--Entry Header VAT tuple-->
 <gl-cor:entryDetail>
 <!-- For NSG 3 reference implementation the buyer's country code serves as a identifier for the standardized chart of accounts to be used (which countrie's CoA) (mainAccountTypeDescription)-->
-
 <!--Account tuples-->
 <!-- The finnish account to be used for short term VAT payables is "17621" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
@@ -493,7 +481,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--For the Header VAT type entry the amount is the total VAT included amount for the invoice-->
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="./cbc:TaxAmount"/>
-<xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:amount></xsl:if>
+<xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 
 <!--Identifier refrence tuples-->
@@ -589,7 +577,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Original document is an invoice -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -664,9 +655,9 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:if>
 <!--Entry Header VAT tuple for CASE1 ends-->
 
-<!--CASE2: Vat category = 'AE' (reverse VAT), trade with-in EU-->
+<!--CASE2: Vat category = 'AE' or 'K' or 'G' (reverse VAT), trade with-in EU-->
 <!--TODO check for country is in EU-->
-<xsl:if test="$buyer_cc!=$seller_cc and $tax_c='AE'">
+<xsl:if test="$buyer_cc!=$seller_cc and ($tax_c='AE' or $tax_c='K' or $tax_c='G')">
 <xsl:for-each select="//Invoice/cac:InvoiceLine">
 
 <!--The amount of VAT to be applied for the invoice is calculated by using the product's UPC code and the mapping provided to retrieve the correct VAT rate-->
@@ -697,7 +688,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:if>
 </xsl:for-each>
 
-<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="number($value) *number($vat) div 100"/></gl-cor:amount></xsl:if>
+<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -791,7 +782,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Original document is an invoice -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -864,7 +858,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:if>
 </xsl:for-each>
 
-<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="number($value) *number($vat) div 100 * (-1)"/></gl-cor:amount></xsl:if>
+<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * (-1) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -958,7 +952,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Original document is an invoice -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -1027,7 +1024,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <gl-cor:account>
 <!--BT-124--><!--BT-17-->
 <xsl:choose><xsl:when test="string($value)"><gl-cor:accountMainID contextRef="now"><xsl:value-of select="$value"/></gl-cor:accountMainID></xsl:when><xsl:when test="string($value2)"><gl-cor:accountMainID contextRef="now"><xsl:value-of select="$value2"/></gl-cor:accountMainID></xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose>
-<xsl:if test="string($value)"><gl-cor:mainAccountTypeDescription contextRef="now"><xsl:value-of select="$cc"/></gl-cor:mainAccountTypeDescription></xsl:if>
+<xsl:if test="string($value)"></xsl:if><gl-cor:mainAccountTypeDescription contextRef="now"><xsl:value-of select="$cc"/></gl-cor:mainAccountTypeDescription>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references.-->
@@ -1041,7 +1038,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:for-each>
 
 
-<!--BT-122--><xsl:variable name="value" select="./cbc:LineExtensionAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:amount></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="./cbc:LineExtensionAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 
 <gl-cor-fi:priceDetails>
@@ -1217,7 +1214,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Alkuperäinen lähdeasiakirja on lasku -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -1263,7 +1263,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <gl-cor:taxes>
 <!--BT-144--><xsl:variable name="value" select="./cac:TaxTotal/cbc:TaxAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxAmount></xsl:if>
-<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate  contextRef="now" unitRef="EUR" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
+<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate  contextRef="now" unitRef="DKK" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:ID"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:TaxExemptionReason"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
 </gl-cor:taxes>

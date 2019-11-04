@@ -44,29 +44,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
     </xsl:element>
   </xsl:template> 
   
-  <!--
-  <xsl:param name="companyID" select="'false'"/>
-  -->
- 
-  <!--
-  <xsl:template name="MakeSpanForCode">
- 
-    <xsl:element name="Languagecode">
-      <xsl:value-of select="$lookupDoc/Languages/Language[@code = '555']/Name/text()" />
-    </xsl:element>
-  </xsl:template>
   
-  <xsl:template match="Invoice">
-    <xsl:element name="Data">
-      <xsl:element name="Name">
-        <xsl:value-of select="//cbc:UBLVersionID/text()"/>
-      </xsl:element>
-      <xsl:call-template name="MakeSpanForCode">
-      </xsl:call-template>
-    </xsl:element>
-  </xsl:template>
-  -->
-
 
  <xsl:template match='/'>
  <!--<xsl:variable name="lookupDoc" select="document('account_mapping.xml')" />-->
@@ -77,7 +55,6 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
             xmlns:gl-muc="http://www.xbrl.org/int/gl/muc/2016-12-01"
             xmlns:xbrli="http://www.xbrl.org/2003/instance"
             xmlns:gl-srcd="http://www.xbrl.org/int/gl/srcd/2016-12-01"
-            xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01"
             xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2016-12-01" xmlns:xlink="http://www.w3.org/1999/xlink">
   <xbrll:schemaRef xlink:type="simple" xlink:href="../../../XBRL-GL-PWD-2016-12-01-fi-2018-11-06/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/>
     <!--Link to account mappings doc between the nordic countries to facilitate automated account postings in the NSG reference implementation-->
@@ -111,7 +88,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!--document information tuple-->
 <gl-cor:documentInfo>
-<!--generating journal entries --><gl-cor:entriesType contextRef="now">journal</gl-cor:entriesType>
+<!--generating entries --><gl-cor:entriesType contextRef="now">entries</gl-cor:entriesType>
 <!--current time--><gl-cor:creationDate contextRef="now"><xsl:value-of select="current-date()"/></gl-cor:creationDate>
 <!--BT-15--><xsl:variable name="value" select="//Invoice/cbc:Note"/><xsl:if test="string($value)"><gl-cor:entriesComment contextRef="now"><xsl:value-of select="$value"/></gl-cor:entriesComment></xsl:if>
 
@@ -369,7 +346,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Original document is an invoice -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -582,7 +562,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Original document is an invoice -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -666,21 +649,16 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--Entry Detail tuples-->
 <gl-cor:entryDetail>
 
-<!--Account tuple-->
-<!--first choice is to use invoice row level accounting references. If not given, the accounting reference for the entire invoice will be used--> 
-<xsl:variable name="value" select="./cbc:AccountingCostCode/text()"/>
-<xsl:variable name="value2" select="//Invoice/cbc:AccountingCostCode/text()"/>
-<!-- For NSG 3 reference implementation the buyer's country code serves as a identifier for the standardized chart of accounts to be used (which countrie's CoA) (mainAccountTypeDescription)-->
-<xsl:variable name="cc" select="//Invoice/cac:AccountingCustomerParty/cac:Party/cac:PostalAddress/cac:Country/cbc:IdentificationCode"/>
+
+<!--Account tuples-->
+<!-- The finnish account to be used is "3000xx" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<!--BT-124--><!--BT-17-->
-<xsl:choose><xsl:when test="string($value)"><gl-cor:accountMainID contextRef="now"><xsl:value-of select="$value"/></gl-cor:accountMainID></xsl:when><xsl:when test="string($value2)"><gl-cor:accountMainID contextRef="now"><xsl:value-of select="$value2"/></gl-cor:accountMainID></xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose>
-<xsl:if test="string($value)"><gl-cor:mainAccountTypeDescription contextRef="now"><xsl:value-of select="$cc"/></gl-cor:mainAccountTypeDescription></xsl:if>
+<gl-cor:accountMainID contextRef="now">3000xx</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
 </gl-cor:account>
 
-<!--For NSG 3 reference implementation. Add other countries accounting references.-->
-<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = $cc and (gl-cor:accountMainID/text()=$value or gl-cor:accountMainID/text()=$value2)]/parent::gl-cor:entryDetail/child::gl-cor:account">
-<xsl:if test="gl-cor:mainAccountTypeDescription/text() != $cc and (gl-cor:accountMainID/text()!=$value or gl-cor:accountMainID/text()!=$value2)">
+<!--For NSG 3 reference implementation. Add other countries accounting references too for the general sales.-->
+<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='3000xx']/parent::gl-cor:entryDetail/child::gl-cor:account">
+<xsl:if test="gl-cor:mainAccountTypeDescription/text() != 'FI'">
  <gl-cor:account>
 		 <gl-cor:accountMainID contextRef="now"><xsl:value-of select="./gl-cor:accountMainID/text()"/></gl-cor:accountMainID>
 		 <gl-cor:mainAccountTypeDescription contextRef="now"><xsl:value-of select="./gl-cor:mainAccountTypeDescription/text()"/></gl-cor:mainAccountTypeDescription>
@@ -865,7 +843,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!-- Alkuperäinen lähdeasiakirja on lasku -->
 <!--BT-3--><xsl:variable name="value" select="//Invoice/cbc:InvoiceTypeCode"/><xsl:if test="string($value)"><gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
-<!--BT-1--><xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+<!--BT-1-->
+<!--
+<xsl:variable name="value" select="//Invoice/cbc:ID"/><xsl:if test="string($value)"><gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber></xsl:if>
+-->
 
 <!--BT-76--><xsl:variable name="value" select="//Invoice/cac:PaymentMeans/cbc:PaymentID"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -911,7 +892,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <gl-cor:taxes>
 <!--BT-144--><xsl:variable name="value" select="./cac:TaxTotal/cbc:TaxAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxAmount></xsl:if>
-<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate  contextRef="now" unitRef="EUR" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
+<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate  contextRef="now" unitRef="DKK" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:ID"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:TaxExemptionReason"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
 </gl-cor:taxes>
