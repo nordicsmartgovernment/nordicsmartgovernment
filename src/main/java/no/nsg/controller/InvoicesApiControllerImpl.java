@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
@@ -56,6 +57,9 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
             String invoiceOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
             persistedInvoice = invoiceManager.createInvoice(principal.getName(), body);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.getMessage(), e);
         } catch (NoSuchElementException e) {
             LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

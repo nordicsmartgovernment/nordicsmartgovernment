@@ -310,11 +310,12 @@ public class BusinessDocumentDbo {
         try {
             Patcher.patch(originalIS, diffIS, result);
             this.xbrl = result.toString();
+            parseXbrl();
+            return getXbrl();
         } catch (Exception e) {
             LOGGER.info("Patching failed: "+e.getMessage());
+            throw new IllegalArgumentException(e);
         }
-        parseXbrl();
-        return getXbrl();
     }
 
     private void parseXbrl() throws IOException, SAXException {

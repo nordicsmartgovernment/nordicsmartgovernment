@@ -31,7 +31,7 @@ public class InvoiceManager {
             try {
                 invoice = createInvoice(companyId, invoiceOriginalXml, connection);
                 connection.commit();
-            } catch (SQLException | SAXException e) {
+            } catch (Exception e) {
                 try {
                     connection.rollback();
                     throw e;
