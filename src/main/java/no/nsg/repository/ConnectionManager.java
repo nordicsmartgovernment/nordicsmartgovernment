@@ -14,6 +14,7 @@ import org.xml.sax.SAXException;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -224,7 +225,7 @@ public class ConnectionManager {
 		URI uri = ConnectionManager.class.getResource("/").toURI();
 		if (uri.getScheme().equals("jar")) {
 			try (java.nio.file.FileSystem fileSystem = java.nio.file.FileSystems.newFileSystem(uri, Collections.emptyMap());
-				 Stream<Path> fileStream = Files.list(fileSystem.getPath("/BOOT-INF/classes/SyntheticData/"))) {
+				 DirectoryStream<Path> fileStream = Files.newDirectoryStream(fileSystem.getPath("/BOOT-INF/classes/SyntheticData/"))) {
 				fileStream.forEach(x -> {
 					try {
 						importSyntheticData(new File(x.toString()).getName(), connection);
@@ -234,7 +235,7 @@ public class ConnectionManager {
 				});
 			}
 		} else {
-			try (Stream<Path> fileStream = Files.list(Paths.get("target/classes/SyntheticData/"))) {
+			try (DirectoryStream<Path> fileStream = Files.newDirectoryStream(Paths.get("target/classes/SyntheticData/"))) {
 				fileStream.forEach(x -> {
 					try {
 						importSyntheticData(x.toFile().getName(), connection);
@@ -242,7 +243,7 @@ public class ConnectionManager {
 						throw new RuntimeException(e);
 					}
 				});
-			}
+            }
 		}
 	}
 

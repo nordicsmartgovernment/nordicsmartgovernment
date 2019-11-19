@@ -271,7 +271,7 @@ public class BusinessDocumentDbo {
         if (parsedDocument != null) {
             Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS,"AccountingSupplierParty").item(0);
             if (child instanceof Element) {
-                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
+                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyTaxScheme").item(0);
                 if (child instanceof Element) {
                     child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
@@ -286,7 +286,7 @@ public class BusinessDocumentDbo {
 
             child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingCustomerParty").item(0);
             if (child instanceof Element && tmpDirection!=TransformationManager.Direction.SALES) {
-                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
+                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyTaxScheme").item(0);
                 if (child instanceof Element) {
                     child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
@@ -300,7 +300,7 @@ public class BusinessDocumentDbo {
             }
         }
 
-        throw new RuntimeException("customerId was neither supplier: \""+supplier+"\" nor customer: \""+customer+"\"");
+        throw new RuntimeException("customerId ("+companyId+") was neither supplier ("+supplier+") nor customer ("+customer+")");
     }
 
     public String patchXbrl(final String patchXml) throws IOException, SAXException {

@@ -98,7 +98,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOrganizationTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "DK20202020", null);
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "20202020", null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -122,7 +122,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOrganizationInboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "DK20202020", "incoming");
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "20202020", "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -158,7 +158,7 @@ public class TransactionsApiControllerTest {
             invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
             invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
             invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal("39937423947"), httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal("SE4598375937"), httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         }
     }
 
