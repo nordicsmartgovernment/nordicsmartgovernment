@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -68,8 +70,12 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
         Object transaction;
         try {
             transaction = transactionManager.patchTransactionById(id, patchXml);
-        } catch (PatchException e) {
+        } catch (PatchException| SAXException | IllegalArgumentException e) {
             LOGGER.error("PATCH_PATCHTRANSACTION patch failed:", e);
+            try {
+                response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());
+            } catch (IOException e2) {
+            }
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
             LOGGER.error("PATCH_PATCHTRANSACTION failed:", e);

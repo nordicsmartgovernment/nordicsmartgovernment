@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.xml.sax.SAXException;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -59,7 +60,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
             String invoiceOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
             persistedInvoice = invoiceManager.createInvoice(principal.getName(), body);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException| SAXException e) {
             LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
             try {
                 response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());

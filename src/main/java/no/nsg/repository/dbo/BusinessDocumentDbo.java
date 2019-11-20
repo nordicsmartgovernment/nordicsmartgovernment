@@ -300,7 +300,7 @@ public class BusinessDocumentDbo {
             }
         }
 
-        throw new RuntimeException("customerId ("+companyId+") was neither supplier ("+supplier+") nor customer ("+customer+")");
+        throw new IllegalArgumentException("customerId ("+companyId+") was neither supplier ("+supplier+") nor customer ("+customer+")");
     }
 
     public String patchXbrl(final String patchXml) throws IOException, SAXException {
