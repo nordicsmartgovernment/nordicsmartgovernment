@@ -52,27 +52,33 @@ public class CompanyDbo {
     }
 
     public static CompanyDbo getOrCreateByOrgno(final Connection connection, final String orgno) throws SQLException {
-        try {
-            int id = CompanyDbo.findByOrgno(connection, orgno);
-            return new CompanyDbo(connection, id);
-        } catch (NoSuchElementException e) {
+        Integer id = CompanyDbo.findByOrgno(connection, orgno);
+        if (id == null) {
             CompanyDbo newCompany = new CompanyDbo();
             newCompany.setOrgno(orgno);
             newCompany.persist(connection);
             return newCompany;
+        } else {
+            return new CompanyDbo(connection, id);
         }
     }
 
-    public static int findByOrgno(final Connection connection, final String orgno) throws SQLException {
-        final String sql = "SELECT _id FROM nsg.company WHERE orgno=?";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, orgno);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("_id");
+    public static Integer findByOrgno(final Connection connection, final String orgno) throws SQLException {
+        Integer id = null;
+        if (orgno!=null && !orgno.isEmpty()) {
+            final String sql = "SELECT _id FROM nsg.company WHERE orgno=?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, orgno);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    id = rs.getInt("_id");
+                    if (rs.wasNull()) {
+                        id = null;
+                    }
+                }
             }
         }
-        throw new NoSuchElementException();
+        return id;
     }
 
     public void persist(final Connection connection) throws SQLException {

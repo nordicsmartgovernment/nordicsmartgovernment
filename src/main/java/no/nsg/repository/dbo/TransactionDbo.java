@@ -34,6 +34,9 @@ public class TransactionDbo {
     @JsonIgnore
     private TransformationManager.Direction direction = TransformationManager.Direction.DOESNT_MATTER;
 
+    @JsonIgnore
+    private Integer _id_referencedcompany;
+
 
     public TransactionDbo() {
         this(null);
@@ -50,7 +53,7 @@ public class TransactionDbo {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT _id_transactionset, transactionid, transactiontime, direction FROM nsg.transaction WHERE _id=?";
+        final String sql = "SELECT _id_transactionset, transactionid, transactiontime, direction, _id_referencedcompany FROM nsg.transaction WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -78,6 +81,8 @@ public class TransactionDbo {
             }
             setDirection(intToDirection(tmpDirection));
 
+            Integer referencedCompanyId = rs.getInt("_id_referencedcompany");
+            set_ReferencedCompanyId(rs.wasNull() ? null : referencedCompanyId);
         }
     }
 
@@ -131,9 +136,17 @@ public class TransactionDbo {
         return direction;
     }
 
+    public void set_ReferencedCompanyId(final Integer _referencedCompanyId) {
+        this._id_referencedcompany = _referencedCompanyId;
+    }
+
+    public Integer get_ReferencedCompanyId() {
+        return this._id_referencedcompany;
+    }
+
     public void persist(final Connection connection) throws SQLException {
         if (get_id() == UNINITIALIZED) {
-            final String sql = "INSERT INTO nsg.transaction (_id_transactionset, transactionid, transactiontime, direction) VALUES (?,?,?,?)";
+            final String sql = "INSERT INTO nsg.transaction (_id_transactionset, transactionid, transactiontime, direction, _id_referencedcompany) VALUES (?,?,?,?,?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
                 if (get_TransactionSetId() == TransactionSetDbo.UNINITIALIZED) {
                     stmt.setNull(1, Types.INTEGER);
@@ -156,6 +169,13 @@ public class TransactionDbo {
                     stmt.setInt(4, tmpDirection);
                 }
 
+                Integer referencedCompany = get_ReferencedCompanyId();
+                if (referencedCompany==null || referencedCompany == CompanyDbo.UNINITIALIZED) {
+                    stmt.setNull(5, Types.INTEGER);
+                } else {
+                    stmt.setInt(5, get_ReferencedCompanyId());
+                }
+
                 stmt.executeUpdate();
 
                 ResultSet rs = stmt.getGeneratedKeys();
@@ -164,7 +184,7 @@ public class TransactionDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.transaction SET _id_transactionset=?, transactionid=?, transactiontime=?, direction=? WHERE _id=?";
+            final String sql = "UPDATE nsg.transaction SET _id_transactionset=?, transactionid=?, transactiontime=?, direction=?, _id_referencedcompany=? WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 if (get_TransactionSetId() == TransactionSetDbo.UNINITIALIZED) {
                     stmt.setNull(1, Types.INTEGER);
@@ -187,7 +207,14 @@ public class TransactionDbo {
                     stmt.setInt(4, tmpDirection);
                 }
 
-                stmt.setInt(5, get_id());
+                Integer referencedCompany = get_ReferencedCompanyId();
+                if (referencedCompany==null || referencedCompany==CompanyDbo.UNINITIALIZED) {
+                    stmt.setNull(5, Types.INTEGER);
+                } else {
+                    stmt.setInt(5, get_ReferencedCompanyId());
+                }
+
+                stmt.setInt(6, get_id());
 
                 stmt.executeUpdate();
             }

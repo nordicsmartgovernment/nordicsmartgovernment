@@ -65,6 +65,8 @@ public class BusinessDocumentDbo {
 
     @JsonIgnore
     private TransformationManager.Direction tmpDirection = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
+    @JsonIgnore
+    private String referencedCompanyId = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
 
     @JsonIgnore
     private LocalDateTime tmpTransactionTime = null; //Not persisted - only for forwarding info from DocumentRowDbo to TrasactionDbo
@@ -265,42 +267,51 @@ public class BusinessDocumentDbo {
             return;
         }
 
-        String supplier="", customer="";
-
         Document parsedDocument = parseDocument(document);
-        if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS,"AccountingSupplierParty").item(0);
-            if (child instanceof Element) {
-                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
-                if (child instanceof Element) {
-                    child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
-                    if (child != null) {
-                        supplier = child.getTextContent();
-                        if (companyId.equalsIgnoreCase(child.getTextContent())) {
-                            tmpDirection = TransformationManager.Direction.SALES;
-                            return;
-                        }
-                    }
-                }
-            }
+        String supplier = getDocumentSupplier(parsedDocument);
+        String customer = getDocumentCustomer(parsedDocument);
 
-            child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingCustomerParty").item(0);
-            if (child instanceof Element && tmpDirection!=TransformationManager.Direction.SALES) {
-                child = ((Element)child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
+        if (companyId.equalsIgnoreCase(supplier)) {
+            tmpDirection = TransformationManager.Direction.SALES;
+            referencedCompanyId = customer;
+        } else if (companyId.equalsIgnoreCase(customer)) {
+            tmpDirection = TransformationManager.Direction.PURCHASE;
+            referencedCompanyId = supplier;
+        } else {
+            throw new IllegalArgumentException("customerId (" + companyId + ") was neither supplier (" + supplier + ") nor customer (" + customer + ")");
+        }
+    }
+
+    private String getDocumentSupplier(final Document parsedDocument) {
+        if (parsedDocument != null) {
+            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingSupplierParty").item(0);
+            if (child instanceof Element) {
+                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
                 if (child instanceof Element) {
-                    child = ((Element)child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
+                    child = ((Element) child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
-                        customer = child.getTextContent();
-                        if (companyId.equalsIgnoreCase(child.getTextContent())) {
-                            tmpDirection = TransformationManager.Direction.PURCHASE;
-                            return;
-                        }
+                        return child.getTextContent();
                     }
                 }
             }
         }
+        return null;
+    }
 
-        throw new IllegalArgumentException("customerId ("+companyId+") was neither supplier ("+supplier+") nor customer ("+customer+")");
+    private String getDocumentCustomer(final Document parsedDocument) {
+        if (parsedDocument != null) {
+            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingCustomerParty").item(0);
+            if (child instanceof Element) {
+                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
+                if (child instanceof Element) {
+                    child = ((Element) child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
+                    if (child != null) {
+                        return child.getTextContent();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public String patchXbrl(final String patchXml) throws IOException, SAXException {
@@ -480,6 +491,9 @@ public class BusinessDocumentDbo {
             transactionDbo.setDirection(tmpDirection);
             modifiedTransaction = true;
         }
+
+        transactionDbo.set_ReferencedCompanyId(CompanyDbo.findByOrgno(connection, referencedCompanyId));
+
         if (tmpTransactionTime!=null && transactionDbo.getTransactionTime()!=tmpTransactionTime) {
             transactionDbo.setTransactionTime(tmpTransactionTime);
             modifiedTransaction = true;
