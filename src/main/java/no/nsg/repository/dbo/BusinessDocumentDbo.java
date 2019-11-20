@@ -64,6 +64,9 @@ public class BusinessDocumentDbo {
     private String xbrl;
 
     @JsonIgnore
+    private boolean isSynthetic = false;
+
+    @JsonIgnore
     private TransformationManager.Direction tmpDirection = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
     @JsonIgnore
     private String referencedCompanyId = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
@@ -103,7 +106,7 @@ public class BusinessDocumentDbo {
             throw new NoSuchElementException();
         }
 
-        final String sql = "SELECT _id_transaction, _id_journal, documenttype, documentid, original, xbrl FROM nsg.businessdocument WHERE _id=?";
+        final String sql = "SELECT _id_transaction, _id_journal, documenttype, documentid, original, xbrl, issynthetic FROM nsg.businessdocument WHERE _id=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
@@ -127,6 +130,8 @@ public class BusinessDocumentDbo {
 
             setDocumentid(rs.getString("documentid"));
             setOriginalAndXbrl(rs.getBinaryStream("original"), rs.getCharacterStream("xbrl"));
+
+            isSynthetic = rs.getBoolean("issynthetic");
         }
     }
 
@@ -215,6 +220,10 @@ public class BusinessDocumentDbo {
 
     public String getXbrl() {
         return xbrl;
+    }
+
+    public void setIsSynthetic() {
+        this.isSynthetic = true;
     }
 
     private void transformXbrlFromOriginal(DocumentFormat documentFormat, final TransformationManager.Direction direction) {
@@ -402,8 +411,8 @@ public class BusinessDocumentDbo {
         }
 
         if (get_id() == UNINITIALIZED) {
-            final String sql = "INSERT INTO nsg.businessdocument (_id_transaction, _id_journal, documenttype, documentid, original, xbrl) " +
-                                      "VALUES (?,?,?,?,?,?)";
+            final String sql = "INSERT INTO nsg.businessdocument (_id_transaction, _id_journal, documenttype, documentid, original, xbrl, issynthetic) " +
+                                      "VALUES (?,?,?,?,?,?,?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
                  Reader xbrlReader = new StringReader(getXbrl())) {
@@ -430,6 +439,8 @@ public class BusinessDocumentDbo {
                 stmt.setBinaryStream(5, originalBais, originalBais.available());
                 stmt.setCharacterStream(6, xbrlReader);
 
+                stmt.setBoolean(7, this.isSynthetic);
+
                 stmt.executeUpdate();
 
                 ResultSet rs = stmt.getGeneratedKeys();
@@ -438,7 +449,7 @@ public class BusinessDocumentDbo {
                 }
             }
         } else {
-            final String sql = "UPDATE nsg.businessdocument SET _id_transaction=?, _id_journal=?, documenttype=?, documentid=?, original=?, xbrl=? "+
+            final String sql = "UPDATE nsg.businessdocument SET _id_transaction=?, _id_journal=?, documenttype=?, documentid=?, original=?, xbrl=?, issynthetic=? "+
                                                 "WHERE _id=?";
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
@@ -465,7 +476,10 @@ public class BusinessDocumentDbo {
                 stmt.setString(4, getDocumentid());
                 stmt.setBinaryStream(5, originalBais, originalBais.available());
                 stmt.setCharacterStream(6, xbrlReader);
-                stmt.setInt(7, get_id());
+
+                stmt.setBoolean(7, this.isSynthetic);
+
+                stmt.setInt(8, get_id());
 
                 stmt.executeUpdate();
             }

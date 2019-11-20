@@ -25,11 +25,14 @@ public class BankstatementManager {
     private ConnectionManager connectionManager;
 
 
-    public BusinessDocumentDbo createBankstatement(final String bankstatementOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createBankstatement(final String bankstatementOriginalXml, final boolean isSynthetic) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo bankstatement;
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 bankstatement = new BusinessDocumentDbo();
+                if (isSynthetic) {
+                    bankstatement.setIsSynthetic();
+                }
                 bankstatement.setDocumenttype(DocumentType.Type.BANK_STATEMENT);
                 bankstatement.setOriginalFromString(bankstatementOriginalXml);
                 bankstatement.persist(connection);

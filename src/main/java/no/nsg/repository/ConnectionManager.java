@@ -221,7 +221,13 @@ public class ConnectionManager {
 		}
 	}
 
-	private void importSyntheticData(final Connection connection) throws URISyntaxException, IOException {
+	private void importSyntheticData(final Connection connection) throws URISyntaxException, IOException, SQLException {
+		LOGGER.info("Deleting old synthetic data");
+		final String sql = "DELETE FROM nsg.businessdocument WHERE issynthetic=true";
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			stmt.executeUpdate();
+		}
+
 		URI uri = ConnectionManager.class.getResource("/").toURI();
 		if (uri.getScheme().equals("jar")) {
 			try (java.nio.file.FileSystem fileSystem = java.nio.file.FileSystems.newFileSystem(uri, Collections.emptyMap());
@@ -259,12 +265,6 @@ public class ConnectionManager {
 
 		String companyId = filename.substring(0, filename.length()-".zip".length());
 
-		final String sql = "DELETE FROM nsg.company WHERE orgno=?";
-		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-			stmt.setString(1, companyId);
-			stmt.executeUpdate();
-		}
-
 		URI uri = ConnectionManager.class.getResource("/").toURI();
 		boolean isLocalBuild = !uri.getScheme().equals("jar");
 
@@ -297,17 +297,17 @@ public class ConnectionManager {
 					xmlDocument = baos.toString();
 
 					if (ze.getName().startsWith(companyId + "/purchase_invoices/")) {
-						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+						invoiceManager.createInvoice(companyId, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith(companyId + "/sales_invoices/")) {
-						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+						invoiceManager.createInvoice(companyId, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith(companyId + "/bank_statements/")) {
-						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+						invoiceManager.createInvoice(companyId, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith(companyId + "/orders/")) {
-						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+						invoiceManager.createInvoice(companyId, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith(companyId + "/receipts/")) {
-						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+						invoiceManager.createInvoice(companyId, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith(companyId + "/other/")) {
-						invoiceManager.createInvoice(companyId, xmlDocument, connection);
+						invoiceManager.createInvoice(companyId, xmlDocument, true, connection);
 					}
 
 					importCount++;

@@ -29,7 +29,7 @@ public class InvoiceManager {
         BusinessDocumentDbo invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                invoice = createInvoice(companyId, invoiceOriginalXml, connection);
+                invoice = createInvoice(companyId, invoiceOriginalXml, false, connection);
                 connection.commit();
             } catch (Exception e) {
                 try {
@@ -43,8 +43,11 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml, final boolean isSynthetic, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo invoice = new BusinessDocumentDbo();
+        if (isSynthetic) {
+            invoice.setIsSynthetic();
+        }
         invoice.setDocumenttype(DocumentType.Type.INVOICE);
         invoice.setOriginalFromString(companyId, invoiceOriginalXml); //Will also set direction
         invoice.persist(connection);

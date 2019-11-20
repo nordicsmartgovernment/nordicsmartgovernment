@@ -54,7 +54,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
             ContentCachingRequestWrapper requestCacheWrapperObject = (ContentCachingRequestWrapper) httpServletRequest;
             String bankstatementOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
-            persistedBankstatement = bankstatementManager.createBankstatement(body);
+            persistedBankstatement = bankstatementManager.createBankstatement(body, false);
         } catch (NoSuchElementException e) {
             LOGGER.error("POST_CREATEBANKSTATEMENT failed to persist bankstatement");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
