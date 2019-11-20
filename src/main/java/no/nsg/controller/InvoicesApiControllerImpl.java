@@ -14,6 +14,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
      */
 
     @Override
-    public ResponseEntity<Void> createInvoice(Principal principal, HttpServletRequest httpServletRequest, String body) {
+    public ResponseEntity<Void> createInvoice(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String body) {
         BusinessDocumentDbo persistedInvoice;
         try {
             /*
@@ -59,7 +61,11 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
             persistedInvoice = invoiceManager.createInvoice(principal.getName(), body);
         } catch (IllegalArgumentException e) {
             LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, e.getMessage(), e);
+            try {
+                response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());
+            } catch (IOException e2) {
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (NoSuchElementException e) {
             LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -77,7 +83,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<Object> getInvoiceById(Principal principal, HttpServletRequest httpServletRequest, String id) {
+    public ResponseEntity<Object> getInvoiceById(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String id) {
         Invoice returnValue = null;
         try {
             BusinessDocumentDbo invoice = invoiceManager.getInvoiceById(id);
@@ -97,7 +103,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<List<Object>> getInvoices(Principal principal, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<Object>> getInvoices(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         List<Object> returnValue = new ArrayList<>();
         try {
             List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices();

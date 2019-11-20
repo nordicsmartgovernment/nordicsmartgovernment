@@ -12,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
      */
 
     @Override
-    public ResponseEntity<Void> createBankStatement(Principal principal, HttpServletRequest httpServletRequest, String body) {
+    public ResponseEntity<Void> createBankStatement(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String body) {
         BusinessDocumentDbo persistedBankstatement;
         try {
             /*
@@ -71,7 +72,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     }
 
     @Override
-    public ResponseEntity<Object> getBankStatementById(Principal principal, HttpServletRequest httpServletRequest, String id) {
+    public ResponseEntity<Object> getBankStatementById(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String id) {
         Bankstatement returnValue = null;
         try {
             BusinessDocumentDbo bankstatement = bankstatementManager.getBankstatementById(id);
@@ -91,7 +92,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     }
 
     @Override
-    public ResponseEntity<List<Object>> getBankStatements(Principal principal, HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<Object>> getBankStatements(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response) {
         List<Object> returnValue = new ArrayList<>();
         try {
             List<BusinessDocumentDbo> bankstatements = bankstatementManager.getBankstatements();

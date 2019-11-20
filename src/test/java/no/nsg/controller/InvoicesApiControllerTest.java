@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +44,9 @@ public class InvoicesApiControllerTest {
 
     @Mock
     HttpServletRequest httpServletRequestMock;
+
+    @Mock
+    HttpServletResponse httpServletResponseMock;
 
     @Autowired
     InvoicesApiControllerImpl invoicesApiController;
@@ -90,13 +94,13 @@ public class InvoicesApiControllerTest {
         String original = resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8);
         String originalChecksum = sha256Checksum(original.getBytes(StandardCharsets.UTF_8));
 
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(principal, httpServletRequestMock, original);
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(principal, httpServletRequestMock, httpServletResponseMock, original);
         Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response2 = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, createdId);
+        ResponseEntity<Object> response2 = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, httpServletResponseMock, createdId);
         Assert.assertTrue(response2.getStatusCode() == HttpStatus.OK);
         InvoicesApiControllerImpl.Invoice returnedInvoice = (InvoicesApiControllerImpl.Invoice) response2.getBody();
         String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
@@ -105,13 +109,13 @@ public class InvoicesApiControllerTest {
 
     @Test
     public void createInvoiceTest() throws IOException {
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(new TestPrincipal("983294"), httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> response = invoicesApiController.createInvoice(new TestPrincipal("983294"), httpServletRequestMock, httpServletResponseMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void getInvoicesTest() {
-        ResponseEntity<List<Object>> response = invoicesApiController.getInvoices(new TestPrincipal(""), httpServletRequestMock);
+        ResponseEntity<List<Object>> response = invoicesApiController.getInvoices(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock);
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
@@ -119,13 +123,13 @@ public class InvoicesApiControllerTest {
     public void getInvoiceByIdTest() throws IOException {
         Principal principal = new TestPrincipal("123456785");
 
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(principal, httpServletRequestMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(principal, httpServletRequestMock, httpServletResponseMock, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, createdId);
+        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(principal, httpServletRequestMock, httpServletResponseMock, createdId);
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
         InvoicesApiControllerImpl.Invoice invoice = (InvoicesApiControllerImpl.Invoice) response.getBody();

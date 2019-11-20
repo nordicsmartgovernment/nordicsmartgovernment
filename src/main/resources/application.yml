@@ -13,9 +13,9 @@ server:
   http2:
     enabled: true
 
-spring:
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
+#spring:
+#  autoconfigure:
+#    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
 
 #Enable this to log REST API mappings (GCP health probe will spam the log, though)
 #logging:

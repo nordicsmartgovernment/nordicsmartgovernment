@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +41,9 @@ public class TransactionsApiControllerTest {
 
     @Mock
     HttpServletRequest httpServletRequestMock;
+
+    @Mock
+    HttpServletResponse httpServletResponseMock;
 
     @Autowired
     TransactionsApiControllerImpl transactionsApiController;
@@ -90,7 +94,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null, null);
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -98,7 +102,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOrganizationTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "20202020", null);
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, "20202020", null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -106,7 +110,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getInboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null, "incoming");
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, null, "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -114,7 +118,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOutboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, null, "outgoing");
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, null, "outgoing");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -122,7 +126,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOrganizationInboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, null, "20202020", "incoming");
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, "20202020", "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -130,7 +134,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void patchTransactionByIdTest() throws IOException {
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
@@ -139,7 +143,7 @@ public class TransactionsApiControllerTest {
         String patchXml = "<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\">\n" +
                             "<replace sel=\"xbrli:xbrl/xbrli:context/xbrli:entity/xbrli:identifier/text()\">Patched!</replace>\n" +
                           "</diff>";
-        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(new TestPrincipal(""), httpServletRequestMock, createdId, patchXml);
+        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, createdId, patchXml);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -153,12 +157,12 @@ public class TransactionsApiControllerTest {
 
             connectionManager.waitUntilSyntheticDataIsImported();
 
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal("983294"), httpServletRequestMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(new TestPrincipal("983294"), httpServletRequestMock, httpServletResponseMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         }
     }
 

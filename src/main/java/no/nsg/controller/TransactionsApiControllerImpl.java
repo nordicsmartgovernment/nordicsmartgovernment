@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.security.Principal;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
      */
 
     @Override
-    public ResponseEntity<Object> getTransactionById(Principal principal, HttpServletRequest httpServletRequest, String transactionId) {
+    public ResponseEntity<Object> getTransactionById(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String transactionId) {
         String transaction;
         try {
             transaction = transactionManager.getTransactionDocument(transactionId);
@@ -46,7 +47,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<List<String>> getTransactions(Principal principal, HttpServletRequest httpServletRequest, String filterDocumentId, String filterOrganizationId, String finterInvoiceType) {
+    public ResponseEntity<List<String>> getTransactions(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String filterDocumentId, String filterOrganizationId, String finterInvoiceType) {
         List<String> transactionIds;
         try {
             transactionIds = transactionManager.getTransactionIds(filterDocumentId, filterOrganizationId, finterInvoiceType);
@@ -63,7 +64,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<Object> patchTransactionById(Principal principal, HttpServletRequest httpServletRequest, String id, String patchXml) {
+    public ResponseEntity<Object> patchTransactionById(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String id, String patchXml) {
         Object transaction;
         try {
             transaction = transactionManager.patchTransactionById(id, patchXml);
