@@ -1,6 +1,5 @@
 api.mustache:
-* Added "import javax.servlet.http.HttpServletRequest;" needed by CachableDispatcherServlet
-* Added "import java.security.Principal;" needed for HTTP Basic Auth
+* Added HttpServletRequest and HttpServletRequest needed by CachableDispatcherServlet and "Content-Type"/"Accept"-header functionality
 * Added parameters to the @RequestMapping
 
 apiController.mustache
