@@ -1,12 +1,12 @@
 package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
-import no.nsg.spring.TestPrincipal;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,7 +94,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, null, null);
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -102,7 +102,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOrganizationTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, "20202020", null);
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, "20202020", null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -110,7 +110,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getInboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, null, "incoming");
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -118,7 +118,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOutboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, null, "outgoing");
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "outgoing");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -126,7 +126,7 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getOrganizationInboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, null, "20202020", "incoming");
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, "20202020", "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         List<String> responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -134,7 +134,9 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void patchTransactionByIdTest() throws IOException {
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+        final String customerId = "2372513-5";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.sales-invoice");
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
@@ -143,7 +145,7 @@ public class TransactionsApiControllerTest {
         String patchXml = "<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\">\n" +
                             "<replace sel=\"xbrli:xbrl/xbrli:context/xbrli:entity/xbrli:identifier/text()\">Patched!</replace>\n" +
                           "</diff>";
-        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, createdId, patchXml);
+        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(httpServletRequestMock, httpServletResponseMock, createdId, patchXml);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -152,17 +154,18 @@ public class TransactionsApiControllerTest {
     }
 
     private void initializeInvoiceData() throws IOException {
+        final String customerId = "983294";
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
 
             connectionManager.waitUntilSyntheticDataIsImported();
 
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(new TestPrincipal("983294"), httpServletRequestMock, httpServletResponseMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         }
     }
 

@@ -25,11 +25,11 @@ public class InvoiceManager {
     private ConnectionManager connectionManager;
 
 
-    public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createInvoice(final String companyId, final DocumentType.Type documentType, final String invoiceOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo invoice;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                invoice = createInvoice(companyId, invoiceOriginalXml, false, connection);
+                invoice = createInvoice(companyId, documentType, invoiceOriginalXml, false, connection);
                 connection.commit();
             } catch (Exception e) {
                 try {
@@ -43,12 +43,12 @@ public class InvoiceManager {
         return invoice;
     }
 
-    public BusinessDocumentDbo createInvoice(final String companyId, final String invoiceOriginalXml, final boolean isSynthetic, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createInvoice(final String companyId, final DocumentType.Type documentType, final String invoiceOriginalXml, final boolean isSynthetic, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo invoice = new BusinessDocumentDbo();
         if (isSynthetic) {
             invoice.setIsSynthetic();
         }
-        invoice.setDocumenttype(DocumentType.Type.INVOICE);
+        invoice.setDocumenttype(documentType);
         invoice.setOriginalFromString(companyId, invoiceOriginalXml); //Will also set direction
         invoice.persist(connection);
         return invoice;
@@ -100,11 +100,10 @@ public class InvoiceManager {
     public List<BusinessDocumentDbo> getInvoices(final Connection connection) throws SQLException {
         List<BusinessDocumentDbo> invoices = new ArrayList<>();
 
-        final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=? OR documenttype=? OR documenttype=?";
+        final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=? OR documenttype=?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, DocumentType.toInt(DocumentType.Type.INVOICE));
-            stmt.setInt(2, DocumentType.toInt(DocumentType.Type.SALES_INVOICE));
-            stmt.setInt(3, DocumentType.toInt(DocumentType.Type.PURCHASE_INVOICE));
+            stmt.setInt(1, DocumentType.toInt(DocumentType.Type.SALES_INVOICE));
+            stmt.setInt(2, DocumentType.toInt(DocumentType.Type.PURCHASE_INVOICE));
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {

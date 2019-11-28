@@ -1,7 +1,6 @@
 package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
-import no.nsg.spring.TestPrincipal;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
@@ -27,7 +26,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.security.Principal;
 import java.util.List;
 
 
@@ -85,33 +83,31 @@ public class BankstatementsApiControllerTest {
     @Ignore //Resource is imported in getBankstatementByIdTest below
     @Test
     public void createBankstatementTest() throws IOException {
-        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void createInvalidBankstatementTest() throws IOException {
-        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void getBankstatementsTest() {
-        ResponseEntity<List<Object>> response = bankstatementsApiController.getBankStatements(new TestPrincipal(""), httpServletRequestMock, httpServletResponseMock);
+        ResponseEntity<List<Object>> response = bankstatementsApiController.getBankStatements(httpServletRequestMock, httpServletResponseMock);
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
     @Test
     public void getBankstatementByIdTest() throws IOException {
-        Principal principal = new TestPrincipal("");
-
-        ResponseEntity<Void> createResponse = bankstatementsApiController.createBankStatement(principal, httpServletRequestMock, httpServletResponseMock, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> createResponse = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(principal, httpServletRequestMock, httpServletResponseMock, createdId);
+        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, httpServletResponseMock, createdId);
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
         BankstatementsApiControllerImpl.Bankstatement bankstatement = (BankstatementsApiControllerImpl.Bankstatement) response.getBody();

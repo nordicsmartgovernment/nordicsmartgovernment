@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.repository.DocumentType;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.invoice.InvoiceManager;
 import org.slf4j.Logger;
@@ -8,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 //import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -18,12 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
-import java.security.Principal;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-//force build 87878787 45454545 4576456456
 
 @Controller
 public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.InvoicesApi {
@@ -50,7 +48,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
      */
 
     @Override
-    public ResponseEntity<Void> createInvoice(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String body) {
+    public ResponseEntity<Void> createInvoice(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String body) {
         BusinessDocumentDbo persistedInvoice;
         try {
             /*
@@ -59,9 +57,16 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
             ContentCachingRequestWrapper requestCacheWrapperObject = (ContentCachingRequestWrapper) httpServletRequest;
             String invoiceOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
-            persistedInvoice = invoiceManager.createInvoice(principal.getName(), body);
+
+            final String contentType = httpServletRequest.getContentType();
+            DocumentType.Type documentType = DocumentType.fromMimeType(contentType);
+            if (documentType == null) {
+                throw new IllegalArgumentException("Please set Content-Type:-header to a supported MIME type: "+DocumentType.getDocumentMimeTypes());
+            }
+
+            persistedInvoice = invoiceManager.createInvoice(companyId, documentType, body);
         } catch (IllegalArgumentException| SAXException e) {
-            LOGGER.error("POST_CREATEINVOICE failed to persist invoice");
+            LOGGER.error("POST_CREATEINVOICE failed to persist invoice: " + e.getMessage());
             try {
                 response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());
             } catch (IOException e2) {
@@ -84,7 +89,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<Object> getInvoiceById(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String id) {
+    public ResponseEntity<Object> getInvoiceById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String id) {
         Invoice returnValue = null;
         try {
             BusinessDocumentDbo invoice = invoiceManager.getInvoiceById(id);
@@ -104,13 +109,26 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
     }
 
     @Override
-    public ResponseEntity<List<Object>> getInvoices(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response) {
-        List<Object> returnValue = new ArrayList<>();
+    public ResponseEntity<Object> getInvoices(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId) {
+        List<? extends Object> returnValue = null;
         try {
-            List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices();
-            for (BusinessDocumentDbo invoice : invoices) {
-                returnValue.add(new Invoice(invoice.getDocumentid(), invoice.getOriginal()));
+            final String accept = httpServletRequest.getHeader("Accept");
+            if ("application/xml".equalsIgnoreCase(accept)) {
+                returnValue = getInvoiceBodies();
+                response.setContentType("application/xml");
+            } else if ("application/json".equalsIgnoreCase(accept)) {
+                returnValue = getInvoiceIds();
+                response.setContentType("application/json");
+            } else {
+                throw new IllegalArgumentException("Please set Accept:-header to either \"application/json\" or \"application/xml\"");
             }
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("GET_GETINVOICES failed: " + e.getMessage());
+            try {
+                response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());
+            } catch (IOException e2) {
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
             LOGGER.error("GET_GETINVOICES failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -121,6 +139,24 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
         } else {
             return new ResponseEntity<>(returnValue, HttpStatus.OK);
         }
+    }
+
+    public List<String> getInvoiceIds() throws SQLException {
+        List<String> returnValue = new ArrayList<>();
+        List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices();
+        for (BusinessDocumentDbo invoice : invoices) {
+            returnValue.add(invoice.getDocumentid());
+        }
+        return returnValue;
+    }
+
+    public List<Invoice> getInvoiceBodies() throws SQLException {
+        List<Invoice> returnValue = new ArrayList<>();
+        List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices();
+        for (BusinessDocumentDbo invoice : invoices) {
+            returnValue.add(new Invoice(invoice.getDocumentid(), invoice.getOriginal()));
+        }
+        return returnValue;
     }
 
 }

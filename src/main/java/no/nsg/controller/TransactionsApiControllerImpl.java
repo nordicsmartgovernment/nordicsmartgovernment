@@ -13,7 +13,6 @@ import org.xml.sax.SAXException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 
 //import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -32,7 +31,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
      */
 
     @Override
-    public ResponseEntity<Object> getTransactionById(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String transactionId) {
+    public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String transactionId) {
         String transaction;
         try {
             transaction = transactionManager.getTransactionDocument(transactionId);
@@ -49,7 +48,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<List<String>> getTransactions(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String filterDocumentId, String filterOrganizationId, String finterInvoiceType) {
+    public ResponseEntity<List<String>> getTransactions(HttpServletRequest httpServletRequest, HttpServletResponse response, String filterDocumentId, String filterOrganizationId, String finterInvoiceType) {
         List<String> transactionIds;
         try {
             transactionIds = transactionManager.getTransactionIds(filterDocumentId, filterOrganizationId, finterInvoiceType);
@@ -66,7 +65,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<Object> patchTransactionById(Principal principal, HttpServletRequest httpServletRequest, HttpServletResponse response, String id, String patchXml) {
+    public ResponseEntity<Object> patchTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String id, String patchXml) {
         Object transaction;
         try {
             transaction = transactionManager.patchTransactionById(id, patchXml);
