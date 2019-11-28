@@ -19,26 +19,43 @@ tags:
   - name: invoiceCollection
     description: invoiceCollection operations
 paths:
-  /invoices:
+  /invoices/{companyId}:
     get:
       tags:
         - invoiceCollection
       description: List every invoice in the catalog
       operationId: getInvoices
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: The Invoice owner customerId
+          schema:
+            type: string
       responses:
         '200':
           description: OK
           content:
             application/xml:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Invoice"
+                type: object
+                description: Array of all company invoices (BASE64-encoded)
+            application/json:
+              schema:
+                type: object
+                description: List of IDs for all company invoices
     post:
       tags:
         - invoiceCollection
       description: create new invoice in the catalog
       operationId: createInvoice
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: The Invoice owner customerId
+          schema:
+            type: string
       responses:
         '201':
           description: Created
@@ -50,17 +67,23 @@ paths:
       requestBody:
         required: true
         content:
-          application/xml:
+          "*/*":
             schema:
               type: string
               description: An XML-document (Finvoice/Invoice) in the form of a string
-  /invoices/{id}:
+  /invoices/{companyId}/{id}:
     get:
       tags:
         - invoiceCollection
       description: Get an invoice by id
       operationId: getInvoiceById
       parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: The Invoice owner customerId
+          schema:
+            type: string
         - name: id
           in: path
           required: true
