@@ -161,6 +161,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <!--BT-122--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.'))*(-1)), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
 <gl-cor:identifierReference>
@@ -390,6 +392,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.'))), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
@@ -594,6 +598,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <!--BT-8--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount/@AmountCurrencyIdentifier"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->

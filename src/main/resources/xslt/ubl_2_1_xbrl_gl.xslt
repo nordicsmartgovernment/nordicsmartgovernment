@@ -188,6 +188,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -483,6 +484,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--BT-122--><xsl:variable name="value" select="./cbc:TaxAmount"/>
 <xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -690,6 +692,8 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
 <gl-cor:identifierReference>
@@ -859,6 +863,8 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:for-each>
 
 <xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * (-1) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+
+<!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -1040,6 +1046,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!--BT-122--><xsl:variable name="value" select="./cbc:LineExtensionAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
 <gl-cor-fi:priceDetails>
 <xsl:variable name="value" select="./cac:Price/cbc:PriceAmount"/><xsl:if test="string($value)"><gl-cor-fi:netPrice contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor-fi:netPrice></xsl:if>

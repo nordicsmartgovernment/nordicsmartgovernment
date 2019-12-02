@@ -157,6 +157,8 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 <gl-cor:amount decimals='{$value2}' contextRef="now" unitRef="{$ccy}"><xsl:value-of select="$value"/></gl-cor:amount>
 </xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="substring(//Stmt/FrToDt/ToDtTm, 1, 10)"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+
 <gl-bus:amountMemo contextRef="now">false</gl-bus:amountMemo>
 
 
@@ -542,6 +544,8 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 <!--Identifier refrence tuples-->
 <!--Account information-->
 <!--TODO identifierCode ja identifierType tähän-->
+
+
 
 <gl-cor:identifierReference>
 <!--AccountDetails-->

@@ -188,6 +188,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Order-2" x
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="//cac:AnticipatedMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value*(-1)), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -480,6 +481,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Order-2" x
 <!--BT-122--><xsl:variable name="value" select="./cbc:TaxAmount"/>
 <xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value ), '0.00')"/></gl-cor:amount></xsl:if>
 
+<!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -694,7 +696,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Order-2" x
 
 <!--BT-8--><xsl:variable name="value" select="//Order/cbc:DocumentCurrencyCode"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
 
-
+<!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
 
 <!--Identifier refrence tuples-->
