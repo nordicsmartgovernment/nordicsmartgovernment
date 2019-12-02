@@ -94,67 +94,78 @@ public class TransactionsApiControllerTest {
 
     @Test
     public void getTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null);
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<String> responseBody = response.getBody();
+        Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
     }
 
     @Test
     public void getOrganizationTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, "20202020", null);
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<String> responseBody = response.getBody();
+        Object responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+    }
+
+    @Test
+    public void getOrganizationTransactionsAsXbrlTest() {
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/xbrl-instance+xml");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
     }
 
     @Test
     public void getInboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "incoming");
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<String> responseBody = response.getBody();
+        Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
     }
 
     @Test
     public void getOutboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "outgoing");
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "outgoing");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<String> responseBody = response.getBody();
+        Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
     }
 
     @Test
     public void getOrganizationInboundTransactionsTest() {
-        ResponseEntity<List<String>> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, "20202020", "incoming");
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        List<String> responseBody = response.getBody();
+        Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
     }
 
     @Test
     public void patchTransactionByIdTest() throws IOException {
-        final String customerId = "2372513-5";
+        final String companyId = "2372513-5";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.sales-invoice");
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        String patchXml = "<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\">\n" +
-                            "<replace sel=\"xbrli:xbrl/xbrli:context/xbrli:entity/xbrli:identifier/text()\">Patched!</replace>\n" +
-                          "</diff>";
-        ResponseEntity<Object> response = transactionsApiController.patchTransactionById(httpServletRequestMock, httpServletResponseMock, createdId, patchXml);
+        String xbrlDocument = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
+                              "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\"/>";
+        ResponseEntity<Void> response = transactionsApiController.putTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdId, xbrlDocument);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
-        String xbrl = (String)responseBody;
-        Assert.assertTrue(xbrl.contains("Patched!"));
     }
 
     private void initializeInvoiceData() throws IOException {
         final String customerId = "983294";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.sales-invoice");
+
         if (!hasInitializedInvoiceData) {
             hasInitializedInvoiceData = true;
 

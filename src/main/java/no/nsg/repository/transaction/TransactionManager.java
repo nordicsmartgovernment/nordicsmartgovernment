@@ -17,7 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @Component
@@ -27,18 +29,18 @@ public class TransactionManager {
     private ConnectionManager connectionManager;
 
 
-    public List<String> getTransactionIds(final String filterDocumentId, final String filterOrganizationId, final String filterInvoiceType) throws SQLException {
+    public List<String> getTransactionIds(final String companyId, final String filterDocumentId, final String filterInvoiceType) throws SQLException {
         List<String> transactionIds = new ArrayList<>();
 
         try (Connection connection = connectionManager.getConnection()) {
+            String filterCompanyId = "";
+            if (companyId!=null) {
+                filterCompanyId = "AND c.orgno=? ";
+            }
+
             String documentFilter = "";
             if (filterDocumentId!=null) {
                 documentFilter = "AND d.documentid=? ";
-            }
-
-            String organizationFilter = "";
-            if (filterOrganizationId!=null) {
-                organizationFilter = "AND c.orgno=? ";
             }
 
             String invoiceTypeFilter = "";
@@ -51,17 +53,17 @@ public class TransactionManager {
                     +"WHERE d._id_transaction=t._id "
                     +"AND t._id_transactionset=ts._id "
                     +"AND ts._id_company=c._id "
+                    +filterCompanyId
                     +documentFilter
-                    +organizationFilter
                     +invoiceTypeFilter+
                     "ORDER BY t.transactionid;";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 int i = 0;
+                if (!filterCompanyId.isEmpty()) {
+                    stmt.setString(++i, companyId);
+                }
                 if (!documentFilter.isEmpty()) {
                     stmt.setString(++i, filterDocumentId);
-                }
-                if (!organizationFilter.isEmpty()) {
-                    stmt.setString(++i, filterOrganizationId);
                 }
                 if (!invoiceTypeFilter.isEmpty()) {
                     int direction = TransactionDbo.NO_DIRECTION;
@@ -117,8 +119,23 @@ public class TransactionManager {
     }
 
     public String getTransactionDocument(final String transactionId) throws SQLException, IOException, SAXException {
+        return getTransactionDocument(Collections.singletonList(transactionId));
+    }
+
+    public String getTransactionDocument(final List<String> transactionIds) throws SQLException, IOException, SAXException {
         Document transactionDocument = null;
         Node accountingEntry = null;
+
+        StringBuilder sb = new StringBuilder();
+        for (String transactionId : transactionIds) {
+            if (sb.length() > 0) {
+                sb.append(',');
+            }
+            sb.append('\'');
+            sb.append(transactionId);
+            sb.append('\'');
+        }
+        final String transactionIdsAsString = sb.toString();
 
         try (Connection connection = connectionManager.getConnection()) {
 
@@ -127,9 +144,9 @@ public class TransactionManager {
                               +"WHERE d._id_transaction=t._id "
                               +"AND t._id_transactionset=ts._id "
                               +"AND ts._id_company=c._id "
-                              +"AND t.transactionid=?";
+                              +"AND t.transactionid IN (?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, transactionId);
+                stmt.setString(1, transactionIdsAsString);
 
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
@@ -254,22 +271,18 @@ public class TransactionManager {
         return transactions;
     }
 
-    public String patchTransactionById(final String id, final String patchXml) throws SQLException, IOException, SAXException {
-        String patchedXbrl;
-
+    public void putTransactionById(final String id, final String xbrlDocument) throws SQLException, IOException, SAXException {
         try (Connection connection = connectionManager.getConnection()) {
             int documentId = BusinessDocumentDbo.findInternalId(connection, id);
             if (documentId == BusinessDocumentDbo.UNINITIALIZED) {
                 connection.commit();
-                return null;
+                throw new NoSuchElementException();
             }
             BusinessDocumentDbo original = new BusinessDocumentDbo(connection, documentId);
-            patchedXbrl = original.patchXbrl(patchXml);
+            original.setXbrl(xbrlDocument);
             original.persist(connection);
             connection.commit();
         }
-
-        return patchedXbrl;
     }
 
     private String readerToString(final Reader xbrlReader) {

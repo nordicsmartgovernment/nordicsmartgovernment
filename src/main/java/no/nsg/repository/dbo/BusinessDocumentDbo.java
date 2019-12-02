@@ -218,6 +218,11 @@ public class BusinessDocumentDbo {
         this.xbrl = sb.toString();
     }
 
+    public void setXbrl(final String xbrl) throws IOException, SAXException {
+        this.xbrl = xbrl;
+        parseXbrl();
+    }
+
     public String getXbrl() {
         return xbrl;
     }
