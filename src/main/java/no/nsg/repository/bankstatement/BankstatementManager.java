@@ -25,7 +25,7 @@ public class BankstatementManager {
     private ConnectionManager connectionManager;
 
 
-    public BusinessDocumentDbo createBankstatement(final String bankstatementOriginalXml, final boolean isSynthetic) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createBankstatement(final String companyId, final DocumentType.Type documentType, final String bankstatementOriginalXml, final boolean isSynthetic) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo bankstatement;
         try (Connection connection = connectionManager.getConnection()) {
             try {
@@ -33,8 +33,8 @@ public class BankstatementManager {
                 if (isSynthetic) {
                     bankstatement.setIsSynthetic();
                 }
-                bankstatement.setDocumenttype(DocumentType.Type.BANK_STATEMENT);
-                bankstatement.setOriginalFromString(bankstatementOriginalXml);
+                bankstatement.setDocumenttype(documentType);
+                bankstatement.setOriginalFromString(companyId, bankstatementOriginalXml);
                 bankstatement.persist(connection);
                 connection.commit();
             } catch (SQLException | SAXException e) {
@@ -70,12 +70,20 @@ public class BankstatementManager {
         return bankstatement;
     }
 
-    public List<BusinessDocumentDbo> getBankstatements() throws SQLException {
+    public List<BusinessDocumentDbo> getBankstatements(final String companyId) throws SQLException {
         List<BusinessDocumentDbo> bankstatements = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=?";
+            final String sql = "SELECT d._id "
+                              +"FROM nsg.businessdocument d, nsg.transaction t, nsg.transactionset ts, nsg.company c "
+                              +"WHERE d._id_transaction=t._id "
+                              +"AND t._id_transactionset=ts._id "
+                              +"AND ts._id_company=c._id "
+                              +"AND d.documenttype=?"
+                              +"AND c.orgno=?";
+
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, DocumentType.toInt(DocumentType.Type.BANK_STATEMENT));
+                stmt.setString(2, companyId);
 
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
