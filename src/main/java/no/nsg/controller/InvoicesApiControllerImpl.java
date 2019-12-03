@@ -114,10 +114,10 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
         try {
             final String accept = httpServletRequest.getHeader("Accept");
             if ("application/xml".equalsIgnoreCase(accept)) {
-                returnValue = getInvoiceBodies();
+                returnValue = getInvoiceBodies(companyId);
                 response.setContentType("application/xml");
             } else if ("application/json".equalsIgnoreCase(accept)) {
-                returnValue = getInvoiceIds();
+                returnValue = getInvoiceIds(companyId);
                 response.setContentType("application/json");
             } else {
                 throw new IllegalArgumentException("Please set Accept:-header to either \"application/json\" or \"application/xml\"");
@@ -141,18 +141,18 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
         }
     }
 
-    public List<String> getInvoiceIds() throws SQLException {
+    public List<String> getInvoiceIds(final String companyId) throws SQLException {
         List<String> returnValue = new ArrayList<>();
-        List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices();
+        List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices(companyId);
         for (BusinessDocumentDbo invoice : invoices) {
             returnValue.add(invoice.getDocumentid());
         }
         return returnValue;
     }
 
-    public List<Invoice> getInvoiceBodies() throws SQLException {
+    public List<Invoice> getInvoiceBodies(final String companyId) throws SQLException {
         List<Invoice> returnValue = new ArrayList<>();
-        List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices();
+        List<BusinessDocumentDbo> invoices = invoiceManager.getInvoices(companyId);
         for (BusinessDocumentDbo invoice : invoices) {
             returnValue.add(new Invoice(invoice.getDocumentid(), invoice.getOriginal()));
         }

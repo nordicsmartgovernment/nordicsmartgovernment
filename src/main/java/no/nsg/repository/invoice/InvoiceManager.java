@@ -79,11 +79,11 @@ public class InvoiceManager {
         return new BusinessDocumentDbo(connection, BusinessDocumentDbo.findInternalId(connection, id));
     }
 
-    public List<BusinessDocumentDbo> getInvoices() throws SQLException {
+    public List<BusinessDocumentDbo> getInvoices(final String companyId) throws SQLException {
         List<BusinessDocumentDbo> invoices = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                invoices = getInvoices(connection);
+                invoices = getInvoices(connection, companyId);
                 connection.commit();
             } catch (SQLException e) {
                 try {
@@ -97,13 +97,21 @@ public class InvoiceManager {
         return invoices;
     }
 
-    public List<BusinessDocumentDbo> getInvoices(final Connection connection) throws SQLException {
+    public List<BusinessDocumentDbo> getInvoices(final Connection connection, final String companyId) throws SQLException {
         List<BusinessDocumentDbo> invoices = new ArrayList<>();
 
-        final String sql = "SELECT _id FROM nsg.businessdocument WHERE documenttype=? OR documenttype=?";
+        final String sql = "SELECT d._id "
+                          +"FROM nsg.businessdocument d, nsg.transaction t, nsg.transactionset ts, nsg.company c "
+                          +"WHERE d._id_transaction=t._id "
+                          +"AND t._id_transactionset=ts._id "
+                          +"AND ts._id_company=c._id "
+                          +"AND (d.documenttype=? OR d.documenttype=?) "
+                          +"AND c.orgno=?";
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, DocumentType.toInt(DocumentType.Type.SALES_INVOICE));
             stmt.setInt(2, DocumentType.toInt(DocumentType.Type.PURCHASE_INVOICE));
+            stmt.setString(3, companyId);
 
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
