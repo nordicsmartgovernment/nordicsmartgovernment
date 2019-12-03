@@ -296,17 +296,17 @@ public class ConnectionManager {
 					}
 					xmlDocument = baos.toString();
 
-					if (ze.getName().startsWith(companyId + "/purchase_invoices/")) {
+					if (ze.getName().startsWith("purchase_invoices/")) {
 						invoiceManager.createInvoice(companyId, DocumentType.Type.PURCHASE_INVOICE, xmlDocument, true, connection);
-					} else if (ze.getName().startsWith(companyId + "/sales_invoices/")) {
+					} else if (ze.getName().startsWith("sales_invoices/")) {
 						invoiceManager.createInvoice(companyId, DocumentType.Type.SALES_INVOICE, xmlDocument, true, connection);
-					} else if (ze.getName().startsWith(companyId + "/bank_statements/")) {
+					} else if (ze.getName().startsWith("bank_statements/")) {
 						invoiceManager.createInvoice(companyId, DocumentType.Type.BANK_STATEMENT, xmlDocument, true, connection);
-					} else if (ze.getName().startsWith(companyId + "/orders/")) {
+					} else if (ze.getName().startsWith("orders/")) {
 						invoiceManager.createInvoice(companyId, DocumentType.Type.PURCHASE_ORDER, xmlDocument, true, connection);
-					} else if (ze.getName().startsWith(companyId + "/receipts/")) {
+					} else if (ze.getName().startsWith("receipts/")) {
 						invoiceManager.createInvoice(companyId, DocumentType.Type.RECEIPT, xmlDocument, true, connection);
-					} else if (ze.getName().startsWith(companyId + "/other/")) {
+					} else if (ze.getName().startsWith("other/")) {
 						invoiceManager.createInvoice(companyId, DocumentType.Type.OTHER, xmlDocument, true, connection);
 					}
 
