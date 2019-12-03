@@ -110,7 +110,7 @@ public class InvoicesApiControllerImpl implements no.nsg.generated.invoice_api.I
 
     @Override
     public ResponseEntity<Object> getInvoices(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId) {
-        List<? extends Object> returnValue = null;
+        List<? extends Object> returnValue;
         try {
             final String accept = httpServletRequest.getHeader("Accept");
             if ("application/xml".equalsIgnoreCase(accept)) {

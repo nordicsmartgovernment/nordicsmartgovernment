@@ -21,22 +21,22 @@ tags:
   - name: writeTransaction
     description: operations that writes or updates a single transcation
 paths:
-  /transactions:
+  /transactions/{companyId}:
     get:
       tags:
         - transactionCollection
       description: List every transaction in the catalog
       operationId: getTransactions
       parameters:
+        - name: companyId
+          in: path
+          description: The transactions owner customerId
+          required: true
+          schema:
+            type: string
         - name: documentId
           in: query
           description: Filter transactions by document id
-          required: false
-          schema:
-            type: string
-        - name: organizationId
-          in: query
-          description: Filter transactions by organization id
           required: false
           schema:
             type: string
@@ -55,18 +55,25 @@ paths:
         '200':
           description: OK
           content:
+            application/xbrl-instance+xml:
+              schema:
+                type: object
             application/json:
               schema:
-                type: array
-                items:
-                  type: string
-  /transactions/{id}:
+                type: object
+  /transactions/{companyId}/{id}:
     get:
       tags:
         - transactionCollection
       description: Get a transaction by transaction id
       operationId: getTransactionById
       parameters:
+        - name: companyId
+          in: path
+          description: The transaction owner customerId
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -77,15 +84,21 @@ paths:
         '200':
           description: OK
           content:
-            application/xml:
+            application/xbrl-instance+xml:
               schema:
                 $ref: "#/components/schemas/Transaction"
-    patch:
+    put:
       tags:
         - writeTransaction
       description: Patch a transaction
-      operationId: patchTransactionById
+      operationId: putTransactionById
       parameters:
+        - name: companyId
+          in: path
+          description: The transaction owner customerId
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -95,21 +108,13 @@ paths:
       responses:
         '200':
           description: OK
-          content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/Transaction"
       requestBody:
         required: true
         content:
-          application/xml:
+          application/xbrl-instance+xml:
             schema:
               type: string
-              $ref: '#/components/schemas/Diff'
 components:
   schemas:
     Transaction:
       type: object
-    Diff:
-      description: The patch operation conforms to RFC 5261
-      type: string

@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.repository.DocumentType;
 import no.nsg.repository.bankstatement.BankstatementManager;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import org.slf4j.Logger;
@@ -44,7 +45,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
      */
 
     @Override
-    public ResponseEntity<Void> createBankStatement(HttpServletRequest httpServletRequest, HttpServletResponse response, String body) {
+    public ResponseEntity<Void> createBankStatement(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String body) {
         BusinessDocumentDbo persistedBankstatement;
         try {
             /*
@@ -53,7 +54,14 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
             ContentCachingRequestWrapper requestCacheWrapperObject = (ContentCachingRequestWrapper) httpServletRequest;
             String bankstatementOriginal = new String(requestCacheWrapperObject.getContentAsByteArray(), requestCacheWrapperObject.getCharacterEncoding());
              */
-            persistedBankstatement = bankstatementManager.createBankstatement(body, false);
+
+            final String contentType = httpServletRequest.getContentType();
+            DocumentType.Type documentType = DocumentType.fromMimeType(contentType);
+            if (DocumentType.Type.BANK_STATEMENT != documentType) {
+                throw new IllegalArgumentException("Please set Content-Type:-header to a supported MIME type: \""+DocumentType.toMimeType(DocumentType.Type.BANK_STATEMENT)+"\"");
+            }
+
+            persistedBankstatement = bankstatementManager.createBankstatement(companyId, documentType, body, false);
         } catch (NoSuchElementException e) {
             LOGGER.error("POST_CREATEBANKSTATEMENT failed to persist bankstatement");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,7 +79,7 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     }
 
     @Override
-    public ResponseEntity<Object> getBankStatementById(HttpServletRequest httpServletRequest, HttpServletResponse response, String id) {
+    public ResponseEntity<Object> getBankStatementById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String id) {
         Bankstatement returnValue = null;
         try {
             BusinessDocumentDbo bankstatement = bankstatementManager.getBankstatementById(id);
@@ -91,10 +99,10 @@ public class BankstatementsApiControllerImpl implements no.nsg.generated.banksta
     }
 
     @Override
-    public ResponseEntity<List<Object>> getBankStatements(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+    public ResponseEntity<Object> getBankStatements(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId) {
         List<Object> returnValue = new ArrayList<>();
         try {
-            List<BusinessDocumentDbo> bankstatements = bankstatementManager.getBankstatements();
+            List<BusinessDocumentDbo> bankstatements = bankstatementManager.getBankstatements(companyId);
             for (BusinessDocumentDbo bankstatement : bankstatements) {
                 returnValue.add(new Bankstatement(bankstatement.getDocumentid(), bankstatement.getOriginal()));
             }

@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 //import org.springframework.web.util.ContentCachingRequestWrapper;
 
@@ -31,7 +32,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
      */
 
     @Override
-    public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String transactionId) {
+    public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId) {
         String transaction;
         try {
             transaction = transactionManager.getTransactionDocument(transactionId);
@@ -48,27 +49,48 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     }
 
     @Override
-    public ResponseEntity<List<String>> getTransactions(HttpServletRequest httpServletRequest, HttpServletResponse response, String filterDocumentId, String filterOrganizationId, String finterInvoiceType) {
-        List<String> transactionIds;
+    public ResponseEntity<Object> getTransactions(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String filterDocumentId, String finterInvoiceType) {
+        Object returnValue;
+        boolean noContent = false;
         try {
-            transactionIds = transactionManager.getTransactionIds(filterDocumentId, filterOrganizationId, finterInvoiceType);
+            List<String> transactionIds = transactionManager.getTransactionIds(companyId, filterDocumentId, finterInvoiceType);
+
+            final String accept = httpServletRequest.getHeader("Accept");
+            if ("application/xbrl-instance+xml".equalsIgnoreCase(accept)) {
+                returnValue = transactionManager.getTransactionDocument(transactionIds);
+                response.setContentType("application/xbrl-instance+xml");
+            } else if ("application/json".equalsIgnoreCase(accept)) {
+                returnValue = transactionIds;
+                noContent = (transactionIds==null || transactionIds.isEmpty());
+                response.setContentType("application/json");
+            } else {
+                throw new IllegalArgumentException("Please set Accept:-header to either \"application/json\" or \"application/xbrl-instance+xml\"");
+            }
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("GET_GETTRANSACTIONS failed: " + e.getMessage());
+            try {
+                response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());
+            } catch (IOException e2) {
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
             LOGGER.error("GET_GETTRANSACTIONS failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (transactionIds==null || transactionIds.isEmpty()) {
+        if (returnValue==null || noContent) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            return new ResponseEntity<>(transactionIds, HttpStatus.OK);
+            return new ResponseEntity<>(returnValue, HttpStatus.OK);
         }
     }
 
     @Override
-    public ResponseEntity<Object> patchTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String id, String patchXml) {
-        Object transaction;
+    public ResponseEntity<Void> putTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String id, String body) {
         try {
-            transaction = transactionManager.patchTransactionById(id, patchXml);
+            transactionManager.putTransactionById(id, body);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (PatchException| SAXException | IllegalArgumentException e) {
             LOGGER.error("PATCH_PATCHTRANSACTION patch failed:", e);
             try {
@@ -81,11 +103,7 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        if (transaction==null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(transaction, HttpStatus.OK);
-        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

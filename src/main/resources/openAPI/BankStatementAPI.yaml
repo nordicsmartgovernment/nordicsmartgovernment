@@ -19,26 +19,41 @@ tags:
   - name: bankStatementCollection
     description: bank statement collection operations
 paths:
-  /bankStatements:
+  /bankStatements/{companyId}:
     get:
       tags:
         - bankStatementCollection
-      description: List every bank statement in the catalog
+      description: List every customer bank statement in the catalog
       operationId: getBankStatements
+      parameters:
+        - name: companyId
+          in: path
+          description: The bank statements owner customerId
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: OK
           content:
             application/xml:
               schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/BankStatement"
+                type: object
+            application/json:
+              schema:
+                type: object
     post:
       tags:
         - bankStatementCollection
       description: create new bank statement in the catalog
       operationId: createBankStatement
+      parameters:
+        - name: companyId
+          in: path
+          description: The bank statements owner customerId
+          required: true
+          schema:
+            type: string
       responses:
         '201':
           description: Created
@@ -50,17 +65,23 @@ paths:
       requestBody:
         required: true
         content:
-          application/xml:
+          "*/*":
             schema:
               type: string
               description: An XML-document in the form of a string
-  /bankStatements/{id}:
+  /bankStatements/{companyId}/{id}:
     get:
       tags:
         - bankStatementCollection
       description: Get a bank statement by id
       operationId: getBankStatementById
       parameters:
+        - name: companyId
+          in: path
+          description: The bank statements owner customerId
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true

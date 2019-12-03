@@ -6,6 +6,7 @@ import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -26,7 +27,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 
 @SpringBootTest
@@ -83,31 +83,39 @@ public class BankstatementsApiControllerTest {
     @Ignore //Resource is imported in getBankstatementByIdTest below
     @Test
     public void createBankstatementTest() throws IOException {
-        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
+        final String companyId = "todo";
+        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void createInvalidBankstatementTest() throws IOException {
-        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        final String companyId = "983294";
+
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.bank-statement");
+        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void getBankstatementsTest() {
-        ResponseEntity<List<Object>> response = bankstatementsApiController.getBankStatements(httpServletRequestMock, httpServletResponseMock);
+        final String companyId = "todo";
+        ResponseEntity<Object> response = bankstatementsApiController.getBankStatements(httpServletRequestMock, httpServletResponseMock, companyId);
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
     @Test
     public void getBankstatementByIdTest() throws IOException {
-        ResponseEntity<Void> createResponse = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
+        final String companyId = "todo";
+
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.bank-statement");
+        ResponseEntity<Void> createResponse = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, httpServletResponseMock, createdId);
+        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
         BankstatementsApiControllerImpl.Bankstatement bankstatement = (BankstatementsApiControllerImpl.Bankstatement) response.getBody();
