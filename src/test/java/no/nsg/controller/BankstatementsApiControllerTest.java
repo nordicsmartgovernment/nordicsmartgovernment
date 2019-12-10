@@ -42,7 +42,7 @@ public class BankstatementsApiControllerTest {
     HttpServletResponse httpServletResponseMock;
 
     @Autowired
-    BankstatementsApiControllerImpl bankstatementsApiController;
+    DocumentApiControllerImpl bankstatementsApiController;
 
     @Autowired
     ConnectionManager connectionManager;
@@ -84,7 +84,7 @@ public class BankstatementsApiControllerTest {
     @Test
     public void createBankstatementTest() throws IOException {
         final String companyId = "todo";
-        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
@@ -93,14 +93,15 @@ public class BankstatementsApiControllerTest {
         final String companyId = "983294";
 
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.bank-statement");
-        ResponseEntity<Void> response = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void getBankstatementsTest() {
         final String companyId = "todo";
-        ResponseEntity<Object> response = bankstatementsApiController.getBankStatements(httpServletRequestMock, httpServletResponseMock, companyId);
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
+        ResponseEntity<Object> response = bankstatementsApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, "application/vnd.nordicsmartgovernment.bank-statement");
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
@@ -109,16 +110,16 @@ public class BankstatementsApiControllerTest {
         final String companyId = "todo";
 
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.bank-statement");
-        ResponseEntity<Void> createResponse = bankstatementsApiController.createBankStatement(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> createResponse = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response = bankstatementsApiController.getBankStatementById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
+        ResponseEntity<Object> response = bankstatementsApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
-        BankstatementsApiControllerImpl.Bankstatement bankstatement = (BankstatementsApiControllerImpl.Bankstatement) response.getBody();
+        DocumentApiControllerImpl.Document bankstatement = (DocumentApiControllerImpl.Document) response.getBody();
         Assert.assertEquals(createdId, bankstatement.documentid);
     }
 

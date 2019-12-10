@@ -159,7 +159,7 @@ public class BusinessDocumentDbo {
         return documenttype;
     }
 
-    public void setDocumenttype(final DocumentType.Type documenttype) {
+    private void setDocumenttype(final DocumentType.Type documenttype) {
         this.documenttype = documenttype;
     }
 
@@ -181,11 +181,8 @@ public class BusinessDocumentDbo {
         return original;
     }
 
-    public void setOriginalFromString(final String original) throws IOException, SAXException {
-        setOriginalFromString(null, original);
-    }
-
-    public void setOriginalFromString(final String companyId, final String original) throws IOException, SAXException {
+    public void setOriginalFromString(final DocumentType.Type documentType, final String companyId, final String original) throws IOException, SAXException {
+        setDocumenttype(documentType);
         this.original = original.getBytes(StandardCharsets.UTF_8);
         BusinessDocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
         setDirectionFromDocument(companyId, documentFormat, original);

@@ -29,7 +29,6 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 
 @SpringBootTest
@@ -49,7 +48,7 @@ public class TransactionsApiControllerTest {
     TransactionsApiControllerImpl transactionsApiController;
 
     @Autowired
-    InvoicesApiControllerImpl invoicesApiController;
+    DocumentApiControllerImpl documentApiController;
 
     @Autowired
     ConnectionManager connectionManager;
@@ -150,7 +149,7 @@ public class TransactionsApiControllerTest {
     public void patchTransactionByIdTest() throws IOException {
         final String companyId = "2372513-5";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.sales-invoice");
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+        ResponseEntity<Void> createResponse = documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
@@ -171,12 +170,12 @@ public class TransactionsApiControllerTest {
 
             connectionManager.waitUntilSyntheticDataIsImported();
 
-            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
-            invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+            documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8));
+            documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
+            documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 76 myynti.xml", StandardCharsets.UTF_8));
+            documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 77 myynti.xml", StandardCharsets.UTF_8));
+            documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+            documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, customerId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         }
     }
 
