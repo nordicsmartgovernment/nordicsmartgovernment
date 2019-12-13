@@ -29,6 +29,10 @@ public class DocumentType {
         OTHER
     }
 
+    public static boolean isInvoice(final Type type) {
+        return (type!=null && (type==Type.PURCHASE_INVOICE || type==Type.SALES_INVOICE));
+    }
+
     //Very explicit mapping from type to/from int. Mapped enums should NEVER get a new value! (they exist as int in database)
     public static int toInt(final Type type) {
         switch (type) {

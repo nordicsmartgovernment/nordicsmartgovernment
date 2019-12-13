@@ -6,11 +6,12 @@ import com.github.dnault.xmlpatch.Patcher;
 import net.sf.saxon.s9api.SaxonApiException;
 import no.nsg.repository.DocumentType;
 import no.nsg.repository.TransformationManager;
+import no.nsg.repository.document.FormatFactory;
+import no.nsg.repository.document.formats.DocumentFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -35,13 +36,6 @@ import java.util.UUID;
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class BusinessDocumentDbo {
     private static Logger LOGGER = LoggerFactory.getLogger(BusinessDocumentDbo.class);
-
-    public enum DocumentFormat {
-        UNKNOWN,
-        UML_INVOICE,
-        CAMT053,
-        FINVOICE
-    }
 
     public static final int UNINITIALIZED = 0;
 
@@ -182,12 +176,14 @@ public class BusinessDocumentDbo {
     }
 
     public void setOriginalFromString(final DocumentType.Type documentType, final String companyId, final String original) throws IOException, SAXException {
-        setDocumenttype(documentType);
         this.original = original.getBytes(StandardCharsets.UTF_8);
-        BusinessDocumentDbo.DocumentFormat documentFormat = getDocumentFormat(original);
-        setDirectionFromDocument(companyId, documentFormat, original);
-        transformXbrlFromOriginal(documentFormat, tmpDirection);
-        insertDocumentIdInXbrlDocument();
+        setDocumenttype(documentType);
+        DocumentFormat.Format documentFormat = FormatFactory.guessFormat(documentType, original);
+        setDirectionFromDocument(companyId, documentType, documentFormat, original);
+        if (documentFormat != DocumentFormat.Format.OTHER) {
+            transformXbrlFromOriginal(documentFormat, tmpDirection);
+            insertDocumentIdInXbrlDocument();
+        }
     }
 
     private void insertDocumentIdInXbrlDocument() throws IOException, SAXException {
@@ -228,28 +224,16 @@ public class BusinessDocumentDbo {
         this.isSynthetic = true;
     }
 
-    private void transformXbrlFromOriginal(DocumentFormat documentFormat, final TransformationManager.Direction direction) {
+    private void transformXbrlFromOriginal(final DocumentFormat.Format documentFormat, final TransformationManager.Direction direction) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
-            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, direction, baos);
+            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
             this.xbrl = baos.toString(StandardCharsets.UTF_8.name());
         } catch (SaxonApiException e) {
             LOGGER.info("Invoice failed converting to XBRL");
             this.xbrl = null;
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("Converting to XBRL using unsupported encoding");
-        }
-    }
-
-    private DocumentFormat getDocumentFormat(final String document) {
-        if (document.contains("<Finvoice ")) {
-            return DocumentFormat.FINVOICE;
-        } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.")) {
-            return DocumentFormat.CAMT053;
-        } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"") || document.contains("<Invoice ")) {
-            return DocumentFormat.UML_INVOICE;
-        } else {
-            return DocumentFormat.UNKNOWN;
         }
     }
 
@@ -267,8 +251,8 @@ public class BusinessDocumentDbo {
         return null;
     }
 
-    private void setDirectionFromDocument(final String companyId, final BusinessDocumentDbo.DocumentFormat documentFormat, final String document) throws IOException, SAXException {
-        if (documentFormat != BusinessDocumentDbo.DocumentFormat.UML_INVOICE) {
+    private void setDirectionFromDocument(final String companyId, final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
+        if (!DocumentType.isInvoice(documentType)) {
             tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
             return;
         }
@@ -279,8 +263,9 @@ public class BusinessDocumentDbo {
         }
 
         Document parsedDocument = parseDocument(document);
-        String supplier = getDocumentSupplier(parsedDocument);
-        String customer = getDocumentCustomer(parsedDocument);
+        DocumentFormat docType = FormatFactory.create(documentFormat);
+        String supplier = docType.getDocumentSupplier(parsedDocument);
+        String customer = docType.getDocumentCustomer(parsedDocument);
 
         if (companyId.equalsIgnoreCase(supplier)) {
             tmpDirection = TransformationManager.Direction.SALES;
@@ -291,38 +276,6 @@ public class BusinessDocumentDbo {
         } else {
             throw new IllegalArgumentException("customerId (" + companyId + ") was neither supplier (" + supplier + ") nor customer (" + customer + ")");
         }
-    }
-
-    private String getDocumentSupplier(final Document parsedDocument) {
-        if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingSupplierParty").item(0);
-            if (child instanceof Element) {
-                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
-                if (child instanceof Element) {
-                    child = ((Element) child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
-                    if (child != null) {
-                        return child.getTextContent();
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private String getDocumentCustomer(final Document parsedDocument) {
-        if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingCustomerParty").item(0);
-            if (child instanceof Element) {
-                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
-                if (child instanceof Element) {
-                    child = ((Element) child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
-                    if (child != null) {
-                        return child.getTextContent();
-                    }
-                }
-            }
-        }
-        return null;
     }
 
     public String patchXbrl(final String patchXml) throws IOException, SAXException {
