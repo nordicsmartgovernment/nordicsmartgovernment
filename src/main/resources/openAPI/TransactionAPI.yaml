@@ -87,6 +87,9 @@ paths:
             application/xbrl-instance+xml:
               schema:
                 $ref: "#/components/schemas/Transaction"
+            application/vnd.saf-t+xml:
+              schema:
+                $ref: "#/components/schemas/Transaction"
     put:
       tags:
         - writeTransaction

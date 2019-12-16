@@ -36,7 +36,16 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId) {
         String transaction;
         try {
-            transaction = transactionManager.getTransactionDocument(transactionId);
+            final String accept = httpServletRequest.getHeader("Accept");
+            if (MimeType.XBRL_GL.equalsIgnoreCase(accept)) {
+                transaction = transactionManager.getTransactionDocumentAsXbrlGl(transactionId);
+                response.setContentType(MimeType.XBRL_GL);
+            } else if (MimeType.SAF_T.equalsIgnoreCase(accept)) {
+                transaction = transactionManager.getTransactionDocumentAsSafT(transactionId);
+                response.setContentType(MimeType.SAF_T);
+            } else {
+                throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.SAF_T+"\" or \""+MimeType.XBRL_GL+"\"");
+            }
         } catch (Exception e) {
             LOGGER.error("GET_GETTRANSACTION failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -58,14 +67,17 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
 
             final String accept = httpServletRequest.getHeader("Accept");
             if (MimeType.XBRL_GL.equalsIgnoreCase(accept)) {
-                returnValue = transactionManager.getTransactionDocument(transactionIds);
+                returnValue = transactionManager.getTransactionDocumentAsXbrlGl(transactionIds);
                 response.setContentType(MimeType.XBRL_GL);
+            } else if (MimeType.SAF_T.equalsIgnoreCase(accept)) {
+                    returnValue = transactionManager.getTransactionDocumentAsSafT(transactionIds);
+                    response.setContentType(MimeType.SAF_T);
             } else if (MimeType.JSON.equalsIgnoreCase(accept)) {
                 returnValue = transactionIds;
                 noContent = (transactionIds==null || transactionIds.isEmpty());
                 response.setContentType(MimeType.JSON);
             } else {
-                throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.JSON+"\" or \""+MimeType.XBRL_GL+"\"");
+                throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.JSON+"\", \""+MimeType.SAF_T+"\" or \""+MimeType.XBRL_GL+"\"");
             }
         } catch (IllegalArgumentException e) {
             LOGGER.error("GET_GETTRANSACTIONS failed: " + e.getMessage());

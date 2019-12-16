@@ -27,6 +27,7 @@ public class MimeType {
     public static final String NSG_ORDER_RESPONSE           = "application/vnd.nordicsmartgovernment.order-response";
 
     public static final String XBRL_GL = "application/xbrl-instance+xml";
+    public static final String SAF_T   = "application/vnd.saf-t+xml";
 
     public static final String JSON = "application/json";
     public static final String XML = "application/xml";
