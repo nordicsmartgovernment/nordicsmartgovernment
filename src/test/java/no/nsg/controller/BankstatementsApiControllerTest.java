@@ -1,6 +1,7 @@
 package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.MimeType;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
@@ -92,7 +93,7 @@ public class BankstatementsApiControllerTest {
     public void createInvalidBankstatementTest() throws IOException {
         final String companyId = "983294";
 
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.bank-statement");
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_BANKSTATEMENT);
         ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
@@ -100,8 +101,8 @@ public class BankstatementsApiControllerTest {
     @Test
     public void getBankstatementsTest() {
         final String companyId = "todo";
-        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
-        ResponseEntity<Object> response = bankstatementsApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, "application/vnd.nordicsmartgovernment.bank-statement");
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
+        ResponseEntity<Object> response = bankstatementsApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, MimeType.NSG_BANKSTATEMENT);
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
@@ -109,7 +110,7 @@ public class BankstatementsApiControllerTest {
     public void getBankstatementByIdTest() throws IOException {
         final String companyId = "todo";
 
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.bank-statement");
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_BANKSTATEMENT);
         ResponseEntity<Void> createResponse = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();

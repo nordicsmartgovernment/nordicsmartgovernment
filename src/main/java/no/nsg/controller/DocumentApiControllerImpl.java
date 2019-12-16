@@ -1,6 +1,7 @@
 package no.nsg.controller;
 
 import no.nsg.repository.DocumentType;
+import no.nsg.repository.MimeType;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.document.DocumentManager;
 import org.slf4j.Logger;
@@ -122,14 +123,14 @@ public class DocumentApiControllerImpl implements no.nsg.generated.document_api.
             }
 
             final String accept = httpServletRequest.getHeader("Accept");
-            if ("application/xml".equalsIgnoreCase(accept)) {
+            if (MimeType.XML.equalsIgnoreCase(accept)) {
                 returnValue = getDocumentBodies(companyId, documentTypes);
-                response.setContentType("application/xml");
-            } else if ("application/json".equalsIgnoreCase(accept)) {
+                response.setContentType(MimeType.XML);
+            } else if (MimeType.JSON.equalsIgnoreCase(accept)) {
                 returnValue = getDocumentIds(companyId, documentTypes);
-                response.setContentType("application/json");
+                response.setContentType(MimeType.JSON);
             } else {
-                throw new IllegalArgumentException("Please set Accept:-header to either \"application/json\" or \"application/xml\"");
+                throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.JSON+"\" or \""+MimeType.XML+"\"");
             }
         } catch (IllegalArgumentException e) {
             LOGGER.error("GET_GETDOCUMENTS failed: " + e.getMessage());
