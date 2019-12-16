@@ -118,11 +118,11 @@ public class TransactionManager {
         return transaction;
     }
 
-    public String getTransactionDocument(final String transactionId) throws SQLException, IOException, SAXException {
-        return getTransactionDocument(Collections.singletonList(transactionId));
+    public String getTransactionDocumentAsXbrlGl(final String transactionId) throws SQLException, IOException, SAXException {
+        return getTransactionDocumentAsXbrlGl(Collections.singletonList(transactionId));
     }
 
-    public String getTransactionDocument(final List<String> transactionIds) throws SQLException, IOException, SAXException {
+    public String getTransactionDocumentAsXbrlGl(final List<String> transactionIds) throws SQLException, IOException, SAXException {
         Document transactionDocument = null;
         Node accountingEntry = null;
 
@@ -212,6 +212,14 @@ public class TransactionManager {
                         " </gl-cor:accountingEntries>\n" +
                         "</xbrli:xbrl>\n";
         return BusinessDocumentDbo.parseDocument(transactionXbrl);
+    }
+
+    public String getTransactionDocumentAsSafT(final String transactionId) {
+        return getTransactionDocumentAsSafT(Collections.singletonList(transactionId));
+    }
+
+    public String getTransactionDocumentAsSafT(final List<String> transactionIds) {
+        throw new RuntimeException("Not implemented");
     }
 
     public List<Object> getTransactions(final String filterOrganizationId, final String filterInvoiceType) throws SQLException {

@@ -1,7 +1,7 @@
 openapi: 3.0.2
 info:
-  title: The Nordic Smart Government's bank statement collection API
-  description: Provides the The Nordic Smart Government's bank statement (ISO 20022, camt 053) collection
+  title: The Nordic Smart Government's document/voucher collection API
+  description: Provides the The Nordic Smart Government's document/voucher (invoices, bank statements, receipts, sales and purchase orders etc) collection
   version: '0.1'
   contact:
     name: Nordic Smart Government
@@ -16,20 +16,26 @@ servers:
   - url: 'https://api.nordicsmartgovernment.org'
     description: The reference implementation server
 tags:
-  - name: bankStatementCollection
-    description: bank statement collection operations
+  - name: documentCollection
+    description: documentCollection operations
 paths:
-  /bankStatements/{companyId}:
+  /document/{companyId}:
     get:
       tags:
-        - bankStatementCollection
-      description: List every customer bank statement in the catalog
-      operationId: getBankStatements
+        - documentCollection
+      description: List every company document in the catalog
+      operationId: getDocuments
       parameters:
         - name: companyId
           in: path
-          description: The bank statements owner customerId
           required: true
+          description: The document owner companyId
+          schema:
+            type: string
+        - name: documentTypes
+          in: query
+          description: Filter documents by document types (comma-separated list of mime-types)
+          required: false
           schema:
             type: string
       responses:
@@ -39,19 +45,21 @@ paths:
             application/xml:
               schema:
                 type: object
+                description: XML array of all matching company documents (BASE64-encoded)
             application/json:
               schema:
                 type: object
+                description: List of IDs for all matching company documents
     post:
       tags:
-        - bankStatementCollection
-      description: create new bank statement in the catalog
-      operationId: createBankStatement
+        - documentCollection
+      description: create new document in the catalog
+      operationId: createDocument
       parameters:
         - name: companyId
           in: path
-          description: The bank statements owner customerId
           required: true
+          description: The document owner companyId
           schema:
             type: string
       responses:
@@ -61,41 +69,41 @@ paths:
             Location:
               schema:
                 type: string
-              description: The url to the new bank statement
+              description: The url to the new document
       requestBody:
         required: true
         content:
           "*/*":
             schema:
               type: string
-              description: An XML-document in the form of a string
-  /bankStatements/{companyId}/{id}:
+              description: A document (Finvoice/Invoice etc) in the form of a string
+  /document/{companyId}/{id}:
     get:
       tags:
-        - bankStatementCollection
-      description: Get a bank statement by id
-      operationId: getBankStatementById
+        - documentCollection
+      description: Get a document by id
+      operationId: getDocumentById
       parameters:
         - name: companyId
           in: path
-          description: The bank statements owner customerId
           required: true
+          description: The document owner companyId
           schema:
             type: string
         - name: id
           in: path
           required: true
-          description: The id of the BankStatement
+          description: The id of the document
           schema:
             type: string
       responses:
         '200':
           description: OK
           content:
-            application/xml:
+            "*/*":
               schema:
-                $ref: "#/components/schemas/BankStatement"
+                $ref: "#/components/schemas/Document"
 components:
   schemas:
-    BankStatement:
+    Document:
       type: object

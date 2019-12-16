@@ -1,6 +1,7 @@
 package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
+import no.nsg.repository.MimeType;
 import no.nsg.testcategories.ServiceTest;
 import org.junit.Assert;
 import org.junit.Before;
@@ -48,7 +49,7 @@ public class InvoicesApiControllerTest {
     HttpServletResponse httpServletResponseMock;
 
     @Autowired
-    InvoicesApiControllerImpl invoicesApiController;
+    DocumentApiControllerImpl invoicesApiController;
 
     @Autowired
     ConnectionManager connectionManager;
@@ -89,20 +90,20 @@ public class InvoicesApiControllerTest {
     @Test
     public void createFinvoiceTest() throws IOException, NoSuchAlgorithmException {
         final String companyId = "2372513-5";
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.sales-invoice");
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
 
         String original = resourceAsString("finvoice/Finvoice.xml", StandardCharsets.UTF_8);
         String originalChecksum = sha256Checksum(original.getBytes(StandardCharsets.UTF_8));
 
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, companyId, original);
+        ResponseEntity<Void> createResponse = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, original);
         Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response2 = invoicesApiController.getInvoiceById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
+        ResponseEntity<Object> response2 = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
         Assert.assertTrue(response2.getStatusCode() == HttpStatus.OK);
-        InvoicesApiControllerImpl.Invoice returnedInvoice = (InvoicesApiControllerImpl.Invoice) response2.getBody();
+        DocumentApiControllerImpl.Document returnedInvoice = (DocumentApiControllerImpl.Document) response2.getBody();
         String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
         Assert.assertEquals(originalChecksum, returnedInvoiceChecksum);
     }
@@ -110,33 +111,33 @@ public class InvoicesApiControllerTest {
     @Test
     public void createInvoiceTest() throws IOException {
         final String companyId = "983294";
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.sales-invoice");
-        ResponseEntity<Void> response = invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
+        ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
     public void getInvoicesTest() {
         final String companyId = "todo";
-        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn("application/json");
-        ResponseEntity<Object> response = invoicesApiController.getInvoices(httpServletRequestMock, httpServletResponseMock, companyId);
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
+        ResponseEntity<Object> response = invoicesApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, MimeType.NSG_SALES_INVOICE);
         Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
     @Test
     public void getInvoiceByIdTest() throws IOException {
         final String companyId = "123456785";
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn("application/vnd.nordicsmartgovernment.sales-invoice");
-        ResponseEntity<Void> createResponse = invoicesApiController.createInvoice(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
+        ResponseEntity<Void> createResponse = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
         Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
-        ResponseEntity<Object> response = invoicesApiController.getInvoiceById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
+        ResponseEntity<Object> response = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
         Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
 
-        InvoicesApiControllerImpl.Invoice invoice = (InvoicesApiControllerImpl.Invoice) response.getBody();
+        DocumentApiControllerImpl.Document invoice = (DocumentApiControllerImpl.Document) response.getBody();
         Assert.assertEquals(createdId, invoice.documentid);
     }
 

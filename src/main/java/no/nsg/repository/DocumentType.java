@@ -29,6 +29,10 @@ public class DocumentType {
         OTHER
     }
 
+    public static boolean isInvoice(final Type type) {
+        return (type!=null && (type==Type.PURCHASE_INVOICE || type==Type.SALES_INVOICE));
+    }
+
     //Very explicit mapping from type to/from int. Mapped enums should NEVER get a new value! (they exist as int in database)
     public static int toInt(final Type type) {
         switch (type) {
@@ -97,51 +101,51 @@ public class DocumentType {
             return null;
         }
 
-        if ("application/vnd.nordicsmartgovernment.other".equalsIgnoreCase(mimeType)) {
+        if (MimeType.NSG_OTHER.equalsIgnoreCase(mimeType)) {
             return Type.OTHER;
-        } else if ("application/vnd.nordicsmartgovernment.bank-statement".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_BANKSTATEMENT.equalsIgnoreCase(mimeType)) {
             return Type.BANK_STATEMENT;
-        } else if ("application/vnd.nordicsmartgovernment.purchase-invoice".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_PURCHASE_INVOICE.equalsIgnoreCase(mimeType)) {
             return Type.PURCHASE_INVOICE;
-        } else if ("application/vnd.nordicsmartgovernment.sales-invoice".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_SALES_INVOICE.equalsIgnoreCase(mimeType)) {
             return Type.SALES_INVOICE;
-        } else if ("application/vnd.nordicsmartgovernment.cash-memo".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_CASH_MEMO.equalsIgnoreCase(mimeType)) {
             return Type.CASH_MEMO;
-        } else if ("application/vnd.nordicsmartgovernment.payroll-slip".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_PAYROLL_SLIP.equalsIgnoreCase(mimeType)) {
             return Type.PAYROLL_SLIP;
-        } else if ("application/vnd.nordicsmartgovernment.receipt".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_RECEIPT.equalsIgnoreCase(mimeType)) {
             return Type.RECEIPT;
-        } else if ("application/vnd.nordicsmartgovernment.credit-note".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_CREDIT_NOTE.equalsIgnoreCase(mimeType)) {
             return Type.CREDIT_NOTE;
-        } else if ("application/vnd.nordicsmartgovernment.debit-note".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_DEBIT_NOTE.equalsIgnoreCase(mimeType)) {
             return Type.DEBIT_NOTE;
-        } else if ("application/vnd.nordicsmartgovernment.statement-of-account".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_STATEMENT_OF_ACCOUNT.equalsIgnoreCase(mimeType)) {
             return Type.STATEMENT_OF_ACCOUNT;
-        } else if ("application/vnd.nordicsmartgovernment.reminder".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_REMINDER.equalsIgnoreCase(mimeType)) {
             return Type.REMINDER;
-        } else if ("application/vnd.nordicsmartgovernment.catalogue-request".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_CATALOGUE_REQUEST.equalsIgnoreCase(mimeType)) {
             return Type.CATALOGUE_REQUEST;
-        } else if ("application/vnd.nordicsmartgovernment.specification-update".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_SPECIFICATION_UPDATE.equalsIgnoreCase(mimeType)) {
             return Type.SPECIFICATION_UPDATE;
-        } else if ("application/vnd.nordicsmartgovernment.order-cancellation".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_ORDER_CANCELLATION.equalsIgnoreCase(mimeType)) {
             return Type.ORDER_CANCELLATION;
-        } else if ("application/vnd.nordicsmartgovernment.catalogue".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_CATALOGUE.equalsIgnoreCase(mimeType)) {
             return Type.CATALOGUE;
-        } else if ("application/vnd.nordicsmartgovernment.catalogue-pricing-update".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_CATALOGUE_PRICING_UPDATE.equalsIgnoreCase(mimeType)) {
             return Type.CATALOGUE_PRICING_UPDATE;
-        } else if ("application/vnd.nordicsmartgovernment.application-response".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_APPLICATION_RESPONSE.equalsIgnoreCase(mimeType)) {
             return Type.APPLICATION_RESPONSE;
-        } else if ("application/vnd.nordicsmartgovernment.catalogue-deletion".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_CATALOGUE_DELETION.equalsIgnoreCase(mimeType)) {
             return Type.CATALOGUE_DELETION;
-        } else if ("application/vnd.nordicsmartgovernment.purchase-order".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_PURCHASE_ORDER.equalsIgnoreCase(mimeType)) {
             return Type.PURCHASE_ORDER;
-        } else if ("application/vnd.nordicsmartgovernment.order-change".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_ORDER_CHANGE.equalsIgnoreCase(mimeType)) {
             return Type.ORDER_CHANGE;
-        } else if ("application/vnd.nordicsmartgovernment.catalogue-item".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_CATALOGUE_ITEM.equalsIgnoreCase(mimeType)) {
             return Type.CATALOGUE_ITEM;
-        } else if ("application/vnd.nordicsmartgovernment.order-response-simple".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_ORDER_RESPONSE_SIMPLE.equalsIgnoreCase(mimeType)) {
             return Type.ORDER_RESPONSE_SIMPLE;
-        } else if ("application/vnd.nordicsmartgovernment.order-response".equalsIgnoreCase(mimeType)) {
+        } else if (MimeType.NSG_ORDER_RESPONSE.equalsIgnoreCase(mimeType)) {
             return Type.ORDER_RESPONSE;
         } else {
             return null;
@@ -155,29 +159,29 @@ public class DocumentType {
 
         switch (type) {
             default: return null;
-            case OTHER:                    return "application/vnd.nordicsmartgovernment.other";
-            case BANK_STATEMENT:           return "application/vnd.nordicsmartgovernment.bank-statement";
-            case PURCHASE_INVOICE:         return "application/vnd.nordicsmartgovernment.purchase-invoice";
-            case SALES_INVOICE:            return "application/vnd.nordicsmartgovernment.sales-invoice";
-            case CASH_MEMO:                return "application/vnd.nordicsmartgovernment.cash-memo";
-            case PAYROLL_SLIP:             return "application/vnd.nordicsmartgovernment.payroll-slip";
-            case RECEIPT:                  return "application/vnd.nordicsmartgovernment.receipt";
-            case CREDIT_NOTE:              return "application/vnd.nordicsmartgovernment.credit-note";
-            case DEBIT_NOTE:               return "application/vnd.nordicsmartgovernment.debit-note";
-            case STATEMENT_OF_ACCOUNT:     return "application/vnd.nordicsmartgovernment.statement-of-account";
-            case REMINDER:                 return "application/vnd.nordicsmartgovernment.reminder";
-            case CATALOGUE_REQUEST:        return "application/vnd.nordicsmartgovernment.catalogue-request";
-            case SPECIFICATION_UPDATE:     return "application/vnd.nordicsmartgovernment.specification-update";
-            case ORDER_CANCELLATION:       return "application/vnd.nordicsmartgovernment.order-cancellation";
-            case CATALOGUE:                return "application/vnd.nordicsmartgovernment.catalogue";
-            case CATALOGUE_PRICING_UPDATE: return "application/vnd.nordicsmartgovernment.catalogue-pricing-update";
-            case APPLICATION_RESPONSE:     return "application/vnd.nordicsmartgovernment.application-response";
-            case CATALOGUE_DELETION:       return "application/vnd.nordicsmartgovernment.catalogue-deletion";
-            case PURCHASE_ORDER:           return "application/vnd.nordicsmartgovernment.purchase-order";
-            case ORDER_CHANGE:             return "application/vnd.nordicsmartgovernment.order-change";
-            case CATALOGUE_ITEM:           return "application/vnd.nordicsmartgovernment.catalogue-item";
-            case ORDER_RESPONSE_SIMPLE:    return "application/vnd.nordicsmartgovernment.order-response-simple";
-            case ORDER_RESPONSE:           return "application/vnd.nordicsmartgovernment.order-response";
+            case OTHER:                    return MimeType.NSG_OTHER;
+            case BANK_STATEMENT:           return MimeType.NSG_BANKSTATEMENT;
+            case PURCHASE_INVOICE:         return MimeType.NSG_PURCHASE_INVOICE;
+            case SALES_INVOICE:            return MimeType.NSG_SALES_INVOICE;
+            case CASH_MEMO:                return MimeType.NSG_CASH_MEMO;
+            case PAYROLL_SLIP:             return MimeType.NSG_PAYROLL_SLIP;
+            case RECEIPT:                  return MimeType.NSG_RECEIPT;
+            case CREDIT_NOTE:              return MimeType.NSG_CREDIT_NOTE;
+            case DEBIT_NOTE:               return MimeType.NSG_DEBIT_NOTE;
+            case STATEMENT_OF_ACCOUNT:     return MimeType.NSG_STATEMENT_OF_ACCOUNT;
+            case REMINDER:                 return MimeType.NSG_REMINDER;
+            case CATALOGUE_REQUEST:        return MimeType.NSG_CATALOGUE_REQUEST;
+            case SPECIFICATION_UPDATE:     return MimeType.NSG_SPECIFICATION_UPDATE;
+            case ORDER_CANCELLATION:       return MimeType.NSG_ORDER_CANCELLATION;
+            case CATALOGUE:                return MimeType.NSG_CATALOGUE;
+            case CATALOGUE_PRICING_UPDATE: return MimeType.NSG_CATALOGUE_PRICING_UPDATE;
+            case APPLICATION_RESPONSE:     return MimeType.NSG_APPLICATION_RESPONSE;
+            case CATALOGUE_DELETION:       return MimeType.NSG_CATALOGUE_DELETION;
+            case PURCHASE_ORDER:           return MimeType.NSG_PURCHASE_ORDER;
+            case ORDER_CHANGE:             return MimeType.NSG_ORDER_CHANGE;
+            case CATALOGUE_ITEM:           return MimeType.NSG_CATALOGUE_ITEM;
+            case ORDER_RESPONSE_SIMPLE:    return MimeType.NSG_ORDER_RESPONSE_SIMPLE;
+            case ORDER_RESPONSE:           return MimeType.NSG_ORDER_RESPONSE;
         }
     }
 

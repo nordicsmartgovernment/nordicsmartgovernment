@@ -2,7 +2,7 @@ package no.nsg.repository;
 
 import net.sf.saxon.Configuration;
 import net.sf.saxon.s9api.*;
-import no.nsg.repository.dbo.BusinessDocumentDbo;
+import no.nsg.repository.document.formats.DocumentFormat;
 import org.springframework.stereotype.Component;
 import org.xml.sax.InputSource;
 
@@ -17,11 +17,31 @@ import java.util.Map;
 
 @Component
 public class TransformationManager {
+
     private static final String XSLT_BASE = "xslt/";
-    public static final String FINVOICE_TO_XBRL                = XSLT_BASE+"finvoice_to_xbrl.xslt";
-    public static final String UBL_PURCHASE_INVOICE_TO_XBRL_GL = XSLT_BASE+"ubl_2_1_purchase_invoice_to_xbrl_gl.xslt";
-    public static final String UBL_SALES_INVOICE_TO_XBRL_GL    = XSLT_BASE+"ubl_2_1_sales_invoice_to_xbrl_gl.xslt";
-    public static final String CAMT_053_TO_XBRL_GL             = XSLT_BASE+"camt_053_001_08_to_xbrlgl.xslt";
+
+
+    public static String xsltFor(final DocumentFormat.Format documentFormat) {
+        if (documentFormat == null) {
+            return null;
+        }
+
+        switch (documentFormat) {
+            default: return null;
+            case CAMT_053_001_08:           return XSLT_BASE+"camt_053_001_08_to_xbrlgl.xslt";
+            case FINVOICE:                  return XSLT_BASE+"finvoice_to_xbrl.xslt";
+            case FINVOICE_PURCHASE_INVOICE: return XSLT_BASE+"finvoice_xbrlgl_purchase_invoice.xslt";
+            case FINVOICE_PURCHASE_RECEIPT: return XSLT_BASE+"finvoice_xbrlgl_purchase_receipt.xslt";
+            case FINVOICE_SALES_INVOICE:    return XSLT_BASE+"finvoice_xbrlgl_sales_invoice.xslt";
+            case FINVOICE_SALES_RECEIPT:    return XSLT_BASE+"finvoice_xbrlgl_sales_receipt.xslt";
+            case UBL_2_1_PURCHASE_INVOICE:  return XSLT_BASE+"ubl_2_1_purchase_invoice_to_xbrl_gl.xslt";
+            case UBL_2_1_SALES_INVOICE1:    return XSLT_BASE+"ubl_2_1_sales_invoice_to_xbrl_gl.xslt";
+            case UBL_2_1_SALES_INVOICE2:    return XSLT_BASE+"ubl_2_1_sales_invoice_xbrl_gl.xslt";
+            case UBL_2_1_SALES_ORDER:       return XSLT_BASE+"ubl_2_1_sales_order_xbrl_gl.xslt";
+            case UBL_2_1:                   return XSLT_BASE+"ubl_2_1_xbrl_gl.xslt";
+            case UBL_2_1_PURCHASE_ORDER:    return XSLT_BASE+"ubl_2_1_xbrl_gl_purchase_order.xslt";
+        }
+    }
 
     public enum Direction {
         DOESNT_MATTER,
@@ -64,29 +84,15 @@ public class TransformationManager {
         return xsltCache.get(xslt);
     }
 
-    public static void transform(final InputStream xmlStream, final BusinessDocumentDbo.DocumentFormat format, final Direction direction, final OutputStream outputStream) throws SaxonApiException {
-        String xsltFile;
-        switch (format) {
-            case UML_INVOICE:
-                xsltFile = direction==Direction.SALES ? UBL_SALES_INVOICE_TO_XBRL_GL : UBL_PURCHASE_INVOICE_TO_XBRL_GL;
-                break;
-
-            case FINVOICE:
-                xsltFile = FINVOICE_TO_XBRL;
-                break;
-
-            case CAMT053:
-                xsltFile = CAMT_053_TO_XBRL_GL;
-                break;
-
-            case UNKNOWN:
-            default:
-                throw new RuntimeException("Uninitialized/unknown XSLT format");
-        }
-        transform(xmlStream, xsltFile, outputStream);
+    public static void transform(final InputStream xmlStream, final DocumentFormat.Format format, final OutputStream outputStream) throws SaxonApiException {
+        transform(xmlStream, xsltFor(format), outputStream);
     }
 
     public static synchronized void transform(final InputStream xmlStream, final String xslt, final OutputStream outputStream) throws SaxonApiException {
+        if (xslt==null || xslt.isEmpty()) {
+            throw new RuntimeException("Uninitialized/unknown XSLT format");
+        }
+
         Xslt30Transformer transformer = getStylesheetExecutable(xslt);
         Source source = new StreamSource(xmlStream);
         Serializer destination = processor.newSerializer(outputStream);

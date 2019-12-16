@@ -1,6 +1,7 @@
 package no.nsg.controller;
 
 import com.github.dnault.xmlpatch.PatchException;
+import no.nsg.repository.MimeType;
 import no.nsg.repository.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,16 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
     public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId) {
         String transaction;
         try {
-            transaction = transactionManager.getTransactionDocument(transactionId);
+            final String accept = httpServletRequest.getHeader("Accept");
+            if (MimeType.XBRL_GL.equalsIgnoreCase(accept)) {
+                transaction = transactionManager.getTransactionDocumentAsXbrlGl(transactionId);
+                response.setContentType(MimeType.XBRL_GL);
+            } else if (MimeType.SAF_T.equalsIgnoreCase(accept)) {
+                transaction = transactionManager.getTransactionDocumentAsSafT(transactionId);
+                response.setContentType(MimeType.SAF_T);
+            } else {
+                throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.SAF_T+"\" or \""+MimeType.XBRL_GL+"\"");
+            }
         } catch (Exception e) {
             LOGGER.error("GET_GETTRANSACTION failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -56,15 +66,18 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
             List<String> transactionIds = transactionManager.getTransactionIds(companyId, filterDocumentId, finterInvoiceType);
 
             final String accept = httpServletRequest.getHeader("Accept");
-            if ("application/xbrl-instance+xml".equalsIgnoreCase(accept)) {
-                returnValue = transactionManager.getTransactionDocument(transactionIds);
-                response.setContentType("application/xbrl-instance+xml");
-            } else if ("application/json".equalsIgnoreCase(accept)) {
+            if (MimeType.XBRL_GL.equalsIgnoreCase(accept)) {
+                returnValue = transactionManager.getTransactionDocumentAsXbrlGl(transactionIds);
+                response.setContentType(MimeType.XBRL_GL);
+            } else if (MimeType.SAF_T.equalsIgnoreCase(accept)) {
+                    returnValue = transactionManager.getTransactionDocumentAsSafT(transactionIds);
+                    response.setContentType(MimeType.SAF_T);
+            } else if (MimeType.JSON.equalsIgnoreCase(accept)) {
                 returnValue = transactionIds;
                 noContent = (transactionIds==null || transactionIds.isEmpty());
-                response.setContentType("application/json");
+                response.setContentType(MimeType.JSON);
             } else {
-                throw new IllegalArgumentException("Please set Accept:-header to either \"application/json\" or \"application/xbrl-instance+xml\"");
+                throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.JSON+"\", \""+MimeType.SAF_T+"\" or \""+MimeType.XBRL_GL+"\"");
             }
         } catch (IllegalArgumentException e) {
             LOGGER.error("GET_GETTRANSACTIONS failed: " + e.getMessage());

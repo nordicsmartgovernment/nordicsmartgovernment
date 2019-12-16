@@ -2,6 +2,7 @@ package no.nsg.controller;
 
 import net.sf.saxon.s9api.*;
 import no.nsg.repository.TransformationManager;
+import no.nsg.repository.document.formats.DocumentFormat;
 import no.nsg.testcategories.UnitTest;
 import org.junit.Assert;
 import org.junit.Test;
@@ -31,26 +32,26 @@ public class TransformationTest {
     @Test
     public void finvoiceHappydayTransformTest() throws SaxonApiException, UnsupportedEncodingException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), TransformationManager.FINVOICE_TO_XBRL, baos);
+        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE, baos);
     }
 
     @Test
     public void finvoiceTransformTest() throws SaxonApiException, UnsupportedEncodingException {
-        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), TransformationManager.FINVOICE_TO_XBRL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 75 myynti.xml"), TransformationManager.FINVOICE_TO_XBRL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 76 myynti.xml"), TransformationManager.FINVOICE_TO_XBRL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 77 myynti.xml"), TransformationManager.FINVOICE_TO_XBRL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 78 myynti.xml"), TransformationManager.FINVOICE_TO_XBRL, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 75 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 76 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 77 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 78 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
     }
 
     @Test
     public void ublTransformTest() throws SaxonApiException, UnsupportedEncodingException {
-        transformationManager.transform(getResourceAsStream("ubl/Invoice_base-example.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("ubl/ehf-2-faktura-1.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("ubl/ehf-3-faktura-1.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/Invoice_base-example.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/ehf-2-faktura-1.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("ubl/ehf-3-faktura-1.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), TransformationManager.UBL_PURCHASE_INVOICE_TO_XBRL_GL, baos);
+        transformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, baos);
         String result = baos.toString(StandardCharsets.UTF_8.name());
         Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
         Assert.assertTrue(result.contains("<gl-cor:documentNumber "));
