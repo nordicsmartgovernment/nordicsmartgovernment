@@ -35,8 +35,7 @@ public class TransformationManager {
             case FINVOICE_SALES_INVOICE:    return XSLT_BASE+"finvoice_xbrlgl_sales_invoice.xslt";
             case FINVOICE_SALES_RECEIPT:    return XSLT_BASE+"finvoice_xbrlgl_sales_receipt.xslt";
             case UBL_2_1_PURCHASE_INVOICE:  return XSLT_BASE+"ubl_2_1_purchase_invoice_to_xbrl_gl.xslt";
-            case UBL_2_1_SALES_INVOICE1:    return XSLT_BASE+"ubl_2_1_sales_invoice_to_xbrl_gl.xslt";
-            case UBL_2_1_SALES_INVOICE2:    return XSLT_BASE+"ubl_2_1_sales_invoice_xbrl_gl.xslt";
+            case UBL_2_1_SALES_INVOICE:     return XSLT_BASE+"ubl_2_1_sales_invoice_xbrl_gl.xslt";
             case UBL_2_1_SALES_ORDER:       return XSLT_BASE+"ubl_2_1_sales_order_xbrl_gl.xslt";
             case UBL_2_1:                   return XSLT_BASE+"ubl_2_1_xbrl_gl.xslt";
             case UBL_2_1_PURCHASE_ORDER:    return XSLT_BASE+"ubl_2_1_xbrl_gl_purchase_order.xslt";

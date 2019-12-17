@@ -18,8 +18,7 @@ public class FormatFactory {
             case FINVOICE_SALES_INVOICE:    return new FinvoiceFormat();
             case FINVOICE_SALES_RECEIPT:    return new FinvoiceFormat();
             case UBL_2_1_PURCHASE_INVOICE:  return new UBLFormat();
-            case UBL_2_1_SALES_INVOICE1:    return new UBLFormat();
-            case UBL_2_1_SALES_INVOICE2:    return new UBLFormat();
+            case UBL_2_1_SALES_INVOICE:     return new UBLFormat();
             case UBL_2_1_SALES_ORDER:       return new UBLFormat();
             case UBL_2_1:                   return new UBLFormat();
             case UBL_2_1_PURCHASE_ORDER:    return new UBLFormat();
