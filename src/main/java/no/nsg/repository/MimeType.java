@@ -21,6 +21,7 @@ public class MimeType {
     public static final String NSG_APPLICATION_RESPONSE     = "application/vnd.nordicsmartgovernment.application-response";
     public static final String NSG_CATALOGUE_DELETION       = "application/vnd.nordicsmartgovernment.catalogue-deletion";
     public static final String NSG_PURCHASE_ORDER           = "application/vnd.nordicsmartgovernment.purchase-order";
+    public static final String NSG_SALES_ORDER              = "application/vnd.nordicsmartgovernment.sales-order";
     public static final String NSG_ORDER_CHANGE             = "application/vnd.nordicsmartgovernment.order-change";
     public static final String NSG_CATALOGUE_ITEM           = "application/vnd.nordicsmartgovernment.catalogue-item";
     public static final String NSG_ORDER_RESPONSE_SIMPLE    = "application/vnd.nordicsmartgovernment.order-response-simple";

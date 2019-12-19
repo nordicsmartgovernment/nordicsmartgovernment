@@ -117,6 +117,38 @@ public class InvoicesApiControllerTest {
     }
 
     @Test
+    public void createPurchaseInvoiceTest() throws IOException {
+        final String companyId = "0514039-5";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
+        ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    public void createSalesInvoiceTest() throws IOException {
+        final String companyId = "2431081-2";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
+        ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoice_eKuitti.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    public void createEUPurchaseInvoiceTest() throws IOException {
+        final String companyId = "1199940-3";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
+        ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoiceTestPurchaseEU.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
+    public void createEUSalesInvoiceTest() throws IOException {
+        final String companyId = "2372513-5";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
+        ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoiceTestPurchaseEU.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
     public void getInvoicesTest() {
         final String companyId = "todo";
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);

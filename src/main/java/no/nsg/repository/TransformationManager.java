@@ -29,16 +29,16 @@ public class TransformationManager {
         switch (documentFormat) {
             default: return null;
             case CAMT_053_001_08:           return XSLT_BASE+"camt_053_001_08_to_xbrlgl.xslt";
-            case FINVOICE:                  return XSLT_BASE+"finvoice_to_xbrl.xslt";
-            case FINVOICE_PURCHASE_INVOICE: return XSLT_BASE+"finvoice_xbrlgl_purchase_invoice.xslt";
-            case FINVOICE_PURCHASE_RECEIPT: return XSLT_BASE+"finvoice_xbrlgl_purchase_receipt.xslt";
             case FINVOICE_SALES_INVOICE:    return XSLT_BASE+"finvoice_xbrlgl_sales_invoice.xslt";
+            case FINVOICE_PURCHASE_INVOICE: return XSLT_BASE+"finvoice_xbrlgl_purchase_invoice.xslt";
             case FINVOICE_SALES_RECEIPT:    return XSLT_BASE+"finvoice_xbrlgl_sales_receipt.xslt";
-            case UBL_2_1_PURCHASE_INVOICE:  return XSLT_BASE+"ubl_2_1_purchase_invoice_to_xbrl_gl.xslt";
+            case FINVOICE_PURCHASE_RECEIPT: return XSLT_BASE+"finvoice_xbrlgl_purchase_receipt.xslt";
+            case FINVOICE:                  return XSLT_BASE+"finvoice_to_xbrl.xslt";
             case UBL_2_1_SALES_INVOICE:     return XSLT_BASE+"ubl_2_1_sales_invoice_xbrl_gl.xslt";
+            case UBL_2_1_PURCHASE_INVOICE:  return XSLT_BASE+"ubl_2_1_purchase_invoice_to_xbrl_gl.xslt";
             case UBL_2_1_SALES_ORDER:       return XSLT_BASE+"ubl_2_1_sales_order_xbrl_gl.xslt";
-            case UBL_2_1:                   return XSLT_BASE+"ubl_2_1_xbrl_gl.xslt";
             case UBL_2_1_PURCHASE_ORDER:    return XSLT_BASE+"ubl_2_1_xbrl_gl_purchase_order.xslt";
+            case UBL_2_1:                   return XSLT_BASE+"ubl_2_1_xbrl_gl.xslt";
         }
     }
 

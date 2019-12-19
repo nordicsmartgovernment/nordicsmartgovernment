@@ -55,5 +55,11 @@ public class TransformationTest {
         String result = baos.toString(StandardCharsets.UTF_8.name());
         Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
         Assert.assertTrue(result.contains("<gl-cor:documentNumber "));
+
+        baos = new ByteArrayOutputStream();
+        transformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_SALES_INVOICE, baos);
+        result = baos.toString(StandardCharsets.UTF_8.name());
+        Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
+        //Assert.assertTrue(result.contains("<gl-cor:documentNumber "));
     }
 }

@@ -6,14 +6,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 
-public class UBLFormat implements DocumentFormat {
+public class UBLOrderFormat implements DocumentFormat {
 
     @Override
     public String getDocumentSupplier(final Document parsedDocument) {
         if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingSupplierParty").item(0);
+            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "SellerSupplierParty").item(0);
             if (child instanceof Element) {
-                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
+                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyTaxScheme").item(0);
                 if (child instanceof Element) {
                     child = ((Element) child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {
@@ -28,9 +28,9 @@ public class UBLFormat implements DocumentFormat {
     @Override
     public String getDocumentCustomer(final Document parsedDocument) {
         if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "AccountingCustomerParty").item(0);
+            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "BuyerCustomerParty").item(0);
             if (child instanceof Element) {
-                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyLegalEntity").item(0);
+                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CAC_NS, "PartyTaxScheme").item(0);
                 if (child instanceof Element) {
                     child = ((Element) child).getElementsByTagNameNS(TransformationManager.CBC_NS, "CompanyID").item(0);
                     if (child != null) {

@@ -22,6 +22,7 @@ public class DocumentType {
         APPLICATION_RESPONSE,
         CATALOGUE_DELETION,
         PURCHASE_ORDER,
+        SALES_ORDER,
         ORDER_CHANGE,
         CATALOGUE_ITEM,
         ORDER_RESPONSE_SIMPLE,
@@ -29,8 +30,24 @@ public class DocumentType {
         OTHER
     }
 
+    public static boolean hasDirection(final Type type) {
+        return isSales(type) || isPurchase(type);
+    }
+
     public static boolean isInvoice(final Type type) {
         return (type!=null && (type==Type.PURCHASE_INVOICE || type==Type.SALES_INVOICE));
+    }
+
+    public static boolean isOrder(final Type type) {
+        return (type!=null && (type==Type.PURCHASE_ORDER || type==Type.SALES_ORDER));
+    }
+
+    public static boolean isSales(final Type type) {
+        return (type!=null && (type==Type.SALES_INVOICE || type==Type.SALES_ORDER));
+    }
+
+    public static boolean isPurchase(final Type type) {
+        return (type!=null && (type==Type.PURCHASE_INVOICE || type==Type.PURCHASE_ORDER));
     }
 
     //Very explicit mapping from type to/from int. Mapped enums should NEVER get a new value! (they exist as int in database)
@@ -60,6 +77,7 @@ public class DocumentType {
             case CATALOGUE_ITEM:           return 21;
             case ORDER_RESPONSE_SIMPLE:    return 22;
             case ORDER_RESPONSE:           return 23;
+            case SALES_ORDER:              return 24;
         }
     }
 
@@ -93,6 +111,7 @@ public class DocumentType {
             case 21: return Type.CATALOGUE_ITEM;
             case 22: return Type.ORDER_RESPONSE_SIMPLE;
             case 23: return Type.ORDER_RESPONSE;
+            case 24: return Type.SALES_ORDER;
         }
     }
 
@@ -139,6 +158,8 @@ public class DocumentType {
             return Type.CATALOGUE_DELETION;
         } else if (MimeType.NSG_PURCHASE_ORDER.equalsIgnoreCase(mimeType)) {
             return Type.PURCHASE_ORDER;
+        } else if (MimeType.NSG_SALES_ORDER.equalsIgnoreCase(mimeType)) {
+            return Type.SALES_ORDER;
         } else if (MimeType.NSG_ORDER_CHANGE.equalsIgnoreCase(mimeType)) {
             return Type.ORDER_CHANGE;
         } else if (MimeType.NSG_CATALOGUE_ITEM.equalsIgnoreCase(mimeType)) {
@@ -178,6 +199,7 @@ public class DocumentType {
             case APPLICATION_RESPONSE:     return MimeType.NSG_APPLICATION_RESPONSE;
             case CATALOGUE_DELETION:       return MimeType.NSG_CATALOGUE_DELETION;
             case PURCHASE_ORDER:           return MimeType.NSG_PURCHASE_ORDER;
+            case SALES_ORDER:              return MimeType.NSG_SALES_ORDER;
             case ORDER_CHANGE:             return MimeType.NSG_ORDER_CHANGE;
             case CATALOGUE_ITEM:           return MimeType.NSG_CATALOGUE_ITEM;
             case ORDER_RESPONSE_SIMPLE:    return MimeType.NSG_ORDER_RESPONSE_SIMPLE;

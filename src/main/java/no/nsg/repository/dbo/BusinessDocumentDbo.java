@@ -252,7 +252,7 @@ public class BusinessDocumentDbo {
     }
 
     private void setDirectionFromDocument(final String companyId, final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
-        if (!DocumentType.isInvoice(documentType)) {
+        if (!DocumentType.hasDirection(documentType)) {
             tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
             return;
         }
@@ -267,14 +267,22 @@ public class BusinessDocumentDbo {
         String supplier = docType.getDocumentSupplier(parsedDocument);
         String customer = docType.getDocumentCustomer(parsedDocument);
 
-        if (companyId.equalsIgnoreCase(supplier)) {
-            tmpDirection = TransformationManager.Direction.SALES;
-            referencedCompanyId = customer;
-        } else if (companyId.equalsIgnoreCase(customer)) {
-            tmpDirection = TransformationManager.Direction.PURCHASE;
-            referencedCompanyId = supplier;
+        if (DocumentType.isSales(documentType)) {
+            if (companyId.equalsIgnoreCase(supplier)) {
+                tmpDirection = TransformationManager.Direction.SALES;
+                referencedCompanyId = customer;
+            } else {
+                throw new IllegalArgumentException("customerId (" + companyId + ") was not supplier (" + supplier + ")");
+            }
+        } else if (DocumentType.isPurchase(documentType)) {
+            if (companyId.equalsIgnoreCase(customer)) {
+                tmpDirection = TransformationManager.Direction.PURCHASE;
+                referencedCompanyId = supplier;
+            } else {
+                throw new IllegalArgumentException("customerId (" + companyId + ") was not customer (" + customer + ")");
+            }
         } else {
-            throw new IllegalArgumentException("customerId (" + companyId + ") was neither supplier (" + supplier + ") nor customer (" + customer + ")");
+            throw new IllegalArgumentException("Unexpected document type for direction detection: "+DocumentType.toMimeType(documentType));
         }
     }
 

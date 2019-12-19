@@ -3,7 +3,10 @@ package no.nsg.controller;
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
 import no.nsg.testcategories.ServiceTest;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -25,16 +28,15 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
-@ContextConfiguration(initializers = {BankstatementsApiControllerTest.Initializer.class})
+@ContextConfiguration(initializers = {OrderApiControllerTest.Initializer.class})
 @Category(ServiceTest.class)
-public class BankstatementsApiControllerTest {
+public class OrderApiControllerTest {
 
     @Mock
     HttpServletRequest httpServletRequestMock;
@@ -43,7 +45,7 @@ public class BankstatementsApiControllerTest {
     HttpServletResponse httpServletResponseMock;
 
     @Autowired
-    DocumentApiControllerImpl bankstatementsApiController;
+    DocumentApiControllerImpl orderApiController;
 
     @Autowired
     ConnectionManager connectionManager;
@@ -81,60 +83,24 @@ public class BankstatementsApiControllerTest {
         Assert.assertTrue(true);
     }
 
-    @Ignore //Resource is imported in getBankstatementByIdTest below
     @Test
-    public void createBankstatementTest() throws IOException {
-        final String companyId = "todo";
-        ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
+    public void createPeppolSalesOrderTest() throws IOException {
+        final String companyId = "175 269 2355";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_ORDER);
+        ResponseEntity<Void> response = orderApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/UBL-Order-2.0-Example.xml", StandardCharsets.UTF_8));
         Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
-    public void createAnotherBankstatementTest() throws IOException {
-        final String companyId = "todo";
-
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_BANKSTATEMENT);
-        ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/bank_statement1.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    }
-
-    @Test
-    public void createInvalidBankstatementTest() throws IOException {
-        final String companyId = "983294";
-
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_BANKSTATEMENT);
-        ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    }
-
-    @Test
-    public void getBankstatementsTest() {
-        final String companyId = "todo";
-        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
-        ResponseEntity<Object> response = bankstatementsApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, MimeType.NSG_BANKSTATEMENT);
-        Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
-    }
-
-    @Test
-    public void getBankstatementByIdTest() throws IOException {
-        final String companyId = "todo";
-
-        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_BANKSTATEMENT);
-        ResponseEntity<Void> createResponse = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
-        Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
-        URI location = createResponse.getHeaders().getLocation();
-        String[] paths = location.getPath().split("/");
-        String createdId = paths[paths.length-1];
-
-        ResponseEntity<Object> response = bankstatementsApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
-        Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
-
-        DocumentApiControllerImpl.Document bankstatement = (DocumentApiControllerImpl.Document) response.getBody();
-        Assert.assertEquals(createdId, bankstatement.documentid);
+    public void createPeppolPurchaseOrderTest() throws IOException {
+        final String companyId = "not_set";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_ORDER);
+        ResponseEntity<Void> response = orderApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/UBL-Order-2.0-Example.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {
-        InputStream resourceStream = BankstatementsApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
+        InputStream resourceStream = OrderApiControllerTest.class.getClassLoader().getResourceAsStream(resource);
 
         StringBuilder sb = new StringBuilder();
         String line;
@@ -145,4 +111,5 @@ public class BankstatementsApiControllerTest {
         }
         return sb.toString();
     }
+
 }
