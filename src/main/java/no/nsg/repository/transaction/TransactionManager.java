@@ -12,10 +12,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -126,17 +123,6 @@ public class TransactionManager {
         Document transactionDocument = null;
         Node accountingEntry = null;
 
-        StringBuilder sb = new StringBuilder();
-        for (String transactionId : transactionIds) {
-            if (sb.length() > 0) {
-                sb.append(',');
-            }
-            sb.append('\'');
-            sb.append(transactionId);
-            sb.append('\'');
-        }
-        final String transactionIdsAsString = sb.toString();
-
         try (Connection connection = connectionManager.getConnection()) {
 
             final String sql = "SELECT d.xbrl, c.orgno "
@@ -144,9 +130,9 @@ public class TransactionManager {
                               +"WHERE d._id_transaction=t._id "
                               +"AND t._id_transactionset=ts._id "
                               +"AND ts._id_company=c._id "
-                              +"AND t.transactionid IN (?)";
+                              +"AND t.transactionid = ANY(?)";
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, transactionIdsAsString);
+                stmt.setObject(1, transactionIds.toArray(new String[0]));
 
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
