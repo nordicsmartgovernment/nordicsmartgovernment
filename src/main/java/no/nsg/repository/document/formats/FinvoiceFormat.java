@@ -24,9 +24,9 @@ public class FinvoiceFormat implements DocumentFormat {
     @Override
     public String getDocumentCustomer(Document parsedDocument) {
         if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagName("InvoiceRecipientPartyDetails").item(0);
+            Node child = parsedDocument.getElementsByTagName("BuyerPartyDetails").item(0);
             if (child instanceof Element) {
-                child = ((Element) child).getElementsByTagName("InvoiceRecipientPartyIdentifier").item(0);
+                child = ((Element) child).getElementsByTagName("BuyerPartyIdentifier").item(0);
                 if (child != null) {
                     return child.getTextContent();
                 }

@@ -22,11 +22,9 @@
     <SellerOrganisationTaxCode>FI24310812</SellerOrganisationTaxCode>
   </SellerPartyDetails>
   <BuyerPartyDetails>
-    <BuyerPartyIdentifier>
-    </BuyerPartyIdentifier>
-    <BuyerOrganisationName>NA</BuyerOrganisationName>
-    <BuyerOrganisationTaxCode>
-    </BuyerOrganisationTaxCode>
+    <BuyerPartyIdentifier>1199940-3</BuyerPartyIdentifier>
+<BuyerOrganisationName>Ari Puuri Puurin Kanala            </BuyerOrganisationName>
+<BuyerOrganisationTaxCode>FI11999403</BuyerOrganisationTaxCode>
   </BuyerPartyDetails>
   <InvoiceDetails>
     <InvoiceTypeCode>INF09</InvoiceTypeCode>
