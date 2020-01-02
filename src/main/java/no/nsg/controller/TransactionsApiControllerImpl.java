@@ -33,6 +33,23 @@ public class TransactionsApiControllerImpl implements no.nsg.generated.transacti
      */
 
     @Override
+    public ResponseEntity<List<String>> getTransactionOwners(HttpServletRequest httpServletRequest, HttpServletResponse response) {
+        List<String> returnValue;
+        try {
+            returnValue = transactionManager.getTransactionOwners();
+        } catch (Exception e) {
+            LOGGER.error("GET_GETTRANSACTIONOWNERS failed:", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (returnValue==null || returnValue.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(returnValue, HttpStatus.OK);
+        }
+    }
+
+    @Override
     public ResponseEntity<Object> getTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId) {
         String transaction;
         try {

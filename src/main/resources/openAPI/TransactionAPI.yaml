@@ -21,6 +21,19 @@ tags:
   - name: writeTransaction
     description: operations that writes or updates a single transcation
 paths:
+  /transactions:
+    get:
+      description: List all companyIds with transactions in the system
+      operationId: getTransactionOwners
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
   /transactions/{companyId}:
     get:
       tags:

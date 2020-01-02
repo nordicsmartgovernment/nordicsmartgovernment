@@ -26,6 +26,32 @@ public class TransactionManager {
     private ConnectionManager connectionManager;
 
 
+    public List<String> getTransactionOwners() throws SQLException {
+        List<String> companyIds = new ArrayList<>();
+        try (Connection connection = connectionManager.getConnection()) {
+            final String sql = "SELECT DISTINCT c.orgno "
+                              +"FROM nsg.company c, nsg.transactionset ts, nsg.transaction t "
+                              +"WHERE t._id_transactionset=ts._id "
+                              +"AND ts._id_company=c._id "
+                              +"ORDER BY c.orgno";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                ResultSet rs = stmt.executeQuery();
+                while (rs.next()) {
+                    companyIds.add(rs.getString("orgno"));
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                    throw e;
+                } catch (SQLException e2) {
+                    throw e2;
+                }
+            }
+        }
+        return companyIds;
+    }
+
     public List<String> getTransactionIds(final String companyId, final String filterDocumentId, final String filterInvoiceType) throws SQLException {
         List<String> transactionIds = new ArrayList<>();
 
