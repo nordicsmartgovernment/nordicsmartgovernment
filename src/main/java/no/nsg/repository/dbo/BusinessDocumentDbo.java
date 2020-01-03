@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -62,6 +61,8 @@ public class BusinessDocumentDbo {
 
     @JsonIgnore
     private TransformationManager.Direction tmpDirection = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
+    @JsonIgnore
+    private String companyId = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
     @JsonIgnore
     private String referencedCompanyId = null; //Not persisted - only for forwarding info from EntryDbo to TrasactionDbo
 
@@ -237,21 +238,9 @@ public class BusinessDocumentDbo {
         }
     }
 
-    private String getOrgnrFromXBRL() throws IOException, SAXException {
-        Document parsedDocument = parseDocument(getXbrl());
-        if (parsedDocument != null) {
-            NodeList nodes = parsedDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS,"identifierAuthorityCode");
-            if (nodes.getLength() > 0) {
-                Node child = nodes.item(0).getFirstChild();
-                if (child != null) {
-                    return child.getTextContent();
-                }
-            }
-        }
-        return null;
-    }
-
     private void setDirectionFromDocument(final String companyId, final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
+        this.companyId = companyId;
+
         if (!DocumentType.hasDirection(documentType)) {
             tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
             return;
@@ -356,13 +345,7 @@ public class BusinessDocumentDbo {
             return new TransactionDbo(connection, get_TransactionId());
         }
 
-        String orgnr = getOrgnrFromXBRL();
-        if (orgnr == null) {
-            LOGGER.info("Couldn't find XBRL organizationIdentifier");
-            return null;
-        }
-
-        TransactionDbo transactionDbo = TransactionDbo.create(connection, orgnr, transactionSetName);
+        TransactionDbo transactionDbo = TransactionDbo.create(connection, this.companyId, transactionSetName);
         set_TransactionId(transactionDbo.get_id());
         return transactionDbo;
     }

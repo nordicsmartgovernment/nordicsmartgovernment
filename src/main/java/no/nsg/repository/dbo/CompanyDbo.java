@@ -52,6 +52,10 @@ public class CompanyDbo {
     }
 
     public static CompanyDbo getOrCreateByOrgno(final Connection connection, final String orgno) throws SQLException {
+        if (orgno == null) {
+            throw new RuntimeException("getOrCreateByOrgno: orgno is not set");
+        }
+
         Integer id = CompanyDbo.findByOrgno(connection, orgno);
         if (id == null) {
             CompanyDbo newCompany = new CompanyDbo();
