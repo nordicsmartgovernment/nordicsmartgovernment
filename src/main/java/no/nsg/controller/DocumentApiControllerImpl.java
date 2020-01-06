@@ -27,13 +27,13 @@ import java.util.*;
 @Controller
 @RestControllerAdvice
 public class DocumentApiControllerImpl implements no.nsg.generated.document_api.DocumentApi {
-    private static Logger LOGGER = LoggerFactory.getLogger(DocumentApiControllerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentApiControllerImpl.class);
 
     @Autowired
     private DocumentManager documentManager;
 
 
-    class Document {
+    static class Document {
         public final String documentid;
         public final byte[] original;
         Document(final String documentid, final byte[] original) {
@@ -109,15 +109,15 @@ public class DocumentApiControllerImpl implements no.nsg.generated.document_api.
 
     @Override
     public ResponseEntity<Object> getDocuments(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String documentTypesAsString) {
-        List<? extends Object> returnValue;
+        List<?> returnValue;
         try {
             // Parse wanted document types
             Set<DocumentType.Type> documentTypes = null;
             if (documentTypesAsString != null) {
                 documentTypes = new HashSet<>();
                 String[] documentTypeArray = documentTypesAsString.split(",");
-                for (int i=0; i<documentTypeArray.length; i++) {
-                    DocumentType.Type documentType = DocumentType.fromMimeType(documentTypeArray[i]);
+                for (String s : documentTypeArray) {
+                    DocumentType.Type documentType = DocumentType.fromMimeType(s);
                     if (documentType != null) {
                         documentTypes.add(documentType);
                     }

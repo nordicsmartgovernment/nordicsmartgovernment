@@ -83,7 +83,7 @@ public class AccountDbo {
         Iterator<Map.Entry<String, Integer>> iterator = accountCache.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Integer> entry = iterator.next();
-            if (entry.getValue() == id) {
+            if (entry.getValue().equals(id)) {
                 iterator.remove();
             }
         }

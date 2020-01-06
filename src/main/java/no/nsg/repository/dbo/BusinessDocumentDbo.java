@@ -34,7 +34,7 @@ import java.util.UUID;
 @Component
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class BusinessDocumentDbo {
-    private static Logger LOGGER = LoggerFactory.getLogger(BusinessDocumentDbo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(BusinessDocumentDbo.class);
 
     public static final int UNINITIALIZED = 0;
 
@@ -275,7 +275,7 @@ public class BusinessDocumentDbo {
         }
     }
 
-    public String patchXbrl(final String patchXml) throws IOException, SAXException {
+    public String patchXbrl(final String patchXml) {
         ByteArrayInputStream originalIS = new ByteArrayInputStream(getXbrl().getBytes(StandardCharsets.UTF_8));
         ByteArrayInputStream diffIS = new ByteArrayInputStream(patchXml.getBytes(StandardCharsets.UTF_8));
         OutputStream result = new ByteArrayOutputStream();
@@ -340,7 +340,7 @@ public class BusinessDocumentDbo {
         }
     }
 
-    private TransactionDbo getOrInitializeTransaction(final Connection connection, final String transactionSetName) throws SQLException, IOException, SAXException {
+    private TransactionDbo getOrInitializeTransaction(final Connection connection, final String transactionSetName) throws SQLException {
         if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
             return new TransactionDbo(connection, get_TransactionId());
         }

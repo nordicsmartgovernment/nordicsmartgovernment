@@ -16,7 +16,7 @@ public class HealthController {
     }
 
     @GetMapping(value="/ready")
-    public ResponseEntity getReady() {
+    public ResponseEntity<Void> getReady() {
         return ResponseEntity.ok().build();
     }
 

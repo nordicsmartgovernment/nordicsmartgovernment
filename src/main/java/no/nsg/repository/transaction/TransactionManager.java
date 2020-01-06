@@ -67,7 +67,7 @@ public class TransactionManager {
             }
 
             String invoiceTypeFilter = "";
-            if (filterInvoiceType!=null && ("incoming".equals(filterInvoiceType) || "outgoing".equals(filterInvoiceType))) {
+            if ("incoming".equals(filterInvoiceType) || "outgoing".equals(filterInvoiceType)) {
                 invoiceTypeFilter = "AND t.direction=? ";
             }
 

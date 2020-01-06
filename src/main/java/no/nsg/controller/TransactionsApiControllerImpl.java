@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 @Controller
 @RestControllerAdvice
 public class TransactionsApiControllerImpl implements no.nsg.generated.transaction_api.TransactionsApi {
-    private static Logger LOGGER = LoggerFactory.getLogger(TransactionsApiControllerImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionsApiControllerImpl.class);
 
     @Autowired
     private TransactionManager transactionManager;

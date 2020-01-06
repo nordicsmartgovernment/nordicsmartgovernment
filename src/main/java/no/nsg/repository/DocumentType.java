@@ -35,19 +35,19 @@ public class DocumentType {
     }
 
     public static boolean isInvoice(final Type type) {
-        return (type!=null && (type==Type.PURCHASE_INVOICE || type==Type.SALES_INVOICE));
+        return (type == Type.PURCHASE_INVOICE || type == Type.SALES_INVOICE);
     }
 
     public static boolean isOrder(final Type type) {
-        return (type!=null && (type==Type.PURCHASE_ORDER || type==Type.SALES_ORDER));
+        return (type==Type.PURCHASE_ORDER || type==Type.SALES_ORDER);
     }
 
     public static boolean isSales(final Type type) {
-        return (type!=null && (type==Type.SALES_INVOICE || type==Type.SALES_ORDER));
+        return (type==Type.SALES_INVOICE || type==Type.SALES_ORDER);
     }
 
     public static boolean isPurchase(final Type type) {
-        return (type!=null && (type==Type.PURCHASE_INVOICE || type==Type.PURCHASE_ORDER));
+        return (type==Type.PURCHASE_INVOICE || type==Type.PURCHASE_ORDER);
     }
 
     //Very explicit mapping from type to/from int. Mapped enums should NEVER get a new value! (they exist as int in database)

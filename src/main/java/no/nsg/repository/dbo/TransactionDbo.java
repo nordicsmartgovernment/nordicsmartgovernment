@@ -81,7 +81,7 @@ public class TransactionDbo {
             }
             setDirection(intToDirection(tmpDirection));
 
-            Integer referencedCompanyId = rs.getInt("_id_referencedcompany");
+            int referencedCompanyId = rs.getInt("_id_referencedcompany");
             set_ReferencedCompanyId(rs.wasNull() ? null : referencedCompanyId);
         }
     }

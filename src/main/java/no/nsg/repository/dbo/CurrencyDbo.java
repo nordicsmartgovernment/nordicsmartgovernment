@@ -2,8 +2,6 @@ package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import no.nsg.repository.ConnectionManager;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.*;
 import java.util.*;
@@ -82,7 +80,7 @@ public class CurrencyDbo {
         Iterator<Map.Entry<String, Integer>> iterator = currencyCache.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, Integer> entry = iterator.next();
-            if (entry.getValue() == id) {
+            if (entry.getValue().equals(id)) {
                 iterator.remove();
             }
         }

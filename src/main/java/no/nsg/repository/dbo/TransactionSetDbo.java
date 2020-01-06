@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 public class TransactionSetDbo {
     public static final int UNINITIALIZED = 0;
 
-    public static String DEFAULT_NAME = "default";
+    public static final String DEFAULT_NAME = "default";
 
 
     @JsonIgnore

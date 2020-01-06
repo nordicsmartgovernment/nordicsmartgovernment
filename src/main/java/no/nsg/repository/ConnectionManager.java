@@ -29,7 +29,7 @@ import java.util.zip.ZipInputStream;
 @Component
 public class ConnectionManager {
 
-	private static Logger LOGGER = LoggerFactory.getLogger(ConnectionManager.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(ConnectionManager.class);
 
 	public static final String DB        = "postgres";
 	public static final String DB_SCHEMA = "nsg";
@@ -58,7 +58,7 @@ public class ConnectionManager {
 		IMPORTING,
 		IMPORTED
 	}
-	private long LOCAL_BUILD_SYNTHETICDATA_LENGTH_LIMIT = 512*1024; //Skip files larger than 0.5MB when building locally
+	private static final long LOCAL_BUILD_SYNTHETICDATA_LENGTH_LIMIT = 512*1024; //Skip files larger than 0.5MB when building locally
 
 	private SyntheticDataStatus syntheticDataIsImported = SyntheticDataStatus.UNINITIALIZED;
 	private final Object syntheticDataIsImportedLock = new Object();
@@ -234,7 +234,7 @@ public class ConnectionManager {
 				fileStream.forEach(x -> {
 					try {
 						importSyntheticData(new File(x.toString()).getName(), connection);
-					} catch (SQLException|IOException|SAXException|URISyntaxException e) {
+					} catch (IOException|URISyntaxException e) {
 						throw new RuntimeException(e);
 					}
 				});
@@ -244,7 +244,7 @@ public class ConnectionManager {
 				fileStream.forEach(x -> {
 					try {
 						importSyntheticData(x.toFile().getName(), connection);
-					} catch (SQLException|IOException|SAXException|URISyntaxException e) {
+					} catch (IOException|URISyntaxException e) {
 						throw new RuntimeException(e);
 					}
 				});
@@ -252,7 +252,7 @@ public class ConnectionManager {
 		}
 	}
 
-	private void importSyntheticData(final String filename, final Connection connection) throws SQLException, IOException, SAXException, URISyntaxException {
+	private void importSyntheticData(final String filename, final Connection connection) throws IOException, URISyntaxException {
 		if (filename==null || (filename.length()<=".zip".length()) || !filename.endsWith(".zip")) {
 			return;
 		}

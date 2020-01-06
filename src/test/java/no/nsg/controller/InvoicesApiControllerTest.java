@@ -201,7 +201,7 @@ public class InvoicesApiControllerTest {
         MessageDigest digest = MessageDigest.getInstance("SHA-256");
         byte[] hash = digest.digest(content);
 
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i=0; i<hash.length; i++) {
             sb.append(String.format("%02X", hash[i]));
         }
