@@ -3,9 +3,11 @@ package no.nsg.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 
 @Controller
+@RestControllerAdvice
 public class HealthController {
 
     @GetMapping(value="/ping", produces={"text/plain"})
