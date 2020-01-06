@@ -116,31 +116,6 @@ public class TransactionManager {
         return transactionIds;
     }
 
-    public Object getTransactionByDocumentId(final String documentId) throws SQLException {
-        String transaction = null;
-
-        try (Connection connection = connectionManager.getConnection()) {
-            final String sql = "SELECT d.xbrl FROM nsg.businessdocument d, nsg.transaction t WHERE d._id_transaction=t._id AND d.documentid=?;";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                stmt.setString(1, documentId);
-                ResultSet rs = stmt.executeQuery();
-                if (rs.next()) {
-                    transaction = readerToString(rs.getCharacterStream("xbrl"));
-                }
-                connection.commit();
-            } catch (SQLException e) {
-                try {
-                    connection.rollback();
-                    throw e;
-                } catch (SQLException e2) {
-                    throw e2;
-                }
-            }
-        }
-
-        return transaction;
-    }
-
     public String getTransactionDocumentAsXbrlGl(final String transactionId) throws SQLException, IOException, SAXException {
         return getTransactionDocumentAsXbrlGl(Collections.singletonList(transactionId));
     }
@@ -232,63 +207,6 @@ public class TransactionManager {
 
     public String getTransactionDocumentAsSafT(final List<String> transactionIds) {
         throw new RuntimeException("Not implemented");
-    }
-
-    public List<Object> getTransactions(final String filterOrganizationId, final String filterInvoiceType) throws SQLException {
-        List<Object> transactions = new ArrayList<>();
-
-        try (Connection connection = connectionManager.getConnection()) {
-            String organizationFilter = "";
-            if (filterOrganizationId!=null) {
-                organizationFilter = "AND c.orgno=? ";
-            }
-
-            String invoiceTypeFilter = "";
-            if (filterInvoiceType!=null && ("incoming".equals(filterInvoiceType) || "outgoing".equals(filterInvoiceType))) {
-                invoiceTypeFilter = "AND t.direction=? ";
-            }
-
-            final String sql = "SELECT d.xbrl "
-                              +"FROM nsg.businessdocument d, nsg.transaction t, nsg.transactionset ts, nsg.company c "
-                              +"WHERE d._id_transaction=t._id "
-                               +"AND t._id_transactionset=ts._id "
-                               +"AND ts._id_company=c._id "
-                                     +organizationFilter
-                                     +invoiceTypeFilter+";";
-            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-                int i = 0;
-                if (!organizationFilter.isEmpty()) {
-                    stmt.setString(++i, filterOrganizationId);
-                }
-                if (!invoiceTypeFilter.isEmpty()) {
-                    int direction = TransactionDbo.NO_DIRECTION;
-                    if ("incoming".equals(filterInvoiceType)) {
-                        direction = TransactionDbo.INBOUND_DIRECTION;
-                    } else if ("outgoing".equals(filterInvoiceType)) {
-                        direction = TransactionDbo.OUTBOUND_DIRECTION;
-                    }
-                    stmt.setInt(++i, direction);
-                }
-
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    String xbrl = readerToString(rs.getCharacterStream("xbrl"));
-                    if (xbrl != null) {
-                        transactions.add(xbrl);
-                    }
-                }
-                connection.commit();
-            } catch (SQLException e) {
-                try {
-                    connection.rollback();
-                    throw e;
-                } catch (SQLException e2) {
-                    throw e2;
-                }
-            }
-        }
-
-        return transactions;
     }
 
     public void putTransactionById(final String id, final String xbrlDocument) throws SQLException, IOException, SAXException {
