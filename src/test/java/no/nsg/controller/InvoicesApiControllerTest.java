@@ -33,7 +33,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 
 
 @SpringBootTest
@@ -102,7 +101,7 @@ public class InvoicesApiControllerTest {
         String createdId = paths[paths.length-1];
 
         ResponseEntity<Object> response2 = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
-        Assert.assertTrue(response2.getStatusCode() == HttpStatus.OK);
+        Assert.assertSame(response2.getStatusCode(), HttpStatus.OK);
         DocumentApiControllerImpl.Document returnedInvoice = (DocumentApiControllerImpl.Document) response2.getBody();
         String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
         Assert.assertEquals(originalChecksum, returnedInvoiceChecksum);
@@ -172,13 +171,13 @@ public class InvoicesApiControllerTest {
         final String companyId = "123456785";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
         ResponseEntity<Void> createResponse = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
-        Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
+        Assert.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
         ResponseEntity<Object> response = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
-        Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
+        Assert.assertSame(response.getStatusCode(), HttpStatus.OK);
 
         DocumentApiControllerImpl.Document invoice = (DocumentApiControllerImpl.Document) response.getBody();
         Assert.assertEquals(createdId, invoice.documentid);

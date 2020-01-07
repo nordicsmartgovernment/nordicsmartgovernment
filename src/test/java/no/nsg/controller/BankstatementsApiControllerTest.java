@@ -121,13 +121,13 @@ public class BankstatementsApiControllerTest {
 
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_BANKSTATEMENT);
         ResponseEntity<Void> createResponse = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.1.xml", StandardCharsets.UTF_8));
-        Assert.assertTrue(createResponse.getStatusCode() == HttpStatus.CREATED);
+        Assert.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdId = paths[paths.length-1];
 
         ResponseEntity<Object> response = bankstatementsApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
-        Assert.assertTrue(response.getStatusCode() == HttpStatus.OK);
+        Assert.assertSame(response.getStatusCode(), HttpStatus.OK);
 
         DocumentApiControllerImpl.Document bankstatement = (DocumentApiControllerImpl.Document) response.getBody();
         Assert.assertEquals(createdId, bankstatement.documentid);
