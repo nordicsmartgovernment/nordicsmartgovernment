@@ -39,6 +39,7 @@ public class TransformationManager {
             case UBL_2_1_SALES_ORDER:       return XSLT_BASE+"ubl_2_1_sales_order_xbrl_gl.xslt";
             case UBL_2_1_PURCHASE_ORDER:    return XSLT_BASE+"ubl_2_1_xbrl_gl_purchase_order.xslt";
             case UBL_2_1:                   return XSLT_BASE+"ubl_2_1_xbrl_gl.xslt";
+            case XBRL_GL_TO_SAF_T:          return XSLT_BASE+"xbrl_gl_to_saf_t.xslt";
         }
     }
 

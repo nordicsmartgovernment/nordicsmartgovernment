@@ -1,9 +1,13 @@
 package no.nsg.repository.transaction;
 
+import net.sf.saxon.s9api.SaxonApiException;
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.dbo.TransactionDbo;
+import no.nsg.repository.document.formats.DocumentFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
@@ -12,6 +16,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,6 +26,7 @@ import java.util.NoSuchElementException;
 
 @Component
 public class TransactionManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionManager.class);
 
     @Autowired
     private ConnectionManager connectionManager;
@@ -201,12 +207,23 @@ public class TransactionManager {
         return BusinessDocumentDbo.parseDocument(transactionXbrl);
     }
 
-    public String getTransactionDocumentAsSafT(final String transactionId) {
+    public String getTransactionDocumentAsSafT(final String transactionId) throws SQLException, IOException, SAXException {
         return getTransactionDocumentAsSafT(Collections.singletonList(transactionId));
     }
 
-    public String getTransactionDocumentAsSafT(final List<String> transactionIds) {
-        throw new RuntimeException("Not implemented");
+    public String getTransactionDocumentAsSafT(final List<String> transactionIds) throws SQLException, IOException, SAXException {
+        String xbrl = getTransactionDocumentAsXbrlGl(transactionIds);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            TransformationManager.transform(new ByteArrayInputStream(xbrl.getBytes(StandardCharsets.UTF_8)), DocumentFormat.Format.XBRL_GL_TO_SAF_T, baos);
+            return baos.toString(StandardCharsets.UTF_8.name());
+        } catch (SaxonApiException e) {
+            LOGGER.info("Failed converting to SAF-T");
+            return null;
+        } catch (UnsupportedEncodingException e) {
+            LOGGER.error("Converting to SAF-T using unsupported encoding");
+            return null;
+        }
     }
 
     public void putTransactionById(final String id, final String xbrlDocument) throws SQLException, IOException, SAXException {

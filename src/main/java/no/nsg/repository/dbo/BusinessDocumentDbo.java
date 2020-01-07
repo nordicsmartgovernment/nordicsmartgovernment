@@ -182,12 +182,12 @@ public class BusinessDocumentDbo {
         DocumentFormat.Format documentFormat = FormatFactory.guessFormat(documentType, original);
         setDirectionFromDocument(companyId, documentType, documentFormat, original);
         if (documentFormat != DocumentFormat.Format.OTHER) {
-            transformXbrlFromOriginal(documentFormat, tmpDirection);
+            transformXbrlFromOriginal(documentFormat);
             insertDocumentIdInXbrlDocument();
         }
     }
 
-    private void insertDocumentIdInXbrlDocument() throws IOException, SAXException {
+    private void insertDocumentIdInXbrlDocument() {
         patchXbrl("<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2016-12-01\">" +
                     "<add pos=\"prepend\" sel=\"xbrli:xbrl/gl-cor:accountingEntries/gl-cor:documentInfo\">\n         <gl-cor:uniqueID>"+getDocumentid()+"</gl-cor:uniqueID></add>" +
                   "</diff>");
@@ -225,7 +225,7 @@ public class BusinessDocumentDbo {
         this.isSynthetic = true;
     }
 
-    private void transformXbrlFromOriginal(final DocumentFormat.Format documentFormat, final TransformationManager.Direction direction) {
+    private void transformXbrlFromOriginal(final DocumentFormat.Format documentFormat) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
