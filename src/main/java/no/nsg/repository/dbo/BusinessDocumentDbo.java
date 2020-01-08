@@ -363,9 +363,10 @@ public class BusinessDocumentDbo {
         if (get_id() == UNINITIALIZED) {
             final String sql = "INSERT INTO nsg.businessdocument (_id_transaction, _id_journal, documenttype, documentid, original, xbrl, issynthetic) " +
                                       "VALUES (?,?,?,?,?,?,?)";
+            final String xbrl = getXbrl();
             try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
-                 Reader xbrlReader = new StringReader(getXbrl())) {
+                 Reader xbrlReader = (xbrl == null) ? null : new StringReader(xbrl)) {
 
                 if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
                     stmt.setInt(1, get_TransactionId());
@@ -387,7 +388,12 @@ public class BusinessDocumentDbo {
 
                 stmt.setString(4, getDocumentid());
                 stmt.setBinaryStream(5, originalBais, originalBais.available());
-                stmt.setCharacterStream(6, xbrlReader);
+
+                if (xbrlReader != null) {
+                    stmt.setCharacterStream(6, xbrlReader);
+                }else {
+                    stmt.setNull(6, Types.CLOB);
+                }
 
                 stmt.setBoolean(7, this.isSynthetic);
 
@@ -401,9 +407,10 @@ public class BusinessDocumentDbo {
         } else {
             final String sql = "UPDATE nsg.businessdocument SET _id_transaction=?, _id_journal=?, documenttype=?, documentid=?, original=?, xbrl=?, issynthetic=? "+
                                                 "WHERE _id=?";
+            final String xbrl = getXbrl();
             try (PreparedStatement stmt = connection.prepareStatement(sql);
                  ByteArrayInputStream originalBais = new ByteArrayInputStream(getOriginal());
-                 Reader xbrlReader = new StringReader(getXbrl())) {
+                 Reader xbrlReader = (xbrl == null) ? null : new StringReader(xbrl)) {
 
                 if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
                     stmt.setInt(1, get_TransactionId());
@@ -425,7 +432,12 @@ public class BusinessDocumentDbo {
 
                 stmt.setString(4, getDocumentid());
                 stmt.setBinaryStream(5, originalBais, originalBais.available());
-                stmt.setCharacterStream(6, xbrlReader);
+
+                if (xbrlReader != null) {
+                    stmt.setCharacterStream(6, xbrlReader);
+                }else {
+                    stmt.setNull(6, Types.CLOB);
+                }
 
                 stmt.setBoolean(7, this.isSynthetic);
 
