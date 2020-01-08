@@ -49,4 +49,14 @@ public class FormatFactory {
         }
     }
 
+    public static boolean isCompatible(final DocumentType.Type documentType, final DocumentFormat.Format documentFormat) {
+        if (DocumentType.isInvoice(documentType)) {
+            return DocumentFormat.isInvoice(documentFormat);
+        } else if (DocumentType.isOrder(documentType)) {
+            return DocumentFormat.isOrder(documentFormat);
+        } else {
+            return (!DocumentFormat.isInvoice(documentFormat) && !DocumentFormat.isOrder(documentFormat));
+        }
+    }
+
 }

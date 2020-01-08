@@ -104,7 +104,7 @@ public class BankstatementsApiControllerTest {
 
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_BANKSTATEMENT);
         ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assert.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
     }
 
     @Test

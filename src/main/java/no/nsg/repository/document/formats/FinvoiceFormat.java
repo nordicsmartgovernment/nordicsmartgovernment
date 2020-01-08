@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 
-public class FinvoiceFormat implements DocumentFormat {
+public class FinvoiceFormat extends DocumentFormat {
 
     @Override
     public String getDocumentSupplier(Document parsedDocument) {

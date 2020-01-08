@@ -180,6 +180,10 @@ public class BusinessDocumentDbo {
         this.original = original.getBytes(StandardCharsets.UTF_8);
         setDocumenttype(documentType);
         DocumentFormat.Format documentFormat = FormatFactory.guessFormat(documentType, original);
+        if (!FormatFactory.isCompatible(documentType, documentFormat)) {
+            throw new IllegalArgumentException("Document format seems to not match given document type");
+        }
+
         setDirectionFromDocument(companyId, documentType, documentFormat, original);
         if (documentFormat != DocumentFormat.Format.OTHER) {
             transformXbrlFromOriginal(documentFormat);

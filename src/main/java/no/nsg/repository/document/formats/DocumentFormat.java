@@ -3,9 +3,9 @@ package no.nsg.repository.document.formats;
 import org.w3c.dom.Document;
 
 
-public interface DocumentFormat {
+public abstract class DocumentFormat {
 
-    enum Format {
+    public enum Format {
         CAMT_053_001_08,
         FINVOICE,
         FINVOICE_PURCHASE_INVOICE,
@@ -21,7 +21,22 @@ public interface DocumentFormat {
         OTHER
     }
 
-    String getDocumentSupplier(final Document parsedDocument);
-    String getDocumentCustomer(final Document parsedDocument);
+    public abstract String getDocumentSupplier(final Document parsedDocument);
+    public abstract String getDocumentCustomer(final Document parsedDocument);
+
+    public static boolean isInvoice(final DocumentFormat.Format format) {
+        return (format == Format.FINVOICE ||
+                format == Format.FINVOICE_PURCHASE_INVOICE ||
+                format == Format.FINVOICE_SALES_INVOICE ||
+                format == Format.UBL_2_1_PURCHASE_INVOICE ||
+                format == Format.UBL_2_1_SALES_INVOICE ||
+                format == Format.UBL_2_1);
+    }
+
+    public static boolean isOrder(final DocumentFormat.Format format) {
+        return (format == Format.UBL_2_1_SALES_ORDER ||
+                format == Format.UBL_2_1 ||
+                format == Format.UBL_2_1_PURCHASE_ORDER);
+    }
 
 }

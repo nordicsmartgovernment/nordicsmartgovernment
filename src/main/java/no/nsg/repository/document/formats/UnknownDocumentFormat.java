@@ -3,7 +3,7 @@ package no.nsg.repository.document.formats;
 import org.w3c.dom.Document;
 
 
-public class UnknownDocumentFormat implements DocumentFormat {
+public class UnknownDocumentFormat extends DocumentFormat {
 
     @Override
     public String getDocumentSupplier(final Document parsedDocument) {

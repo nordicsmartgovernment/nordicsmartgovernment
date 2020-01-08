@@ -6,7 +6,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 
-public class UBLInvoiceFormat implements DocumentFormat {
+public class UBLInvoiceFormat extends DocumentFormat {
 
     @Override
     public String getDocumentSupplier(final Document parsedDocument) {
