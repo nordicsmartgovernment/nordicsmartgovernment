@@ -295,17 +295,17 @@ public class ConnectionManager {
 					xmlDocument = baos.toString();
 
 					if (ze.getName().startsWith("purchase_invoices/")) {
-						documentManager.createDocument(companyId, DocumentType.Type.PURCHASE_INVOICE, xmlDocument, true, connection);
+						documentManager.createDocument(companyId, null, DocumentType.Type.PURCHASE_INVOICE, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith("sales_invoices/")) {
-						documentManager.createDocument(companyId, DocumentType.Type.SALES_INVOICE, xmlDocument, true, connection);
+						documentManager.createDocument(companyId, null, DocumentType.Type.SALES_INVOICE, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith("bank_statements/")) {
-						documentManager.createDocument(companyId, DocumentType.Type.BANK_STATEMENT, xmlDocument, true, connection);
+						documentManager.createDocument(companyId, null, DocumentType.Type.BANK_STATEMENT, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith("orders/")) {
-						documentManager.createDocument(companyId, DocumentType.Type.PURCHASE_ORDER, xmlDocument, true, connection);
+						documentManager.createDocument(companyId, null, DocumentType.Type.PURCHASE_ORDER, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith("receipts/")) {
-						documentManager.createDocument(companyId, DocumentType.Type.RECEIPT, xmlDocument, true, connection);
+						documentManager.createDocument(companyId, null, DocumentType.Type.RECEIPT, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith("other/")) {
-						documentManager.createDocument(companyId, DocumentType.Type.OTHER, xmlDocument, true, connection);
+						documentManager.createDocument(companyId, null, DocumentType.Type.OTHER, xmlDocument, true, connection);
 					}
 
 					importCount++;

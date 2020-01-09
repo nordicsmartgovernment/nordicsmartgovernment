@@ -344,20 +344,29 @@ public class BusinessDocumentDbo {
         }
     }
 
-    private TransactionDbo getOrInitializeTransaction(final Connection connection, final String transactionSetName) throws SQLException {
-        if (get_TransactionId() != TransactionDbo.UNINITIALIZED) {
-            return new TransactionDbo(connection, get_TransactionId());
+    public TransactionDbo connectToTransaction(final Connection connection, final String transactionId) throws SQLException {
+        TransactionDbo transactionDbo;
+
+        if (transactionId==null) {
+            transactionDbo = TransactionDbo.create(connection, this.companyId, TransactionSetDbo.DEFAULT_NAME);
+        } else {
+            Integer tmpId = TransactionDbo.findByTransactionId(connection, transactionId);
+            if (tmpId == null || tmpId == TransactionDbo.UNINITIALIZED) {
+                throw new NoSuchElementException();
+            }
+            transactionDbo = new TransactionDbo(connection, tmpId);
         }
 
-        TransactionDbo transactionDbo = TransactionDbo.create(connection, this.companyId, transactionSetName);
         set_TransactionId(transactionDbo.get_id());
         return transactionDbo;
     }
 
-    public void persist(final Connection connection) throws SQLException, IOException, SAXException {
-        TransactionDbo transactionDbo = getOrInitializeTransaction(connection, TransactionSetDbo.DEFAULT_NAME);
-        if (transactionDbo==null || transactionDbo.get_id()==TransactionDbo.UNINITIALIZED) {
-            throw new NoSuchElementException();
+    public void persist(final Connection connection) throws SQLException, IOException {
+        TransactionDbo transactionDbo;
+        try {
+            transactionDbo = new TransactionDbo(connection, get_TransactionId());
+        } catch (NoSuchElementException e) {
+            throw new NoSuchElementException("Document is not connected to an existing transaction");
         }
 
         if (get_id() == UNINITIALIZED) {

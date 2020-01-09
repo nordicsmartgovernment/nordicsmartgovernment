@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 
@@ -47,6 +47,11 @@ public class DocumentApiControllerImpl implements no.nsg.generated.document_api.
 
     @Override
     public ResponseEntity<Void> createDocument(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String body) {
+        return createDocumentInTransaction(httpServletRequest, response, companyId, null, body);
+    }
+
+    @Override
+    public ResponseEntity<Void> createDocumentInTransaction(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String id, String body) {
         BusinessDocumentDbo persistedDocument;
         try {
             /*
@@ -62,7 +67,7 @@ public class DocumentApiControllerImpl implements no.nsg.generated.document_api.
                 throw new IllegalArgumentException("Please set Content-Type:-header to a supported MIME type: "+DocumentType.getDocumentMimeTypes());
             }
 
-            persistedDocument = documentManager.createDocument(companyId, documentType, body);
+            persistedDocument = documentManager.createDocument(companyId, id, documentType, body);
         } catch (IllegalArgumentException| SAXException e) {
             LOGGER.error("POST_CREATEDOCUMENT failed to persist document: " + e.getMessage());
             try {

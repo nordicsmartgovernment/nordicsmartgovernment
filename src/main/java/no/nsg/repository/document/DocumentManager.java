@@ -22,11 +22,11 @@ public class DocumentManager {
     private ConnectionManager connectionManager;
 
 
-    public BusinessDocumentDbo createDocument(final String companyId, final DocumentType.Type documentType, final String documentOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createDocument(final String companyId, final String transactionId, final DocumentType.Type documentType, final String documentOriginalXml) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo document;
         try (Connection connection = connectionManager.getConnection()) {
             try {
-                document = createDocument(companyId, documentType, documentOriginalXml, false, connection);
+                document = createDocument(companyId, transactionId, documentType, documentOriginalXml, false, connection);
                 connection.commit();
             } catch (Exception e) {
                 try {
@@ -40,12 +40,13 @@ public class DocumentManager {
         return document;
     }
 
-    public BusinessDocumentDbo createDocument(final String companyId, final DocumentType.Type documentType, final String documentOriginalXml, final boolean isSynthetic, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
+    public BusinessDocumentDbo createDocument(final String companyId, final String transactionId, final DocumentType.Type documentType, final String documentOriginalXml, final boolean isSynthetic, final Connection connection) throws UnknownFormatConversionException, SQLException, IOException, SAXException {
         BusinessDocumentDbo document = new BusinessDocumentDbo();
         if (isSynthetic) {
             document.setIsSynthetic();
         }
         document.setOriginalFromString(documentType, companyId, documentOriginalXml); //Will also set direction
+        document.connectToTransaction(connection, transactionId);
         document.persist(connection);
         return document;
     }

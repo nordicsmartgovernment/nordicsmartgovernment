@@ -105,6 +105,39 @@ paths:
             "*/*":
               schema:
                 $ref: "#/components/schemas/Document"
+    post:
+      tags:
+        - documentCollection
+      description: create new document in the catalog and appends it to the given transaction (id)
+      operationId: createDocumentInTransaction
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: The document owner companyId
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: The id of the transaction to append to
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              schema:
+                type: string
+              description: The url to the new document
+      requestBody:
+        required: true
+        content:
+          "*/*":
+            schema:
+              type: string
+              description: A document (Finvoice/Invoice etc) in the form of a string
 components:
   schemas:
     Document:

@@ -144,6 +144,24 @@ public class TransactionDbo {
         return this._id_referencedcompany;
     }
 
+    public static Integer findByTransactionId(final Connection connection, final String transactionId) throws SQLException {
+        Integer id = null;
+        if (transactionId!=null && !transactionId.isEmpty()) {
+            final String sql = "SELECT _id FROM nsg.transaction WHERE transactionid=?";
+            try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+                stmt.setString(1, transactionId);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    id = rs.getInt("_id");
+                    if (rs.wasNull()) {
+                        id = null;
+                    }
+                }
+            }
+        }
+        return id;
+    }
+
     public void persist(final Connection connection) throws SQLException {
         if (get_id() == UNINITIALIZED) {
             final String sql = "INSERT INTO nsg.transaction (_id_transactionset, transactionid, transactiontime, direction, _id_referencedcompany) VALUES (?,?,?,?,?)";
