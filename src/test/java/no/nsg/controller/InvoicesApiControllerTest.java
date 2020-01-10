@@ -98,9 +98,10 @@ public class InvoicesApiControllerTest {
         Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
-        String createdId = paths[paths.length-1];
+        String createdTransactionId = paths[paths.length-2];
+        String createdDocumentId = paths[paths.length-1];
 
-        ResponseEntity<Object> response2 = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
+        ResponseEntity<Object> response2 = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
         Assert.assertSame(response2.getStatusCode(), HttpStatus.OK);
         DocumentApiControllerImpl.Document returnedInvoice = (DocumentApiControllerImpl.Document) response2.getBody();
         String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
@@ -159,6 +160,22 @@ public class InvoicesApiControllerTest {
     }
 
     @Test
+    public void createEUSalesInvoiceWithAttachmentTest() throws IOException {
+        final String companyId = "2372513-5";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
+        ResponseEntity<Void> createResponse = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoiceTestPurchaseEU.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
+
+        URI location = createResponse.getHeaders().getLocation();
+        String[] paths = location.getPath().split("/");
+        String createdTransactionId = paths[paths.length-2];
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_OTHER);
+        ResponseEntity<Void> createResponse2 = invoicesApiController.createDocumentInTransaction(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, "asdf");
+        Assert.assertEquals(HttpStatus.CREATED, createResponse2.getStatusCode());
+        Assert.assertEquals(createdTransactionId, createResponse2.getHeaders().getLocation().getPath().split("/")[3]);
+    }
+
+    @Test
     public void getInvoicesTest() {
         final String companyId = "todo";
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
@@ -174,13 +191,14 @@ public class InvoicesApiControllerTest {
         Assert.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
-        String createdId = paths[paths.length-1];
+        String createdTransactionId = paths[paths.length-2];
+        String createdDocumentId = paths[paths.length-1];
 
-        ResponseEntity<Object> response = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
+        ResponseEntity<Object> response = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
         Assert.assertSame(response.getStatusCode(), HttpStatus.OK);
 
         DocumentApiControllerImpl.Document invoice = (DocumentApiControllerImpl.Document) response.getBody();
-        Assert.assertEquals(createdId, invoice.documentid);
+        Assert.assertEquals(createdDocumentId, invoice.documentid);
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {

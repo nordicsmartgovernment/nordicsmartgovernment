@@ -79,36 +79,11 @@ paths:
             schema:
               type: string
               description: A document (Finvoice/Invoice etc) in the form of a string
-  /document/{companyId}/{id}:
-    get:
-      tags:
-        - documentCollection
-      description: Get a document by id
-      operationId: getDocumentById
-      parameters:
-        - name: companyId
-          in: path
-          required: true
-          description: The document owner companyId
-          schema:
-            type: string
-        - name: id
-          in: path
-          required: true
-          description: The id of the document
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            "*/*":
-              schema:
-                $ref: "#/components/schemas/Document"
+  /document/{companyId}/{transactionId}:
     post:
       tags:
         - documentCollection
-      description: create new document in the catalog and appends it to the given transaction (id)
+      description: create new document in the catalog and appends it to the given transaction
       operationId: createDocumentInTransaction
       parameters:
         - name: companyId
@@ -117,7 +92,7 @@ paths:
           description: The document owner companyId
           schema:
             type: string
-        - name: id
+        - name: transactionId
           in: path
           required: true
           description: The id of the transaction to append to
@@ -138,6 +113,38 @@ paths:
             schema:
               type: string
               description: A document (Finvoice/Invoice etc) in the form of a string
+  /document/{companyId}/{transactionId}/{id}:
+    get:
+      tags:
+        - documentCollection
+      description: Get a document by id
+      operationId: getDocumentById
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: The document owner companyId
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          required: true
+          description: The id of the document transaction
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          description: The id of the document
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/Document"
 components:
   schemas:
     Document:

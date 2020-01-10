@@ -154,11 +154,11 @@ public class TransactionsApiControllerTest {
         Assert.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
-        String createdId = paths[paths.length-1];
+        String createdDocumentId = paths[paths.length-1];
 
         String xbrlDocument = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                               "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\"/>";
-        ResponseEntity<Void> response = transactionsApiController.putTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdId, xbrlDocument);
+        ResponseEntity<Void> response = transactionsApiController.putTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdDocumentId, xbrlDocument);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 

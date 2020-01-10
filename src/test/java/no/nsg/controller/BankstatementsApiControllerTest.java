@@ -124,13 +124,14 @@ public class BankstatementsApiControllerTest {
         Assert.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
-        String createdId = paths[paths.length-1];
+        String createdTransactionId = paths[paths.length-2];
+        String createdDocumentId = paths[paths.length-1];
 
-        ResponseEntity<Object> response = bankstatementsApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdId);
+        ResponseEntity<Object> response = bankstatementsApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
         Assert.assertSame(response.getStatusCode(), HttpStatus.OK);
 
         DocumentApiControllerImpl.Document bankstatement = (DocumentApiControllerImpl.Document) response.getBody();
-        Assert.assertEquals(createdId, bankstatement.documentid);
+        Assert.assertEquals(createdDocumentId, bankstatement.documentid);
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {

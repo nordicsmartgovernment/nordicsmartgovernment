@@ -32,6 +32,56 @@ public class TransactionManager {
     private ConnectionManager connectionManager;
 
 
+    public TransactionDbo getTransactionById(final int id) throws SQLException {
+        TransactionDbo transaction = null;
+        try (Connection connection = connectionManager.getConnection()) {
+            try {
+                try {
+                    transaction = getTransactionById(id, connection);
+                } catch (NoSuchElementException|NumberFormatException e) {
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                    throw e;
+                } catch (SQLException e2) {
+                    throw e2;
+                }
+            }
+        }
+        return transaction;
+    }
+
+    public TransactionDbo getTransactionById(final int id, final Connection connection) throws SQLException {
+        return new TransactionDbo(connection, id);
+    }
+
+    public TransactionDbo getTransactionByGuid(final String guid) throws SQLException {
+        TransactionDbo transaction = null;
+        try (Connection connection = connectionManager.getConnection()) {
+            try {
+                try {
+                    transaction = getTransactionByGuid(guid, connection);
+                } catch (NoSuchElementException|NumberFormatException e) {
+                }
+                connection.commit();
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                    throw e;
+                } catch (SQLException e2) {
+                    throw e2;
+                }
+            }
+        }
+        return transaction;
+    }
+
+    public TransactionDbo getTransactionByGuid(final String guid, final Connection connection) throws SQLException {
+        return getTransactionById(TransactionDbo.findInternalId(connection, guid), connection);
+    }
+
     public List<String> getTransactionOwners() throws SQLException {
         List<String> companyIds = new ArrayList<>();
         try (Connection connection = connectionManager.getConnection()) {

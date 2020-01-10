@@ -8,9 +8,11 @@ import no.nsg.repository.DocumentType;
 import no.nsg.repository.TransformationManager;
 import no.nsg.repository.document.FormatFactory;
 import no.nsg.repository.document.formats.DocumentFormat;
+import no.nsg.repository.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -22,6 +24,7 @@ import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -140,6 +143,13 @@ public class BusinessDocumentDbo {
 
     private int get_TransactionId() {
         return this._id_transaction;
+    }
+
+    private TransactionDbo getTransaction(final TransactionManager transactionManager) throws SQLException {
+        if (get_TransactionId() == TransactionDbo.UNINITIALIZED) {
+            return null;
+        }
+        return transactionManager.getTransactionById(get_TransactionId());
     }
 
     public void set_JournalId(final int _id_journal) {
@@ -498,5 +508,17 @@ public class BusinessDocumentDbo {
             }
         }
         throw new NoSuchElementException();
+    }
+
+    public URI getLocation(final ServletUriComponentsBuilder fromCurrentRequest, final TransactionManager transactionManager) {
+        TransactionDbo transaction;
+        try {
+            transaction = getTransaction(transactionManager);
+        } catch (Exception e) {
+            throw new RuntimeException("GetLocation failed: "+e.getMessage());
+        }
+
+        return fromCurrentRequest.path("/document/{companyId}/{transactionId}/{id}")
+                                 .buildAndExpand(this.companyId, transaction.getTransactionid(), getDocumentid()).toUri();
     }
 }

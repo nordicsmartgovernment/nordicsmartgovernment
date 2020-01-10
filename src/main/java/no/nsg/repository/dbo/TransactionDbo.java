@@ -239,6 +239,18 @@ public class TransactionDbo {
         }
     }
 
+    public static int findInternalId(final Connection connection, final String id) throws SQLException {
+        final String sql = "SELECT _id FROM nsg.transaction WHERE transactionid=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("_id");
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
     private TransformationManager.Direction intToDirection(final Integer direction) {
         if (direction == null) {
             return null;

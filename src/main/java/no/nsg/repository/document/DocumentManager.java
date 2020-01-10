@@ -51,12 +51,12 @@ public class DocumentManager {
         return document;
     }
 
-    public BusinessDocumentDbo getDocumentById(final String id) throws SQLException {
+    public BusinessDocumentDbo getDocumentByGuid(final String id) throws SQLException {
         BusinessDocumentDbo document = null;
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 try {
-                    document = getDocumentById(id, connection);
+                    document = getDocumentByGuid(id, connection);
                 } catch (NoSuchElementException|NumberFormatException|IOException e) {
                 }
                 connection.commit();
@@ -72,7 +72,7 @@ public class DocumentManager {
         return document;
     }
 
-    public BusinessDocumentDbo getDocumentById(final String id, final Connection connection) throws SQLException, IOException {
+    public BusinessDocumentDbo getDocumentByGuid(final String id, final Connection connection) throws SQLException, IOException {
         return new BusinessDocumentDbo(connection, BusinessDocumentDbo.findInternalId(connection, id));
     }
 

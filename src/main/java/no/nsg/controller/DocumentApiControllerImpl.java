@@ -4,6 +4,7 @@ import no.nsg.repository.DocumentType;
 import no.nsg.repository.MimeType;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.document.DocumentManager;
+import no.nsg.repository.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,9 @@ public class DocumentApiControllerImpl implements no.nsg.generated.document_api.
 
     @Autowired
     private DocumentManager documentManager;
+
+    @Autowired
+    private TransactionManager transactionManager;
 
 
     static class Document {
@@ -86,16 +90,16 @@ public class DocumentApiControllerImpl implements no.nsg.generated.document_api.
         if (persistedDocument==null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/document/{companyId}/{id}").buildAndExpand(companyId, persistedDocument.getDocumentid()).toUri();
+            URI location = persistedDocument.getLocation(ServletUriComponentsBuilder.fromCurrentRequest(), transactionManager);
             return ResponseEntity.created(location).build();
         }
     }
 
     @Override
-    public ResponseEntity<Object> getDocumentById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String id) {
+    public ResponseEntity<Object> getDocumentById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId, String id) {
         Document returnValue = null;
         try {
-            BusinessDocumentDbo document = documentManager.getDocumentById(id);
+            BusinessDocumentDbo document = documentManager.getDocumentByGuid(id);
             if (document != null) {
                 response.setContentType(DocumentType.toMimeType(document.getDocumenttype()));
                 returnValue = new Document(document.getDocumentid(), document.getOriginal());
