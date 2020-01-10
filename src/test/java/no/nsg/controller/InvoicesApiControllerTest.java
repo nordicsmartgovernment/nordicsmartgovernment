@@ -48,7 +48,7 @@ public class InvoicesApiControllerTest {
     HttpServletResponse httpServletResponseMock;
 
     @Autowired
-    DocumentApiControllerImpl invoicesApiController;
+    DocumentApi invoicesApiController;
 
     @Autowired
     ConnectionManager connectionManager;
@@ -103,7 +103,7 @@ public class InvoicesApiControllerTest {
 
         ResponseEntity<Object> response2 = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
         Assert.assertSame(response2.getStatusCode(), HttpStatus.OK);
-        DocumentApiControllerImpl.Document returnedInvoice = (DocumentApiControllerImpl.Document) response2.getBody();
+        DocumentApi.Document returnedInvoice = (DocumentApi.Document) response2.getBody();
         String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
         Assert.assertEquals(originalChecksum, returnedInvoiceChecksum);
     }
@@ -197,7 +197,7 @@ public class InvoicesApiControllerTest {
         ResponseEntity<Object> response = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
         Assert.assertSame(response.getStatusCode(), HttpStatus.OK);
 
-        DocumentApiControllerImpl.Document invoice = (DocumentApiControllerImpl.Document) response.getBody();
+        DocumentApi.Document invoice = (DocumentApi.Document) response.getBody();
         Assert.assertEquals(createdDocumentId, invoice.documentid);
     }
 

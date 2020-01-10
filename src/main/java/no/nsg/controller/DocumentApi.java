@@ -27,8 +27,8 @@ import java.util.*;
 
 @Controller
 @RestControllerAdvice
-public class DocumentApiControllerImpl implements no.nsg.generated.document_api.DocumentApi {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentApiControllerImpl.class);
+public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentApi.class);
 
     @Autowired
     private DocumentManager documentManager;
@@ -47,7 +47,7 @@ public class DocumentApiControllerImpl implements no.nsg.generated.document_api.
     }
 
 
-    DocumentApiControllerImpl() {}
+    DocumentApi() {}
 
     @Override
     public ResponseEntity<Void> createDocument(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String body) {

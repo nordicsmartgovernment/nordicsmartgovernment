@@ -43,7 +43,7 @@ public class BankstatementsApiControllerTest {
     HttpServletResponse httpServletResponseMock;
 
     @Autowired
-    DocumentApiControllerImpl bankstatementsApiController;
+    DocumentApi bankstatementsApiController;
 
     @Autowired
     ConnectionManager connectionManager;
@@ -130,7 +130,7 @@ public class BankstatementsApiControllerTest {
         ResponseEntity<Object> response = bankstatementsApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
         Assert.assertSame(response.getStatusCode(), HttpStatus.OK);
 
-        DocumentApiControllerImpl.Document bankstatement = (DocumentApiControllerImpl.Document) response.getBody();
+        DocumentApi.Document bankstatement = (DocumentApi.Document) response.getBody();
         Assert.assertEquals(createdDocumentId, bankstatement.documentid);
     }
 

@@ -46,10 +46,10 @@ public class TransactionsApiControllerTest {
     HttpServletResponse httpServletResponseMock;
 
     @Autowired
-    TransactionsApiControllerImpl transactionsApiController;
+    TransactionsApi transactionsApiController;
 
     @Autowired
-    DocumentApiControllerImpl documentApiController;
+    DocumentApi documentApiController;
 
     @Autowired
     ConnectionManager connectionManager;

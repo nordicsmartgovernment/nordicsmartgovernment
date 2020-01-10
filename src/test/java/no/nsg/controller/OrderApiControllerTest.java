@@ -45,7 +45,7 @@ public class OrderApiControllerTest {
     HttpServletResponse httpServletResponseMock;
 
     @Autowired
-    DocumentApiControllerImpl orderApiController;
+    DocumentApi orderApiController;
 
     @Autowired
     ConnectionManager connectionManager;
