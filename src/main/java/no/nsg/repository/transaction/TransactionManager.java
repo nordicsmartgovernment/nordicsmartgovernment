@@ -291,6 +291,10 @@ public class TransactionManager {
     }
 
     private String readerToString(final Reader xbrlReader) {
+        if (xbrlReader == null) {
+            return null;
+        }
+
         StringBuilder sb = new StringBuilder();
         char[] buffer = new char[10 * 1024];
         int length;

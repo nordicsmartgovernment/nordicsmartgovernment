@@ -51,6 +51,9 @@ public class InvoicesApiControllerTest {
     DocumentApi invoicesApiController;
 
     @Autowired
+    TransactionsApi transactionsApiController;
+
+    @Autowired
     ConnectionManager connectionManager;
 
     @ClassRule
@@ -173,6 +176,10 @@ public class InvoicesApiControllerTest {
         ResponseEntity<Void> createResponse2 = invoicesApiController.createDocumentInTransaction(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, "asdf");
         Assert.assertEquals(HttpStatus.CREATED, createResponse2.getStatusCode());
         Assert.assertEquals(createdTransactionId, createResponse2.getHeaders().getLocation().getPath().split("/")[3]);
+
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
+        ResponseEntity<Object> transactionResponse = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
+        Assert.assertTrue(transactionResponse.getStatusCode()==HttpStatus.OK);
     }
 
     @Test
