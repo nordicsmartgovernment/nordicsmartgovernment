@@ -12,7 +12,6 @@ import no.nsg.repository.transaction.TransactionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -25,6 +24,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -137,6 +137,10 @@ public class BusinessDocumentDbo {
         return this._id;
     }
 
+    public void setCompanyId(final String companyId) {
+        this.companyId = companyId;
+    }
+
     public void set_TransactionId(final int _id_transaction) {
         this._id_transaction = _id_transaction;
     }
@@ -186,7 +190,8 @@ public class BusinessDocumentDbo {
         return original;
     }
 
-    public void setOriginalFromString(final DocumentType.Type documentType, final String companyId, final String original) throws IOException, SAXException {
+    public void setOriginalFromString(final DocumentType.Type documentType, final String companyId, final String transactionId, final String original) throws IOException, SAXException {
+        setCompanyId(companyId);
         this.original = original.getBytes(StandardCharsets.UTF_8);
         setDocumenttype(documentType);
         DocumentFormat.Format documentFormat = FormatFactory.guessFormat(documentType, original);
@@ -194,16 +199,16 @@ public class BusinessDocumentDbo {
             throw new IllegalArgumentException("Document format seems to not match given document type");
         }
 
-        setDirectionFromDocument(companyId, documentType, documentFormat, original);
+        setDirectionFromDocument(documentType, documentFormat, original);
         if (documentFormat != DocumentFormat.Format.OTHER) {
             transformXbrlFromOriginal(documentFormat);
-            insertDocumentIdInXbrlDocument();
+            insertDocumentIdInXbrlDocument(getLocationString(this.companyId, transactionId, getDocumentid()));
         }
     }
 
-    private void insertDocumentIdInXbrlDocument() {
+    private void insertDocumentIdInXbrlDocument(final String documentId) {
         patchXbrl("<diff xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2016-12-01\">" +
-                    "<add pos=\"prepend\" sel=\"xbrli:xbrl/gl-cor:accountingEntries/gl-cor:documentInfo\">\n         <gl-cor:uniqueID>"+getDocumentid()+"</gl-cor:uniqueID></add>" +
+                    "<add pos=\"prepend\" sel=\"xbrli:xbrl/gl-cor:accountingEntries/gl-cor:documentInfo\">\n         <gl-cor:uniqueID>"+documentId+"</gl-cor:uniqueID></add>" +
                   "</diff>");
     }
 
@@ -252,15 +257,13 @@ public class BusinessDocumentDbo {
         }
     }
 
-    private void setDirectionFromDocument(final String companyId, final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
-        this.companyId = companyId;
-
+    private void setDirectionFromDocument(final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
         if (!DocumentType.hasDirection(documentType)) {
             tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
             return;
         }
 
-        if (companyId == null) {
+        if (this.companyId == null) {
             tmpDirection = TransformationManager.Direction.DONT_KNOW;
             return;
         }
@@ -271,18 +274,18 @@ public class BusinessDocumentDbo {
         String customer = docType.getDocumentCustomer(parsedDocument);
 
         if (DocumentType.isSales(documentType)) {
-            if (companyId.equalsIgnoreCase(supplier)) {
+            if (this.companyId.equalsIgnoreCase(supplier)) {
                 tmpDirection = TransformationManager.Direction.SALES;
                 referencedCompanyId = customer;
             } else {
-                throw new IllegalArgumentException("customerId (" + companyId + ") was not supplier (" + supplier + ")");
+                throw new IllegalArgumentException("customerId (" + this.companyId + ") was not supplier (" + supplier + ")");
             }
         } else if (DocumentType.isPurchase(documentType)) {
-            if (companyId.equalsIgnoreCase(customer)) {
+            if (this.companyId.equalsIgnoreCase(customer)) {
                 tmpDirection = TransformationManager.Direction.PURCHASE;
                 referencedCompanyId = supplier;
             } else {
-                throw new IllegalArgumentException("customerId (" + companyId + ") was not customer (" + customer + ")");
+                throw new IllegalArgumentException("customerId (" + this.companyId + ") was not customer (" + customer + ")");
             }
         } else {
             throw new IllegalArgumentException("Unexpected document type for direction detection: "+DocumentType.toMimeType(documentType));
@@ -510,15 +513,24 @@ public class BusinessDocumentDbo {
         throw new NoSuchElementException();
     }
 
-    public URI getLocation(final ServletUriComponentsBuilder fromCurrentRequest, final TransactionManager transactionManager) {
+    public URI getLocation(final TransactionManager transactionManager) {
         TransactionDbo transaction;
         try {
             transaction = getTransaction(transactionManager);
+            return new URI(getLocationString(this.companyId, transaction.getTransactionid(), getDocumentid()));
         } catch (Exception e) {
             throw new RuntimeException("GetLocation failed: "+e.getMessage());
         }
+    }
 
-        return fromCurrentRequest.path("/document/{companyId}/{transactionId}/{id}")
-                                 .buildAndExpand(this.companyId, transaction.getTransactionid(), getDocumentid()).toUri();
+    public String getLocationString(final String companyId, final String transactionId, final String documentId) throws UnsupportedEncodingException {
+        StringBuilder sb = new StringBuilder();
+        sb.append("/document/");
+        sb.append(URLEncoder.encode(companyId, "utf-8"));
+        sb.append('/');
+        sb.append(transactionId);
+        sb.append('/');
+        sb.append(documentId);
+        return sb.toString();
     }
 }

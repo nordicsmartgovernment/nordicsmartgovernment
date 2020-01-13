@@ -3,6 +3,7 @@ package no.nsg.repository.document;
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.DocumentType;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
+import no.nsg.repository.dbo.TransactionDbo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
@@ -45,8 +46,9 @@ public class DocumentManager {
         if (isSynthetic) {
             document.setIsSynthetic();
         }
-        document.setOriginalFromString(documentType, companyId, documentOriginalXml); //Will also set direction
-        document.connectToTransaction(connection, transactionId);
+        document.setCompanyId(companyId);
+        TransactionDbo transactionDbo = document.connectToTransaction(connection, transactionId);
+        document.setOriginalFromString(documentType, companyId,transactionDbo.getTransactionid(), documentOriginalXml); //Will also set direction
         document.persist(connection);
         return document;
     }

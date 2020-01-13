@@ -90,7 +90,7 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
         if (persistedDocument==null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            URI location = persistedDocument.getLocation(ServletUriComponentsBuilder.fromCurrentRequest(), transactionManager);
+            URI location = persistedDocument.getLocation(transactionManager);
             return ResponseEntity.created(location).build();
         }
     }

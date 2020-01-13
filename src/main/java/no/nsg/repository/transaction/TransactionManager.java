@@ -37,7 +37,7 @@ public class TransactionManager {
         try (Connection connection = connectionManager.getConnection()) {
             try {
                 try {
-                    transaction = getTransactionById(id, connection);
+                    transaction = TransactionManager.getTransactionById(id, connection);
                 } catch (NoSuchElementException|NumberFormatException e) {
                 }
                 connection.commit();
@@ -53,7 +53,7 @@ public class TransactionManager {
         return transaction;
     }
 
-    public TransactionDbo getTransactionById(final int id, final Connection connection) throws SQLException {
+    public static TransactionDbo getTransactionById(final int id, final Connection connection) throws SQLException {
         return new TransactionDbo(connection, id);
     }
 
@@ -79,7 +79,7 @@ public class TransactionManager {
     }
 
     public TransactionDbo getTransactionByGuid(final String guid, final Connection connection) throws SQLException {
-        return getTransactionById(TransactionDbo.findInternalId(connection, guid), connection);
+        return TransactionManager.getTransactionById(TransactionDbo.findInternalId(connection, guid), connection);
     }
 
     public List<String> getTransactionOwners() throws SQLException {
