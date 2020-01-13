@@ -96,10 +96,10 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
     }
 
     @Override
-    public ResponseEntity<Object> getDocumentById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId, String id) {
+    public ResponseEntity<Object> getDocumentById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId, String documentId) {
         Document returnValue = null;
         try {
-            BusinessDocumentDbo document = documentManager.getDocumentByGuid(id);
+            BusinessDocumentDbo document = documentManager.getDocumentByGuid(documentId);
             if (document != null) {
                 response.setContentType(DocumentType.toMimeType(document.getDocumenttype()));
                 returnValue = new Document(document.getDocumentid(), document.getOriginal());

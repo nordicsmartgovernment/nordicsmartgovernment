@@ -113,7 +113,7 @@ paths:
             schema:
               type: string
               description: A document (Finvoice/Invoice etc) in the form of a string
-  /document/{companyId}/{transactionId}/{id}:
+  /document/{companyId}/{transactionId}/{documentId}:
     get:
       tags:
         - documentCollection
@@ -132,7 +132,7 @@ paths:
           description: The id of the document transaction
           schema:
             type: string
-        - name: id
+        - name: documentId
           in: path
           required: true
           description: The id of the document
