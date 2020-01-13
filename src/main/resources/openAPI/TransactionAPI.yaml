@@ -108,8 +108,8 @@ paths:
     put:
       tags:
         - writeTransaction
-      description: Patch a transaction
-      operationId: putTransactionById
+      description: Replace a document in a transaction
+      operationId: putTransactionByDocumentId
       parameters:
         - name: companyId
           in: path
@@ -120,7 +120,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: The id of the transaction
+          description: The document id of the document to replace
           schema:
             type: string
       responses:

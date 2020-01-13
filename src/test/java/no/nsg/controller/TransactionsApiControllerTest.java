@@ -158,7 +158,7 @@ public class TransactionsApiControllerTest {
 
         String xbrlDocument = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                               "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\"/>";
-        ResponseEntity<Void> response = transactionsApiController.putTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdDocumentId, xbrlDocument);
+        ResponseEntity<Void> response = transactionsApiController.putTransactionByDocumentId(httpServletRequestMock, httpServletResponseMock, companyId, createdDocumentId, xbrlDocument);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 

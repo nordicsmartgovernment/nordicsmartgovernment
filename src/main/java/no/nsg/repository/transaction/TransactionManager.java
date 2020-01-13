@@ -276,9 +276,9 @@ public class TransactionManager {
         }
     }
 
-    public void putTransactionById(final String id, final String xbrlDocument) throws SQLException, IOException, SAXException {
+    public void putTransactionByDocumentGuid(final String documentGuid, final String xbrlDocument) throws SQLException, IOException, SAXException {
         try (Connection connection = connectionManager.getConnection()) {
-            int documentId = BusinessDocumentDbo.findInternalId(connection, id);
+            int documentId = BusinessDocumentDbo.findInternalId(connection, documentGuid);
             if (documentId == BusinessDocumentDbo.UNINITIALIZED) {
                 connection.commit();
                 throw new NoSuchElementException();

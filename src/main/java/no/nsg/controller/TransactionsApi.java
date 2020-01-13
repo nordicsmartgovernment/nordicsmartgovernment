@@ -118,9 +118,9 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
     }
 
     @Override
-    public ResponseEntity<Void> putTransactionById(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String id, String body) {
+    public ResponseEntity<Void> putTransactionByDocumentId(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String documentId, String body) {
         try {
-            transactionManager.putTransactionById(id, body);
+            transactionManager.putTransactionByDocumentGuid(documentId, body);
         } catch (NoSuchElementException e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (PatchException| SAXException | IllegalArgumentException e) {
