@@ -524,13 +524,6 @@ public class BusinessDocumentDbo {
     }
 
     public String getLocationString(final String companyId, final String transactionId, final String documentId) throws UnsupportedEncodingException {
-        StringBuilder sb = new StringBuilder();
-        sb.append("/document/");
-        sb.append(URLEncoder.encode(companyId, "utf-8"));
-        sb.append('/');
-        sb.append(transactionId);
-        sb.append('/');
-        sb.append(documentId);
-        return sb.toString();
+        return "/document/" + URLEncoder.encode(companyId, "utf-8") + "/" + transactionId + "/" + documentId;
     }
 }
