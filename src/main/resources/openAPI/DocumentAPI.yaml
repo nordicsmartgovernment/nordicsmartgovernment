@@ -80,6 +80,32 @@ paths:
               type: string
               description: A document (Finvoice/Invoice etc) in the form of a string
   /document/{companyId}/{transactionId}:
+    get:
+      tags:
+        - documentCollection
+      description: Get documents by transaction id
+      operationId: getDocumentsByTransactionId
+      parameters:
+        - name: companyId
+          in: path
+          required: true
+          description: The document owner companyId
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          required: true
+          description: The id of the document transaction
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: List of IDs for all matching transaction documents
     post:
       tags:
         - documentCollection

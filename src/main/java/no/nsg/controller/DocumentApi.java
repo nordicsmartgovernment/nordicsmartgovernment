@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.xml.sax.SAXException;
 
 import javax.servlet.http.HttpServletRequest;
@@ -162,7 +161,25 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
         }
     }
 
-    public List<String> getDocumentIds(final String companyId, Set<DocumentType.Type> documentTypes) throws SQLException {
+    @Override
+    public ResponseEntity<Object> getDocumentsByTransactionId(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId) {
+        List<?> returnValue;
+        try {
+            returnValue = getDocumentIdsByTransactionId(companyId, transactionId);
+            response.setContentType(MimeType.JSON);
+        } catch (Exception e) {
+            LOGGER.error("GET_GETDOCUMENTS failed:", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (returnValue==null || returnValue.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(returnValue, HttpStatus.OK);
+        }
+    }
+
+    private List<String> getDocumentIds(final String companyId, Set<DocumentType.Type> documentTypes) throws SQLException {
         List<String> returnValue = new ArrayList<>();
         List<BusinessDocumentDbo> invoices = documentManager.getDocuments(companyId, documentTypes);
         for (BusinessDocumentDbo invoice : invoices) {
@@ -171,7 +188,16 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
         return returnValue;
     }
 
-    public List<Document> getDocumentBodies(final String companyId, Set<DocumentType.Type> documentTypes) throws SQLException {
+    private List<String> getDocumentIdsByTransactionId(final String companyId, final String transactionId) throws SQLException {
+        List<String> returnValue = new ArrayList<>();
+        List<BusinessDocumentDbo> invoices = documentManager.getDocumentsByTransactionId(companyId, transactionId);
+        for (BusinessDocumentDbo invoice : invoices) {
+            returnValue.add(invoice.getDocumentid());
+        }
+        return returnValue;
+    }
+
+    private List<Document> getDocumentBodies(final String companyId, Set<DocumentType.Type> documentTypes) throws SQLException {
         List<Document> returnValue = new ArrayList<>();
         List<BusinessDocumentDbo> invoices = documentManager.getDocuments(companyId, documentTypes);
         for (BusinessDocumentDbo invoice : invoices) {

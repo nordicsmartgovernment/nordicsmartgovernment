@@ -129,7 +129,52 @@ public class DocumentManager {
                 } catch (NoSuchElementException|IOException e) {
                 }
             }
-            connection.commit();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        return documents;
+    }
+
+    public List<BusinessDocumentDbo> getDocumentsByTransactionId(final String companyId, final String transactionId) throws SQLException {
+        try (Connection connection = connectionManager.getConnection()) {
+            try {
+                List<BusinessDocumentDbo> documents = getDocumentsByTransactionId(connection, companyId, transactionId);
+                connection.commit();
+                return documents;
+            } catch (SQLException e) {
+                try {
+                    connection.rollback();
+                    throw e;
+                } catch (SQLException e2) {
+                    throw e2;
+                }
+            }
+        }
+    }
+
+    public List<BusinessDocumentDbo> getDocumentsByTransactionId(final Connection connection, final String companyId, final String transactionId) throws SQLException {
+        List<BusinessDocumentDbo> documents = new ArrayList<>();
+
+        String sql = "SELECT d._id "
+                +"FROM nsg.businessdocument d, nsg.transaction t, nsg.transactionset ts, nsg.company c "
+                +"WHERE d._id_transaction=t._id "
+                +"AND t._id_transactionset=ts._id "
+                +"AND ts._id_company=c._id "
+                +"AND c.orgno=? "
+                +"AND t.transactionid=?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, companyId);
+            stmt.setString(2, transactionId);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                try {
+                    documents.add(new BusinessDocumentDbo(connection, rs.getInt("_id")));
+                } catch (NoSuchElementException|IOException e) {
+                }
+            }
         } catch (Exception e) {
             throw e;
         }

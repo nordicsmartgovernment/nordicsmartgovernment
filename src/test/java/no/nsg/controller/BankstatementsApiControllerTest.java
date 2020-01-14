@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 
 @SpringBootTest
@@ -85,8 +86,8 @@ public class BankstatementsApiControllerTest {
     @Test
     public void createBankstatementTest() throws IOException {
         final String companyId = "todo";
-        ResponseEntity<Void> response = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        ResponseEntity<Void> createResponse = bankstatementsApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("camt/NSG.2.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
     }
 
     @Test
@@ -132,6 +133,13 @@ public class BankstatementsApiControllerTest {
 
         DocumentApi.Document bankstatement = (DocumentApi.Document) response.getBody();
         Assert.assertEquals(createdDocumentId, bankstatement.documentid);
+
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
+        ResponseEntity<Object> responseDocumentsByTransaction = bankstatementsApiController.getDocumentsByTransactionId(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
+        Assert.assertTrue(responseDocumentsByTransaction.getStatusCode()==HttpStatus.OK);
+        ArrayList<String> documentArray = (ArrayList<String>) responseDocumentsByTransaction.getBody();
+        Assert.assertTrue(documentArray.size() == 1);
+        Assert.assertTrue(createdDocumentId.equals(documentArray.get(0)));
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {
