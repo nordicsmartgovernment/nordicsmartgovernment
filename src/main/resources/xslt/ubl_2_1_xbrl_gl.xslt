@@ -73,6 +73,10 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <xsl:variable name="seller_cur" select="//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount/@currencyID"/>
 <!--[@source=$seller_cur and @targetCountry=$buyer_cc]-->
 <xsl:variable name="cur_factor" select="$cur_map//map:rate[@source=$seller_cur and @targetCountry=$buyer_cc][1]"/> 
+<xsl:variable name="target_cur" select="$cur_map//map:rate[@source=$seller_cur and @targetCountry=$buyer_cc][1]/@targetCurrency"/>
+<!--
+<TEST> target_cur: <xsl:value-of select="$target_cur"/></TEST>
+-->
 
   <xbrli:context id="now">
     <xbrli:entity>
@@ -85,9 +89,12 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
   <xbrli:unit id="NotUsed">
     <xbrli:measure>pure</xbrli:measure>
   </xbrli:unit>
+  <xbrli:unit id="{$target_cur}">
+    <xbrli:measure>iso4217:<xsl:value-of select="$target_cur"/></xbrli:measure>
+</xbrli:unit>
   
   <!--For each found AmountCurrencyIdentifier, create unit-->
-<xsl:for-each select="distinct-values(//@currencyID)">
+<xsl:for-each select="distinct-values(//@currencyID[not(.=$target_cur)])">
 <xsl:variable name="value" select="."/>
 <xbrli:unit id="{$value}">
     <xbrli:measure>iso4217:<xsl:value-of select="."/></xbrli:measure>
@@ -186,7 +193,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 
 <!--For the Header type entry the amount is the total VAT included amount for the invoice-->
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
-<!--BT-122--><xsl:variable name="value" select="//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="//cac:LegalMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number(($value*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
@@ -482,7 +489,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 <!--For the Header VAT type entry the amount is the total VAT included amount for the invoice-->
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="./cbc:TaxAmount"/>
-<xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
@@ -690,7 +697,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:if>
 </xsl:for-each>
 
-<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
@@ -862,7 +869,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:if>
 </xsl:for-each>
 
-<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * (-1) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<xsl:if test="number($value)!=0 and string($upc_code) and number($vat)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number($value) *number($vat) div 100 * (-1) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
@@ -1044,7 +1051,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:for-each>
 
 
-<!--BT-122--><xsl:variable name="value" select="./cbc:LineExtensionAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="./cbc:LineExtensionAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number(($value * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//Invoice/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
 
@@ -1269,8 +1276,8 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
 </xsl:for-each>
 
 <gl-cor:taxes>
-<!--BT-144--><xsl:variable name="value" select="./cac:TaxTotal/cbc:TaxAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxAmount></xsl:if>
-<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate  contextRef="now" unitRef="DKK" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
+<!--BT-144--><xsl:variable name="value" select="./cac:TaxTotal/cbc:TaxAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="$value*$cur_factor"/></gl-cor:taxAmount></xsl:if>
+<!--BT-143--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:Percent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate  contextRef="now" unitRef="NotUsed" decimals="2"><xsl:value-of select="$value"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:ID"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./cac:Item/cac:ClassifiedTaxCategory/cbc:TaxExemptionReason"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
 </gl-cor:taxes>
