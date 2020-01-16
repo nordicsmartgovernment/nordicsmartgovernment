@@ -57,6 +57,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <xsl:variable name="seller_cur" select="//InvoiceTotalVatIncludedAmount/@AmountCurrencyIdentifier"/>
 <!--[@source=$seller_cur and @targetCountry=$buyer_cc]-->
 <xsl:variable name="cur_factor" select="$cur_map//map:rate[@source=$seller_cur and @targetCountry=$buyer_cc][1]"/>
+<xsl:variable name="target_cur" select="$cur_map//map:rate[@source=$seller_cur and @targetCountry=$buyer_cc][1]/@targetCurrency"/>
   <xbrli:context id="now">
     <xbrli:entity>
       <xbrli:identifier scheme="http://www.xbrl.org/xbrlgl/sample">SAMPLE</xbrli:identifier>
@@ -68,9 +69,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <xbrli:unit id="NotUsed">
     <xbrli:measure>pure</xbrli:measure>
   </xbrli:unit>
+  <xbrli:unit id="{$target_cur}">
+    <xbrli:measure>iso4217:<xsl:value-of select="$target_cur"/></xbrli:measure>
+</xbrli:unit>
   
   <!--For each found AmountCurrencyIdentifier, create unit-->
-<xsl:for-each select="distinct-values(//@AmountCurrencyIdentifier)">
+<xsl:for-each select="distinct-values(//@AmountCurrencyIdentifier[not(.=$target_cur)])">
 <xsl:variable name="value" select="."/>
 <xbrli:unit id="{$value}">
     <xbrli:measure>iso4217:<xsl:value-of select="."/></xbrli:measure>
@@ -157,7 +161,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 </xsl:for-each>
 
 
-<!--BT-122--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.'))*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.'))*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
 
@@ -394,7 +398,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <!--For the Header VAT type entry the amount is the total VAT included amount for the invoice-->
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
-<!--BT-122--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
 
@@ -512,7 +516,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-18--><xsl:variable name="value" select="concat(//PaymentTermsFreeText[1], ',',//PaymentTermsFreeText[2])"/><xsl:if test="string($value)!=','"><gl-cor:terms contextRef="now"><xsl:value-of select="$value"/></gl-cor:terms></xsl:if>
 
 <gl-cor:taxes>
-<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))"/></gl-cor:taxAmount></xsl:if>
+<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*$cur_factor"/></gl-cor:taxAmount></xsl:if>
 <!--BT-143--><xsl:variable name="value" select="./VatRatePercent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./VatCode"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./VatFreeText"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
@@ -599,7 +603,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 </xsl:if>
 </xsl:for-each>
 
-<xsl:if test="exists($value) and string($upc_code) and exists($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) *number(replace($vat,',','.')) div 100 * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<xsl:if test="exists($value) and string($upc_code) and exists($vat)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) *number($vat[1]) div 100 * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
 
@@ -717,7 +721,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-18--><xsl:variable name="value" select="concat(//PaymentTermsFreeText[1], ',',//PaymentTermsFreeText[2])"/><xsl:if test="string($value)!=','"><gl-cor:terms contextRef="now"><xsl:value-of select="$value"/></gl-cor:terms></xsl:if>
 
 <gl-cor:taxes>
-<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))"/></gl-cor:taxAmount></xsl:if>
+<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*$cur_factor"/></gl-cor:taxAmount></xsl:if>
 <!--BT-143--><xsl:variable name="value" select="./VatRatePercent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./VatCode"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./VatFreeText"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
@@ -790,7 +794,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 </xsl:if>
 </xsl:for-each>
 
-<xsl:if test="exists($value) and string($upc_code) and exists($vat)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) *number(replace($vat,',','.')) div 100 * (-1) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+<xsl:if test="exists($value) and string($upc_code) and exists($vat)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) *number(replace($vat[1],',','.')) div 100 * (-1) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
 
@@ -908,7 +912,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-18--><xsl:variable name="value" select="concat(//PaymentTermsFreeText[1], ',',//PaymentTermsFreeText[2])"/><xsl:if test="string($value)!=','"><gl-cor:terms contextRef="now"><xsl:value-of select="$value"/></gl-cor:terms></xsl:if>
 
 <gl-cor:taxes>
-<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))"/></gl-cor:taxAmount></xsl:if>
+<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*$cur_factor"/></gl-cor:taxAmount></xsl:if>
 <!--BT-143--><xsl:variable name="value" select="./VatRatePercent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./VatCode"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./VatFreeText"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
@@ -993,7 +997,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 
 
-<!--BT-122--><xsl:variable name="value" select="./RowVatExcludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="format-number(number(replace($value,',','.'))*$cur_factor, '0.00')"/></gl-cor:amount></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="./RowVatExcludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number(number(replace($value,',','.'))*$cur_factor, '0.00')"/></gl-cor:amount></xsl:if>
 
 
 <!--BT-8--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount/@AmountCurrencyIdentifier"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
@@ -1132,7 +1136,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 </xsl:if>
 
 <gl-cor:taxes>
-<!--BT-144--><xsl:variable name="value" select="./RowVatAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxAmount></xsl:if>
+<!--BT-144--><xsl:variable name="value" select="./RowVatAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*$cur_factor"/></gl-cor:taxAmount></xsl:if>
 <!--BT-143--><xsl:variable name="value" select="./RowVatRatePercent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./RowVatCode"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./RowFreeText"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
