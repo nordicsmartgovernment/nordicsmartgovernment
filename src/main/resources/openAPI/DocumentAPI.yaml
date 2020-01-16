@@ -168,7 +168,7 @@ paths:
         '200':
           description: OK
           content:
-            "*/*":
+            application/xml:
               schema:
                 $ref: "#/components/schemas/Document"
 components:
