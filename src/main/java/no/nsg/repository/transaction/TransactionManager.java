@@ -202,8 +202,10 @@ public class TransactionManager {
                     if (xbrl != null) {
                         Document document = BusinessDocumentDbo.parseDocument(xbrl);
                         NodeList documentEntryHeaders = document.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryHeader");
+                        Node uniqueId = document.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "uniqueID").item(0);
                         for (int headerIndex=0; headerIndex<documentEntryHeaders.getLength(); headerIndex++) {
                             Node entryHeader = documentEntryHeaders.item(headerIndex);
+                            entryHeader.appendChild(document.importNode(uniqueId, true));
                             accountingEntry.appendChild(transactionDocument.importNode(entryHeader, true));
                         }
                     }
