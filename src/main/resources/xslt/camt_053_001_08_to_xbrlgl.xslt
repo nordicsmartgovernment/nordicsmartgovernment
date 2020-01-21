@@ -131,7 +131,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 <!--Account tuples-->
 <!-- The finnish acount to be used is "191001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">191001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">191001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For the NSG reference implementation. Add other countries accounting references too for the Cash at bank, money transfers intermediate accounts reconciliations for own use.-->
@@ -315,7 +324,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 <!--Account tuples-->
 <!-- The finnish account to be used is "17001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade debtors, short term.-->
@@ -334,7 +352,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 	 <!--Account tuples-->
 <!-- The finnish account to be used is "290601" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade creditors, short term.-->
@@ -364,7 +391,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 	 <!--Account tuples-->
 <!-- The finnish account to be used is "17001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade debtors, short term.-->
@@ -379,7 +415,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 <!--Account tuples-->
 <!-- The finnish account to be used is "17001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade debtors, short term.-->
@@ -398,7 +443,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 	 <!--Account tuples-->
 <!-- The finnish account to be used is "290601" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade creditors, short term.-->
@@ -428,7 +482,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 	 <!--Account tuples-->
 <!-- The finnish account to be used is "17001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade debtors, short term.-->
@@ -447,7 +510,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 	 <!--Account tuples-->
 <!-- The finnish account to be used is "290601" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade creditors, short term.-->
@@ -480,7 +552,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 	 <!--Account tuples-->
 <!-- The finnish account to be used is "17001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade debtors, short term.-->
@@ -499,7 +580,16 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 	 <!--Account tuples-->
 <!-- The finnish account to be used is "290601" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the Trade creditors, short term.-->
@@ -929,12 +1019,21 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 
 <!-- ISO Index:  2.267  --><xsl:variable name="value" select="./RltdDts/AccptncDtTm"/><xsl:if test="string($value)"><gl-cor:dateAcknowledged contextRef="now"><xsl:value-of select="$value"/></gl-cor:dateAcknowledged></xsl:if>
 
+
+<!-- ISO Index:  2.84  --><xsl:variable name="value" select="./AcctSvcrRef"/><xsl:if test="string($value)">
 <gl-taf:originatingDocumentStructure>
-<!-- ISO Index:  2.84  --><xsl:variable name="value" select="./AcctSvcrRef"/><xsl:if test="string($value)"><gl-taf:originatingDocumentType contextRef="now">voucher</gl-taf:originatingDocumentType><gl-taf:originatingDocumentNumber contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentNumber></xsl:if>
+<gl-taf:originatingDocumentType contextRef="now">voucher</gl-taf:originatingDocumentType><gl-taf:originatingDocumentNumber contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentNumber>
 </gl-taf:originatingDocumentStructure>
+</xsl:if>
+
+
+<!-- ISO Index:  2.145  --><xsl:variable name="value" select="./DxDtls/Refs/AcctSvcrRef"/>
+<xsl:if test="string($value)">
 <gl-taf:originatingDocumentStructure>
-<!-- ISO Index:  2.145  --><xsl:variable name="value" select="./DxDtls/Refs/AcctSvcrRef"/><xsl:if test="string($value)"><gl-taf:originatingDocumentType contextRef="now">voucher</gl-taf:originatingDocumentType><gl-taf:originatingDocumentNumber contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentNumber></xsl:if>
+<gl-taf:originatingDocumentType contextRef="now">voucher</gl-taf:originatingDocumentType><gl-taf:originatingDocumentNumber contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentNumber>
 </gl-taf:originatingDocumentStructure>
+</xsl:if>
+
 
 
 <xsl:for-each select="./RmtInf/Strd/RfrdDocInf">
@@ -950,10 +1049,15 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 
 
 
-<gl-taf:originatingDocumentStructure>
+
 <!--TODO tyypitys jkorjaa tähän, nyt laitettu other-->
-<!-- ISO Index:  2.262  --><xsl:variable name="value" select="./RmtInf/Strd/CdtrRefInf/Ref"/><xsl:if test="string($value)"><gl-taf:originatingDocumentIdentifierType contextRef="now">O</gl-taf:originatingDocumentIdentifierType><gl-taf:originatingDocumentIdentifierCode contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentIdentifierCode></xsl:if>
+<!-- ISO Index:  2.262  --><xsl:variable name="value" select="./RmtInf/Strd/CdtrRefInf/Ref"/>
+<xsl:if test="string($value)">
+<gl-taf:originatingDocumentStructure>
+<gl-taf:originatingDocumentIdentifierType contextRef="now">O</gl-taf:originatingDocumentIdentifierType><gl-taf:originatingDocumentIdentifierCode contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentIdentifierCode>
 </gl-taf:originatingDocumentStructure>
+</xsl:if>
+
 
 </gl-cor:entryDetail>
 

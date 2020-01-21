@@ -42,6 +42,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             xmlns:xbrli="http://www.xbrl.org/2003/instance"
             xmlns:gl-srcd="http://www.xbrl.org/int/gl/srcd/2016-12-01"
             xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01"
+			xmlns:map="http://www.nsg.org/map" 
             xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2016-12-01" xmlns:xlink="http://www.w3.org/1999/xlink">
   <xbrll:schemaRef xlink:type="simple" xlink:href="../../../XBRL-GL-PWD-2016-12-01-fi-2018-11-06/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/> 
 
@@ -105,7 +106,15 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--Account tuples-->
 <!-- The finnish acount to be used is "17001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment><xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the short term trade debtors.-->
@@ -140,11 +149,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-27--><xsl:variable name="value" select="./SellerCode"/><xsl:if test="string($value)"><gl-cor:identifierExternalReference><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode></gl-cor:identifierExternalReference></xsl:if>
 <gl-cor:identifierExternalReference>
 <!--BT-28--><xsl:variable name="value" select="./SellerPartyIdentifier"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">ytunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <gl-cor:identifierExternalReference>
 <!--BT-30--><xsl:variable name="value" select="./SellerOrganisationTaxCode"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">alvtunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">alvtunnus</gl-cor:identifierAuthority><xsl:comment>VAT ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <!--SellerAccountDetails-->
 <xsl:for-each select="//SellerAccountDetails">
@@ -201,7 +210,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <gl-cor:identifierExternalReference>
 <!--BT-58--><xsl:variable name="value" select="//EpiBei"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">ytunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <!--Identifier Organization Type, organization-->
 <gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
@@ -218,7 +227,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-59--><xsl:variable name="value" select="./AnyPartyOrganisationName[1]"/><xsl:if test="string($value)"><gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription></xsl:if>
 <gl-cor:identifierExternalReference>
 <!--BT-60--><xsl:variable name="value" select="./AnyPartyOrganisationTaxCode"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">alvtunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">alvtunnus</gl-cor:identifierAuthority><xsl:comment>VAT ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 
 <!--Any Party Address Details-->
@@ -315,6 +324,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <xsl:variable name="value" select="//EpiRemittanceInfoIdentifier"/><xsl:if test="string($value)">
 <gl-taf:originatingDocumentStructure>
+<gl-taf:originatingDocumentType contextRef="now">finance-charge</gl-taf:originatingDocumentType>
 <gl-taf:originatingDocumentIdentifierCode contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentIdentifierCode>
 </gl-taf:originatingDocumentStructure>
 </xsl:if>
@@ -340,7 +350,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--Account tuples-->
 <!-- The finnish account to be used for short term VAT payables is "2920411" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">2920411</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">2920411</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the short term trade VAT payables.-->
@@ -373,11 +392,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-27--><xsl:variable name="value" select="./SellerCode"/><xsl:if test="string($value)"><gl-cor:identifierExternalReference><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode></gl-cor:identifierExternalReference></xsl:if>
 <gl-cor:identifierExternalReference>
 <!--BT-28--><xsl:variable name="value" select="./SellerPartyIdentifier"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">ytunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <gl-cor:identifierExternalReference>
 <!--BT-30--><xsl:variable name="value" select="./SellerOrganisationTaxCode"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">alvtunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">alvtunnus</gl-cor:identifierAuthority><xsl:comment>VAT ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <!--SellerAccountDetails-->
 <xsl:for-each select="//SellerAccountDetails">
@@ -434,7 +453,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <gl-cor:identifierExternalReference>
 <!--BT-58--><xsl:variable name="value" select="//EpiBei"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">ytunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <!--Identifier Organization Type, organization-->
 <gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
@@ -446,14 +465,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--End of Payee Party-->
 
 <!--Country of origin-->
-<gl-cor:identifierReference>
 <xsl:variable name="value" select="//CNOriginCountryCode"/>
-<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">O</gl-cor:identifierType></xsl:if>
+<xsl:if test="string($value)">
+<gl-cor:identifierReference>
+<gl-cor:identifierType contextRef="now">O</gl-cor:identifierType>
 <!--Country of origin Address Details-->
 <gl-bus:identifierAddress>
 <!--BT-125--><xsl:if test="string($value)"><gl-bus:identifierAddressPurpose contextRef="now">o</gl-bus:identifierAddressPurpose><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
 </gl-bus:identifierAddress>
 </gl-cor:identifierReference>
+</xsl:if>
 
 
 <!-- Alkuperäinen lähdeasiakirja on lasku -->
@@ -527,6 +548,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <xsl:variable name="value" select="//EpiRemittanceInfoIdentifier"/><xsl:if test="string($value)">
 <gl-taf:originatingDocumentStructure>
+<gl-taf:originatingDocumentType contextRef="now">finance-charge</gl-taf:originatingDocumentType>
 <gl-taf:originatingDocumentIdentifierCode contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentIdentifierCode>
 </gl-taf:originatingDocumentStructure>
 </xsl:if>
@@ -544,7 +566,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--Account tuples-->
 <!-- The finnish account to be used is "3000xx" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">3000xx</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription>
+<gl-cor:accountMainID contextRef="now">3000xx</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<xsl:comment>
+Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
+Norwegian standard chart of accounts:
+https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
+Danish standard chart of accounts:
+https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
+Icelandic standard chart of accounts:
+https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
+</xsl:comment>
 </gl-cor:account>
 
 <!--For NSG 3 reference implementation. Add other countries accounting references too for the general sales.-->
@@ -568,13 +599,13 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
-<gl-cor:identifierReference>
 <!--BT-43--><xsl:variable name="value" select="//SellersBuyerIdentifier"/><xsl:if test="string($value)">
+<gl-cor:identifierReference>
 <gl-cor:identifierCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierCode>
-</xsl:if>
 <!--BT-42--><xsl:variable name="value" select="//BuyerPartyDetails/BuyerOrganisationName[1]"/><xsl:if test="string($value)">
 <gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription><gl-cor:identifierType contextRef="now">FI-B</gl-cor:identifierType></xsl:if>
 </gl-cor:identifierReference>
+</xsl:if>
 
 <!--Seller Party-->
 <xsl:for-each select="//SellerPartyDetails">
@@ -582,11 +613,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-27--><xsl:variable name="value" select="./SellerCode"/><xsl:if test="string($value)"><gl-cor:identifierExternalReference><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode></gl-cor:identifierExternalReference></xsl:if>
 <gl-cor:identifierExternalReference>
 <!--BT-28--><xsl:variable name="value" select="./SellerPartyIdentifier"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">ytunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <gl-cor:identifierExternalReference>
 <!--BT-30--><xsl:variable name="value" select="./SellerOrganisationTaxCode"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
- contextRef="now">alvtunnus</gl-cor:identifierAuthority></xsl:if>
+ contextRef="now">alvtunnus</gl-cor:identifierAuthority><xsl:comment>VAT ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
 <!--SellerAccountDetails-->
 <xsl:for-each select="//SellerAccountDetails">
@@ -640,14 +671,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 
 <!--Country of origin-->
-<gl-cor:identifierReference>
 <xsl:variable name="value" select="//CNOriginCountryCode"/>
-<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">O</gl-cor:identifierType></xsl:if>
+<xsl:if test="string($value)">
+<gl-cor:identifierReference>
+<gl-cor:identifierType contextRef="now">O</gl-cor:identifierType>
 <!--Country of origin Address Details-->
 <gl-bus:identifierAddress>
 <!--BT-125--><xsl:if test="string($value)"><gl-bus:identifierAddressPurpose contextRef="now">o</gl-bus:identifierAddressPurpose><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
 </gl-bus:identifierAddress>
 </gl-cor:identifierReference>
+</xsl:if>
 
 
 <!-- Alkuperäinen lähdeasiakirja on lasku -->
@@ -680,11 +713,11 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <gl-bus:measurable>
 <!--BT-148--><xsl:variable name="value" select="./EanCode"/><xsl:if test="string($value)"><gl-bus:measurableID contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableID></xsl:if>
-<!--BT-147--><xsl:variable name="value" select="./ArticleIdentifier"/><xsl:if test="string($value)"><gl-bus:measurableIDOther contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableIDOther></xsl:if>
+<!--BT-147--><xsl:variable name="value" select="./ArticleIdentifier"/><xsl:if test="string($value)"><gl-bus:measurableIDOther contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableIDOther><gl-bus:measurableDescription contextRef="now">Item Seller's identifier</gl-bus:measurableDescription></xsl:if>
 <!--BT-145--><xsl:variable name="value" select="./ArticleName"/><xsl:if test="string($value)"><gl-bus:measurableDescription contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableDescription></xsl:if>
 <!--BT-120--><xsl:variable name="value" select="./InvoicedQuantity"/><xsl:if test="string($value)"><gl-bus:measurableQuantity contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="replace($value,',','.')"/></gl-bus:measurableQuantity></xsl:if>
 <!--BT-120--><xsl:variable name="value" select="./InvoicedQuantity/@QuantityUnitCode"/><xsl:if test="string($value)"><gl-bus:measurableUnitOfMeasure contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableUnitOfMeasure></xsl:if>
-<!--BT-149--><xsl:variable name="value" select="./ArticleGroupIdentifier"/><xsl:if test="string($value)"><gl-bus:measurableQualifier contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableQualifier></xsl:if>
+<!--BT-149--><xsl:variable name="value" select="./ArticleGroupIdentifier"/><xsl:if test="string($value)"><gl-bus:measurableQualifier contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableQualifier></xsl:if><xsl:comment>In NSG produced data often used for UNSPSC = United Nations Standard Products and Services Code</xsl:comment>
 <!--BT-126--><xsl:variable name="value" select="./StartDate"/><xsl:if test="string($value)"><gl-bus:measurableStartDateTime contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableStartDateTime></xsl:if>
 <!--BT-127--><xsl:variable name="value" select="./EndDate"/><xsl:if test="string($value)"><gl-bus:measurableEndDateTime contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableEndDateTime></xsl:if>
 </gl-bus:measurable>
@@ -692,6 +725,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-156--><xsl:variable name="value" select="./BuyerArticleIdentifier"/><xsl:if test="string($value)">
 <gl-bus:measurable>
 <gl-bus:measurableIDOther contextRef="now"><xsl:value-of select="$value"/></gl-bus:measurableIDOther>
+<gl-bus:measurableDescription contextRef="now">Item Buyer's identifier</gl-bus:measurableDescription>
 </gl-bus:measurable>
 </xsl:if>
 
@@ -740,6 +774,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <xsl:variable name="value" select="//EpiRemittanceInfoIdentifier"/><xsl:if test="string($value)">
 <gl-taf:originatingDocumentStructure>
+<gl-taf:originatingDocumentType contextRef="now">finance-charge</gl-taf:originatingDocumentType>
 <gl-taf:originatingDocumentIdentifierCode contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentIdentifierCode>
 </gl-taf:originatingDocumentStructure>
 </xsl:if>
