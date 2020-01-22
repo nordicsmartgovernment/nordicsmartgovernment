@@ -202,7 +202,7 @@ public class BusinessDocumentDbo {
         setDirectionFromDocument(documentType, documentFormat, original);
         if (documentFormat != DocumentFormat.Format.OTHER) {
             transformXbrlFromOriginal(documentFormat);
-            insertDocumentIdInXbrlDocument(getLocationString(this.companyId, transactionId, getDocumentid()));
+            insertDocumentIdInXbrlDocument(BusinessDocumentDbo.getLocationString(this.companyId, transactionId, getDocumentid()));
         }
     }
 
@@ -517,13 +517,13 @@ public class BusinessDocumentDbo {
         TransactionDbo transaction;
         try {
             transaction = getTransaction(transactionManager);
-            return new URI(getLocationString(this.companyId, transaction.getTransactionid(), getDocumentid()));
+            return new URI(BusinessDocumentDbo.getLocationString(this.companyId, transaction.getTransactionid(), getDocumentid()));
         } catch (Exception e) {
             throw new RuntimeException("GetLocation failed: "+e.getMessage());
         }
     }
 
-    public String getLocationString(final String companyId, final String transactionId, final String documentId) throws UnsupportedEncodingException {
+    public static String getLocationString(final String companyId, final String transactionId, final String documentId) throws UnsupportedEncodingException {
         return "/document/" + URLEncoder.encode(companyId, "utf-8") + "/" + transactionId + "/" + documentId;
     }
 }

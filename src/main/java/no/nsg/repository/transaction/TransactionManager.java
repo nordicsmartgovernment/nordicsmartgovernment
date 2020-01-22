@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -182,7 +183,7 @@ public class TransactionManager {
 
         try (Connection connection = connectionManager.getConnection()) {
 
-            final String sql = "SELECT d.xbrl, c.orgno "
+            final String sql = "SELECT d.xbrl, c.orgno, t.transactionid, d.documentid "
                               +"FROM nsg.businessdocument d, nsg.transaction t, nsg.transactionset ts, nsg.company c "
                               +"WHERE d._id_transaction=t._id "
                               +"AND t._id_transactionset=ts._id "
@@ -200,12 +201,21 @@ public class TransactionManager {
 
                     String xbrl = readerToString(rs.getCharacterStream("xbrl"));
                     if (xbrl != null) {
+                        String companyId = rs.getString("orgno");
+                        String transactionId = rs.getString("transactionid");
+                        String documentId = rs.getString("documentid");
+                        String location = BusinessDocumentDbo.getLocationString(companyId, transactionId, documentId);
+
                         Document document = BusinessDocumentDbo.parseDocument(xbrl);
                         NodeList documentEntryHeaders = document.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryHeader");
-                        Node uniqueId = document.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "uniqueID").item(0);
                         for (int headerIndex=0; headerIndex<documentEntryHeaders.getLength(); headerIndex++) {
                             Node entryHeader = documentEntryHeaders.item(headerIndex);
-                            entryHeader.appendChild(document.importNode(uniqueId, true));
+
+                            NodeList documentNumbers = ((Element)entryHeader).getElementsByTagNameNS("gl-cor", "documentNumber");
+                            if (documentNumbers != null && documentNumbers.getLength()>0) {
+                                documentNumbers.item(0).setTextContent(location);
+                            }
+
                             accountingEntry.appendChild(transactionDocument.importNode(entryHeader, true));
                         }
                     }
