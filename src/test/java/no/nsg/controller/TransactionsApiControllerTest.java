@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 
 
 @SpringBootTest
@@ -95,7 +96,7 @@ public class TransactionsApiControllerTest {
     @Test
     public void getTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
-        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null);
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -104,7 +105,7 @@ public class TransactionsApiControllerTest {
     @Test
     public void getOrganizationTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
-        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null);
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null, null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -113,7 +114,38 @@ public class TransactionsApiControllerTest {
     @Test
     public void getOrganizationTransactionsAsXbrlTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
-        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null);
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null, null, null);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Object responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+    }
+
+    @Test
+    public void getTransactionsStartingFromTest() {
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
+        final LocalDate startDate = LocalDate.of(2019, 1, 1);
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, startDate, null, null, null);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Object responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+    }
+
+    @Test
+    public void getTransactionsEndingFromTest() {
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
+        final LocalDate endDate = LocalDate.of(2020, 12, 31);
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, endDate, null, null);
+        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Object responseBody = response.getBody();
+        Assert.assertNotNull(responseBody);
+    }
+
+    @Test
+    public void getTransactionsBetweenStartEndFromTest() {
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
+        final LocalDate startDate = LocalDate.of(2019, 1, 1);
+        final LocalDate endDate = LocalDate.of(2020, 12, 31);
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, startDate, endDate, null, null);
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -122,7 +154,7 @@ public class TransactionsApiControllerTest {
     @Test
     public void getInboundTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
-        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "incoming");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -131,7 +163,7 @@ public class TransactionsApiControllerTest {
     @Test
     public void getOutboundTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
-        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, "outgoing");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, "outgoing");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);
@@ -140,7 +172,7 @@ public class TransactionsApiControllerTest {
     @Test
     public void getOrganizationInboundTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
-        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, "incoming");
+        ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null, null, "incoming");
         Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
         Assert.assertNotNull(responseBody);

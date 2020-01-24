@@ -2,6 +2,8 @@ package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.*;
@@ -10,6 +12,7 @@ import java.util.*;
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class CurrencyDbo {
     public static final int UNINITIALIZED = 0;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CurrencyDbo.class);
 
     @JsonIgnore
     private int _id;
@@ -110,7 +113,9 @@ public class CurrencyDbo {
                 stmt.setString(1, getCurrency());
                 stmt.setInt(2, get_id());
 
-                stmt.executeUpdate();
+                if (stmt.executeUpdate() == 0) {
+                    LOGGER.error("CurrencyDbo executeUpdate returned 0");
+                }
 
                 CurrencyDbo.putCurrencyInCache(connection, getCurrency(), get_id());
             }

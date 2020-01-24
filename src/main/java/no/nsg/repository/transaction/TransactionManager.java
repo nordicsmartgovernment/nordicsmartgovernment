@@ -19,6 +19,7 @@ import org.xml.sax.SAXException;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -109,13 +110,24 @@ public class TransactionManager {
         return companyIds;
     }
 
-    public List<String> getTransactionIds(final String companyId, final String filterDocumentId, final String filterInvoiceType) throws SQLException {
+    public List<String> getTransactionIds(final String companyId, final LocalDate filterStartDate, final LocalDate filterEndDate,
+                                          final String filterDocumentId, final String filterInvoiceType) throws SQLException {
         List<String> transactionIds = new ArrayList<>();
 
         try (Connection connection = connectionManager.getConnection()) {
             String filterCompanyId = "";
             if (companyId!=null) {
                 filterCompanyId = "AND c.orgno=? ";
+            }
+
+            String startDateFilter = "";
+            if (filterStartDate!=null) {
+                startDateFilter = "AND (t.transactiontime>=? OR t.transactiontime IS NULL) ";
+            }
+
+            String endDateFilter = "";
+            if (filterEndDate!=null) {
+                endDateFilter = "AND (t.transactiontime<=? OR t.transactiontime IS NULL) ";
             }
 
             String documentFilter = "";
@@ -134,6 +146,8 @@ public class TransactionManager {
                     +"AND t._id_transactionset=ts._id "
                     +"AND ts._id_company=c._id "
                     +filterCompanyId
+                    +startDateFilter
+                    +endDateFilter
                     +documentFilter
                     +invoiceTypeFilter+
                     "ORDER BY t.transactionid;";
@@ -144,6 +158,12 @@ public class TransactionManager {
                 }
                 if (!documentFilter.isEmpty()) {
                     stmt.setString(++i, filterDocumentId);
+                }
+                if (!startDateFilter.isEmpty()) {
+                    stmt.setDate(++i, Date.valueOf(filterStartDate));
+                }
+                if (!endDateFilter.isEmpty()) {
+                    stmt.setDate(++i, Date.valueOf(filterEndDate));
                 }
                 if (!invoiceTypeFilter.isEmpty()) {
                     int direction = TransactionDbo.NO_DIRECTION;

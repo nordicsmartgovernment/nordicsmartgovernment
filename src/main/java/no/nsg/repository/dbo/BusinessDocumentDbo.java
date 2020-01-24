@@ -199,7 +199,7 @@ public class BusinessDocumentDbo {
             throw new IllegalArgumentException("Document format seems to not match given document type");
         }
 
-        setDirectionFromDocument(documentType, documentFormat, original);
+        setDirectionAndTransactionTimeFromDocument(documentType, documentFormat, original);
         if (documentFormat != DocumentFormat.Format.OTHER) {
             transformXbrlFromOriginal(documentFormat);
             insertDocumentIdInXbrlDocument(BusinessDocumentDbo.getLocationString(this.companyId, transactionId, getDocumentid()));
@@ -257,7 +257,7 @@ public class BusinessDocumentDbo {
         }
     }
 
-    private void setDirectionFromDocument(final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
+    private void setDirectionAndTransactionTimeFromDocument(final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
         if (!DocumentType.hasDirection(documentType)) {
             tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
             return;
@@ -270,6 +270,7 @@ public class BusinessDocumentDbo {
 
         Document parsedDocument = parseDocument(document);
         DocumentFormat docType = FormatFactory.create(documentFormat);
+        tmpTransactionTime = docType.getTransactionTime(parsedDocument);
         String supplier = docType.getDocumentSupplier(parsedDocument);
         String customer = docType.getDocumentCustomer(parsedDocument);
 
@@ -465,7 +466,9 @@ public class BusinessDocumentDbo {
 
                 stmt.setInt(8, get_id());
 
-                stmt.executeUpdate();
+                if (stmt.executeUpdate() == 0) {
+                    LOGGER.error("BusinessDocumentDbo executeUpdate returned 0");
+                }
             }
         }
 

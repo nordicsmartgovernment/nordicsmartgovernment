@@ -2,6 +2,8 @@ package no.nsg.repository.document.formats;
 
 import org.w3c.dom.Document;
 
+import java.time.LocalDateTime;
+
 
 public abstract class DocumentFormat {
 
@@ -23,6 +25,7 @@ public abstract class DocumentFormat {
 
     public abstract String getDocumentSupplier(final Document parsedDocument);
     public abstract String getDocumentCustomer(final Document parsedDocument);
+    public abstract LocalDateTime getTransactionTime(final Document parsedDocument);
 
     public static boolean isInvoice(final DocumentFormat.Format format) {
         return (format == Format.FINVOICE ||

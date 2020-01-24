@@ -15,6 +15,7 @@ import org.xml.sax.SAXException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -78,11 +79,11 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
     }
 
     @Override
-    public ResponseEntity<Object> getTransactions(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String filterDocumentId, String finterInvoiceType) {
+    public ResponseEntity<Object> getTransactions(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, LocalDate filterStartDate, LocalDate filterEndDate, String filterDocumentId, String finterInvoiceType) {
         Object returnValue;
         boolean noContent = false;
         try {
-            List<String> transactionIds = transactionManager.getTransactionIds(companyId, filterDocumentId, finterInvoiceType);
+            List<String> transactionIds = transactionManager.getTransactionIds(companyId, filterStartDate, filterEndDate, filterDocumentId, finterInvoiceType);
 
             final String accept = httpServletRequest.getHeader("Accept");
             if (MimeType.XBRL_GL.equalsIgnoreCase(accept)) {

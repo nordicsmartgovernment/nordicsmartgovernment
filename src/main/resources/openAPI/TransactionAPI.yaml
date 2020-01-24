@@ -49,6 +49,20 @@ paths:
           required: true
           schema:
             type: string
+        - name: startDate
+          in: query
+          description: Filter transactions by startDate
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          description: Filter transactions by endDate
+          required: false
+          schema:
+            type: string
+            format: date
         - name: documentId
           in: query
           description: Filter transactions by document id

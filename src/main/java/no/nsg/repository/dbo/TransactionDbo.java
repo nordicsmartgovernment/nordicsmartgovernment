@@ -3,6 +3,8 @@ package no.nsg.repository.dbo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import no.nsg.repository.TransformationManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -13,6 +15,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class TransactionDbo {
     public static final int UNINITIALIZED = 0;
+    private static final Logger LOGGER = LoggerFactory.getLogger(TransactionDbo.class);
 
     public static final int NO_DIRECTION = 0;
     public static final int OUTBOUND_DIRECTION = 1;
@@ -234,7 +237,9 @@ public class TransactionDbo {
 
                 stmt.setInt(6, get_id());
 
-                stmt.executeUpdate();
+                if (stmt.executeUpdate() == 0) {
+                    LOGGER.error("TransactionDbo executeUpdate returned 0");
+                }
             }
         }
     }

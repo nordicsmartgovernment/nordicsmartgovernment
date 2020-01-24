@@ -2,6 +2,8 @@ package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.NoSuchElementException;
@@ -10,6 +12,7 @@ import java.util.NoSuchElementException;
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class JournalDbo {
     public static final int UNINITIALIZED = 0;
+    private static final Logger LOGGER = LoggerFactory.getLogger(JournalDbo.class);
 
     @JsonIgnore
     private int _id;
@@ -58,7 +61,9 @@ public class JournalDbo {
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, get_id());
 
-                stmt.executeUpdate();
+                if (stmt.executeUpdate() == 0) {
+                    LOGGER.error("JournalDbo executeUpdate returned 0");
+                }
             }
         }
     }
