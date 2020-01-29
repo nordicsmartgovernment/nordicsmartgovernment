@@ -1,3 +1,4 @@
 target/
 *.iml
 .idea/
+src/main/java/no/nsg/spring/ApplicationInfo.java

@@ -1,5 +1,7 @@
 package no.nsg;
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.info.Info;
 import liquibase.Contexts;
 import liquibase.LabelExpression;
 import liquibase.Liquibase;
@@ -9,6 +11,7 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import no.nsg.repository.ConnectionManager;
+import no.nsg.generated.spring.ApplicationInfo;
 import no.nsg.spring.CachableDispatcherServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +29,12 @@ import java.sql.SQLException;
 
 
 @SpringBootApplication
+@OpenAPIDefinition(
+    info = @Info(
+        title = "Nordic SmartGovernment",
+        version = ApplicationInfo.VERSION
+    )
+)
 public class Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
