@@ -258,6 +258,15 @@ public class BusinessDocumentDbo {
     }
 
     private void setDirectionAndTransactionTimeFromDocument(final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
+        if (documentType == DocumentType.Type.OTHER) {
+            return;
+        }
+
+        Document parsedDocument = parseDocument(document);
+        DocumentFormat docType = FormatFactory.create(documentFormat);
+
+        tmpTransactionTime = docType.getTransactionTime(parsedDocument);
+
         if (!DocumentType.hasDirection(documentType)) {
             tmpDirection = TransformationManager.Direction.DOESNT_MATTER;
             return;
@@ -268,9 +277,6 @@ public class BusinessDocumentDbo {
             return;
         }
 
-        Document parsedDocument = parseDocument(document);
-        DocumentFormat docType = FormatFactory.create(documentFormat);
-        tmpTransactionTime = docType.getTransactionTime(parsedDocument);
         String supplier = docType.getDocumentSupplier(parsedDocument);
         String customer = docType.getDocumentCustomer(parsedDocument);
 

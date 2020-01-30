@@ -8,7 +8,7 @@ public class FormatFactory {
 
     public static DocumentFormat create(DocumentFormat.Format format) {
         switch (format) {
-            case CAMT_053_001_08:           return new UnknownDocumentFormat();
+            case CAMT_053_001_08:           return new CamtFormat();
             case FINVOICE:                  return new FinvoiceFormat();
             case FINVOICE_PURCHASE_INVOICE: return new FinvoiceFormat();
             case FINVOICE_PURCHASE_RECEIPT: return new FinvoiceFormat();

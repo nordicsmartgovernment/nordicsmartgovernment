@@ -147,6 +147,14 @@ public class InvoicesApiControllerTest {
     }
 
     @Test
+    public void createPurchaseInvoiceTestTest() throws IOException {
+        final String companyId = "20202020";
+        Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
+        ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/test_purchase_invoice.xml", StandardCharsets.UTF_8));
+        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    }
+
+    @Test
     public void createEUPurchaseInvoiceTest() throws IOException {
         final String companyId = "003711999403";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
@@ -217,6 +225,8 @@ public class InvoicesApiControllerTest {
             while ((line = bufferedReader.readLine()) != null) {
                 sb.append(line);
             }
+        } catch (NullPointerException e) {
+            throw e;
         }
         return sb.toString();
     }
