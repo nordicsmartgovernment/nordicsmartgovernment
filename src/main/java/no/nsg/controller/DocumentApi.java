@@ -130,6 +130,10 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
                         documentTypes.add(documentType);
                     }
                 }
+
+                if (documentTypes.isEmpty()) {
+                    throw new IllegalArgumentException("Please filter using comma-separated list of supported document types: "+DocumentType.getDocumentMimeTypes());
+                }
             }
 
             final String accept = httpServletRequest.getHeader("Accept");
