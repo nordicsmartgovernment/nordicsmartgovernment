@@ -53,7 +53,19 @@ public class UBLOrderFormat extends DocumentFormat {
     @Override
     public LocalDateTime getTransactionTime(final Document parsedDocument) {
         if (parsedDocument != null) {
-            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CBC_NS, "IssueDate").item(0);
+            Node child = parsedDocument.getElementsByTagNameNS(TransformationManager.CAC_NS, "Delivery").item(0);
+            if (child instanceof Element) {
+                child = ((Element) child).getElementsByTagNameNS(TransformationManager.CBC_NS, "ActualDeliveryDate").item(0);
+                if (child != null) {
+                    try {
+                        return LocalDate.parse(child.getTextContent(), dateFormatter).atStartOfDay();
+                    } catch (DateTimeParseException e) {
+                        return null;
+                    }
+                }
+            }
+
+            child = parsedDocument.getElementsByTagNameNS(TransformationManager.CBC_NS, "IssueDate").item(0);
             if (child != null) {
                 try {
                     return LocalDate.parse(child.getTextContent(), dateFormatter).atStartOfDay();
