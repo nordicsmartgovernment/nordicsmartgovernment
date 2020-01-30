@@ -183,7 +183,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--For the voucher entries to sum up to 0 the Header entries are positive numbers where as the entries per invoice row and the VAT Header are multiplied with *(-1)(negitive numbers). The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="//cac:AnticipatedMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:amount></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
 <!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+ </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//cac:Delivery/cbc:ActualDeliveryDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -487,7 +494,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--BT-122--><xsl:variable name="value" select="./cbc:TaxAmount"/>
 <xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value*(-1)"/></gl-cor:amount></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
 <!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+ </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//cac:Delivery/cbc:ActualDeliveryDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -710,7 +724,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <!--BT-8--><xsl:variable name="value" select="//Order/cbc:DocumentCurrencyCode"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
 <!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+ </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//cac:Delivery/cbc:ActualDeliveryDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 
 <!--Identifier refrence tuples-->
