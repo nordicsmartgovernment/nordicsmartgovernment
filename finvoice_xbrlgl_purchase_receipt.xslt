@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema"  
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
 xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
 xmlns:iso4217="http://www.xbrl.org/2003/iso4217" 
-xmlns:link="http://www.xbrl.org/2003/linkbase" 
+xmlns:link="http://www.xbrl.org/2003/linkbase"
 xmlns:map="http://www.nsg.org/map" 
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
@@ -42,19 +42,27 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
             xmlns:gl-srcd="http://www.xbrl.org/int/gl/srcd/2016-12-01"
             xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01"
             xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2016-12-01" xmlns:xlink="http://www.w3.org/1999/xlink">
-  <xbrll:schemaRef xlink:type="simple" xlink:href="../../../XBRL-GL-PWD-2016-12-01-fi-2018-11-06/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/> 
-
+  <xbrll:schemaRef xlink:type="simple" xlink:href="../../../XBRL-GL-PWD-2016-12-01-fi-2018-11-06/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/>
     <!--Link to account mappings doc between the nordic countries to facilitate automated account postings in the NSG reference implementation-->
 <xsl:variable name="ac_map" select="document('account_mapping.xml')"/> 
 
+<!--link to product category codes - VAT rates mappings (required to calculate the VAT in foreign trade -->
+<xsl:variable name="upc_map" select="document('upc_VAT_mapping.xml')"/> 
+
 <!--link to currency country mapping - required to calculate to amounts in home currency when creating the accounting entries in foreign trade -->
 <xsl:variable name="cur_map" select="document('currency_country_mapping.xml')"/> 
+
 <!--getting the currency factor that is used to multiple all the monetary amounts in the accounting entries. In domestic trade the factor shall always be 1 but in foreign trade a simple fixed currency rate mapping doc is provided to calculate the currency transformation.-->
 <xsl:variable name="buyer_cc" select="//BuyerPartyDetails/BuyerPostalAddressDetails/CountryCode/text()"/>
 <xsl:variable name="seller_cur" select="//InvoiceTotalVatIncludedAmount/@AmountCurrencyIdentifier"/>
+<!--[@source=$seller_cur and @targetCountry=$buyer_cc]-->
+
+<xsl:variable name="cur_factor" select="$cur_map//map:rate[@source=$seller_cur and @targetCountry=$buyer_cc][1]"/>
 <xsl:variable name="target_cur" select="$cur_map//map:rate[@source=$seller_cur and @targetCountry=$buyer_cc][1]/@targetCurrency"/>
-<!--link to Universal product codes - VAT rates mappings (required to calculate the VAT in foreign trade -->
-<xsl:variable name="upc_map" select="document('upc_VAT_mapping.xml')"/> 
+
+<!--
+<TEST>$cur_factor: <xsl:value-of select="$cur_factor"/>,target_cur <xsl:value-of select="$target_cur"/>, buyer_cc <xsl:value-of select="$buyer_cc"/>, seller_cur <xsl:value-of select="$seller_cur"/></TEST>-->
+
   <xbrli:context id="now">
     <xbrli:entity>
       <xbrli:identifier scheme="http://www.xbrl.org/xbrlgl/sample">SAMPLE</xbrli:identifier>
@@ -69,7 +77,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <xbrli:unit id="{$target_cur}">
     <xbrli:measure>iso4217:<xsl:value-of select="$target_cur"/></xbrli:measure>
 </xbrli:unit>
-  
+
   <!--For each found AmountCurrencyIdentifier, create unit-->
 <xsl:for-each select="distinct-values(//@AmountCurrencyIdentifier[not(.=$target_cur)])">
 <xsl:variable name="value" select="."/>
@@ -88,31 +96,63 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <!--BT-15--><xsl:variable name="value" select="//InvoiceFreeText"/><xsl:if test="string($value)"><gl-cor:entriesComment contextRef="now"><xsl:value-of select="$value"/></gl-cor:entriesComment></xsl:if>
 
 
-
 </gl-cor:documentInfo>
 
 <!--entity information tuple-->
-<!--entity information tuple-->
-<!-- TODO myyntilaskun tapauksessa ostajan tiedot ei mene tähän kohtaan. Turvallisempi ratkaisu olisi sekä osto, että myyntilaskujen tapauksissa käsitellä näitä ainoastaan osapuolien kautta-->
 <gl-cor:entityInformation>
 
-<!--poistettu tämä sisältö tässä vauiheessa kokonaan-->
+
+<xsl:variable name="tuple" select="//BuyerPartyDetails"/>
+<!--Organization Identifiers tuples-->
+
+<gl-bus:organizationIdentifiers>
+<!--BT-45--><xsl:variable name="value" select="$tuple/BuyerPartyIdentifier"/><xsl:if test="string($value)"><gl-bus:organizationIdentifier contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationIdentifier><gl-bus:organizationDescription contextRef="now">ytunnus</gl-bus:organizationDescription></xsl:if>
+</gl-bus:organizationIdentifiers>
+
+<gl-bus:organizationIdentifiers>
+<!--BT-46--><xsl:variable name="value" select="$tuple/BuyerOrganisationTaxCode"/><xsl:if test="string($value)"><gl-bus:organizationIdentifier contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationIdentifier><gl-bus:organizationDescription contextRef="now">alvtunnus</gl-bus:organizationDescription></xsl:if>
+
+</gl-bus:organizationIdentifiers>
+
+<!--Organization Address tuple-->
+<gl-bus:organizationAddress>
+<!--BT-48--><xsl:variable name="value" select="$tuple/BuyerPostalAddressDetails/BuyerStreetName[1]"/>
+<xsl:if test="string($value)"><gl-bus:organizationAddressStreet contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressStreet></xsl:if>
+<!--BT-48--><xsl:variable name="value" select="$tuple/BuyerPostalAddressDetails/BuyerStreetName[2]"/>
+<!--BT-48--><xsl:variable name="value2" select="$tuple/BuyerPostalAddressDetails/BuyerStreetName[3]"/>
+<xsl:if test="string($value)"><gl-bus:organizationAddressStreet2 contextRef="now"><xsl:value-of select="concat($value, ', ', $value2)"/></gl-bus:organizationAddressStreet2></xsl:if>
+<!--BT-49--><xsl:variable name="value" select="$tuple/BuyerPostalAddressDetails/BuyerTownName"/><xsl:if test="string($value)"><gl-bus:organizationAddressCity contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressCity></xsl:if>
+<!--BT-51--><xsl:variable name="value" select="$tuple/BuyerPostalAddressDetails/CountryName"/><xsl:if test="string($value)"><gl-bus:organizationAddressStateOrProvince contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressStateOrProvince></xsl:if>
+<!--BT-50--><xsl:variable name="value" select="$tuple/BuyerPostalAddressDetails/BuyerPostCodeIdentifier"/><xsl:if test="string($value)"><gl-bus:organizationAddressZipOrPostalCode contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressZipOrPostalCode></xsl:if>
+<!--BT-52--><xsl:variable name="value" select="$tuple/BuyerPostalAddressDetails/CoutryCode"/><xsl:if test="string($value)"><gl-bus:organizationAddressCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressCountry></xsl:if>
+</gl-bus:organizationAddress>
+<gl-bus:contactInformation>
+<!--BT-9--><xsl:variable name="value" select="//BuyerReferenceIdentifier"/><xsl:if test="string($value)"><gl-bus:contactAttentionLine contextRef="now"><xsl:value-of select="$value"/></gl-bus:contactAttentionLine></xsl:if>
+<gl-bus:contactPhone>
+<!--BT-54--><xsl:variable name="value" select="//InvoiceRecipientPhoneNumberIdentifier"/><xsl:if test="string($value)"><gl-cor:identifierContactPhoneNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierContactPhoneNumber></xsl:if>
+</gl-bus:contactPhone>
+<gl-bus:contactEMail>
+<!--BT-55--><xsl:variable name="value" select="//InvoiceRecipientEmailAddressIdentifier"/><xsl:if test="string($value)"><gl-cor:identifierContactEmailAddress contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierContactEmailAddress></xsl:if>
+</gl-bus:contactEMail>
+</gl-bus:contactInformation>
 
 </gl-cor:entityInformation>
 
+
+
+
 <!--Entry Header tuple-->
 <gl-cor:entryHeader>
-<gl-cor:sourceJournalID contextRef="now">cr</gl-cor:sourceJournalID>
-
-<!--Entry Detail tuples-->
+<gl-cor:sourceJournalID contextRef="now">pj</gl-cor:sourceJournalID>
 <gl-cor:entryDetail>
+
 <!-- For NSG 3 reference implementation the buyer's country code serves as a identifier for the standardized chart of accounts to be used (which countrie's CoA) (mainAccountTypeDescription)-->
-<!-- For NSG 3 reference implementation default accounts are used on Header type entries where all are considered as entries of the "Trade debtors, short term account"-->
+<!-- For NSG 3 reference implementation default accounts are used on Header type entries where all are considered as entries of the "Trade creditors, short term account"-->
 
 <!--Account tuples-->
-<!-- The finnish acount to be used is "17001" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
+<!-- The finnish acount to be used is "290601" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<gl-cor:accountMainID contextRef="now">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
 <xsl:comment>
 Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
 Norwegian standard chart of accounts:
@@ -124,8 +164,8 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:comment>
 </gl-cor:account>
 
-<!--For NSG 3 reference implementation. Add other countries accounting references too for the short term trade debtors.-->
-<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='17001']/parent::gl-cor:entryDetail/child::gl-cor:account">
+<!--For NSG 3 reference implementation. Add other countries accounting references too for the short term trade creditors.-->
+<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='290601']/parent::gl-cor:entryDetail/child::gl-cor:account">
 <xsl:if test="gl-cor:mainAccountTypeDescription/text() != 'FI'">
  <gl-cor:account>
 		 <gl-cor:accountMainID contextRef="now"><xsl:value-of select="./gl-cor:accountMainID/text()"/></gl-cor:accountMainID>
@@ -134,29 +174,27 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:if>
 </xsl:for-each>
 
-<!--For the Header type entry the amount is the total VAT included amount for the invoice-->
-<!--For the voucher entries to sum up to 0 the Header entries are positive numbers where as the entries per invoice row and the VAT Header are multiplied with *(-1)(negitive numbers). The accounts will be automatically balanced.-->
-<!--BT-122--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="replace($value,',','.')"/></gl-cor:amount></xsl:if>
+<!--<TEST>$cur_factor: <xsl:value-of select="$cur_factor"/>,$value <xsl:value-of select="//InvoiceTotalVatIncludedAmount"/></TEST>-->
+<!--BT-122--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.'))*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//DeliveryDate[1]))">
+<xsl:choose>
+  <xsl:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:when>
-  <xs:otherwise>
+  </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
-
+  </xsl:otherwise>
+</xsl:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
-<!--BT-43--><xsl:variable name="value" select="//SellersBuyerIdentifier"/><xsl:if test="string($value)">
 <gl-cor:identifierReference>
+<!--BT-43--><xsl:variable name="value" select="//SellersBuyerIdentifier"/><xsl:if test="string($value)">
 <gl-cor:identifierCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierCode>
+</xsl:if>
 <!--BT-42--><xsl:variable name="value" select="//BuyerPartyDetails/BuyerOrganisationName[1]"/><xsl:if test="string($value)">
 <gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription><gl-cor:identifierType contextRef="now">FI-B</gl-cor:identifierType></xsl:if>
 </gl-cor:identifierReference>
-</xsl:if>
 
 <!--Seller Party-->
 <xsl:for-each select="//SellerPartyDetails">
@@ -222,7 +260,6 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--Payee party details (EpiDetails in Finvoice)-->
 <xsl:for-each select="//EpiPartyDetails">
 <gl-cor:identifierReference>
-
 <gl-cor:identifierExternalReference>
 <!--BT-58--><xsl:variable name="value" select="//EpiBei"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
  contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
@@ -239,12 +276,12 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--Any Party Details-->
 <xsl:for-each select="//AnyPartyDetails">
 <gl-cor:identifierReference>
-<!--BT-59--><xsl:variable name="value" select="./AnyPartyOrganisationName[1]"/><xsl:if test="string($value)"><gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription></xsl:if>
 <gl-cor:identifierExternalReference>
 <!--BT-60--><xsl:variable name="value" select="./AnyPartyOrganisationTaxCode"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
  contextRef="now">alvtunnus</gl-cor:identifierAuthority><xsl:comment>VAT ID</xsl:comment></xsl:if>
 </gl-cor:identifierExternalReference>
-
+<!--BT-59--><xsl:variable name="value" select="./AnyPartyOrganisationName[1]"/><xsl:if test="string($value)"><gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription></xsl:if>
+<gl-cor:identifierType contextRef="now">O</gl-cor:identifierType>
 <!--Any Party Address Details-->
 <gl-bus:identifierAddress>
 <!--BT-61--><xsl:variable name="value" select="./AnyPartyPostalAddressDetails/AnyPartyStreetName"/><xsl:if test="string($value)"><gl-bus:identifierStreet contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierStreet></xsl:if>
@@ -253,7 +290,6 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--BT-64--><xsl:variable name="value" select="./AnyPartyPostalAddressDetails/AnyPartyPostCodeIdentifier"/><xsl:if test="string($value)"><gl-bus:identifierZipOrPostalCode contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierZipOrPostalCode></xsl:if>
 <!--BT-66--><xsl:variable name="value" select="./AnyPartyPostalAddressDetails/CountryCode"/><xsl:if test="string($value)"><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
 </gl-bus:identifierAddress>
-<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">O</gl-cor:identifierType></xsl:if>
 </gl-cor:identifierReference>
 </xsl:for-each>
 
@@ -274,12 +310,22 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </gl-cor:identifierReference>
 </xsl:for-each>
 
-
+<!--Country of origin-->
+<xsl:variable name="value" select="//CNOriginCountryCode"/>
+<xsl:if test="string($value)">
+<gl-cor:identifierReference>
+<gl-cor:identifierType contextRef="now">O</gl-cor:identifierType>
+<!--Country of origin Address Details-->
+<gl-bus:identifierAddress>
+<!--BT-125--><xsl:if test="string($value)"><gl-bus:identifierAddressPurpose contextRef="now">o</gl-bus:identifierAddressPurpose><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
+</gl-bus:identifierAddress>
+</gl-cor:identifierReference>
+</xsl:if>
 
 
 <!-- Alkuperäinen lähdeasiakirja on lasku -->
 <!--BT-1--><xsl:variable name="value" select="//InvoiceNumber"/><xsl:if test="string($value)">
-<gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
+<gl-cor:documentType contextRef="now">receipt</gl-cor:documentType></xsl:if>
 <xsl:variable name="value" select="//InvoiceTypeCode"/><xsl:if test="string($value)">
 <gl-cor:invoiceType contextRef="now"><xsl:value-of select="$value"/></gl-cor:invoiceType></xsl:if>
 <xsl:variable name="value" select="//InvoiceNumber"/><xsl:if test="string($value)">
@@ -287,9 +333,6 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
 -->
 </xsl:if>
-
-
-
 
 <!--BT-76--><xsl:variable name="value" select="//EpiRemittanceInfoIdentifier"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -334,6 +377,7 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:if>
 
 
+
 <!--BT-14--><xsl:variable name="value" select="//DeliveryNoteIdentifier"/><xsl:if test="string($value)"><gl-taf:originatingDocumentStructure><gl-taf:originatingDocumentType contextRef="now">despatch-advice</gl-taf:originatingDocumentType><gl-taf:originatingDocumentNumber contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentNumber></gl-taf:originatingDocumentStructure></xsl:if>
 
 
@@ -347,22 +391,17 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </gl-cor:entryDetail>
 
 
-<!--Header VAT entries (created automatically for the NSG reference implementation-->
-<xsl:variable name="buyer_cc" select="//BuyerPartyDetails/BuyerPostalAddressDetails/CountryCode/text()"/>
-<xsl:variable name="seller_cc" select="//SellerPartyDetails/SellerPostalAddressDetails/CountryCode/text()"/>
-<!--For NSG reference implementation the assumption is made that all invoice rows have the same tax category-->
 
 <!--Entry Header VAT tuple-->
-<!-- NSG POC Header VAT rowa-->
+<!-- NSG POC Header VAT rows-->
+<!--creating one entry per tax catecory given in the invoice-->
 <xsl:for-each select="//VatSpecificationDetails">
-<!--Entry Detail tuples-->
 <gl-cor:entryDetail>
 <!-- For NSG 3 reference implementation the buyer's country code serves as a identifier for the standardized chart of accounts to be used (which countrie's CoA) (mainAccountTypeDescription)-->
-
 <!--Account tuples-->
-<!-- The finnish account to be used for short term VAT payables is "2920411" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
+<!-- The finnish account to be used for short term VAT payables is "17621" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">2920411</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
+<gl-cor:accountMainID contextRef="now">17621</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
 <xsl:comment>
 Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
 Norwegian standard chart of accounts:
@@ -374,8 +413,8 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:comment>
 </gl-cor:account>
 
-<!--For NSG 3 reference implementation. Add other countries accounting references too for the short term trade VAT payables.-->
-<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='2920411']/parent::gl-cor:entryDetail/child::gl-cor:account">
+<!--For NSG 3 reference implementation. Add other countries accounting references too for the short term trade VAT receivables.-->
+<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='17621']/parent::gl-cor:entryDetail/child::gl-cor:account">
 <xsl:if test="gl-cor:mainAccountTypeDescription/text() != 'FI'">
  <gl-cor:account>
 		 <gl-cor:accountMainID contextRef="now"><xsl:value-of select="./gl-cor:accountMainID/text()"/></gl-cor:accountMainID>
@@ -384,16 +423,20 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:if>
 </xsl:for-each>
 
-<!--BT-122--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*(-1)"/></gl-cor:amount><gl-muc:amountCurrency contextRef="now"><xsl:value-of select="$value/@AmountCurrencyIdentifier"/></gl-muc:amountCurrency></xsl:if>
+<!--For the Header VAT type entry the amount is the total VAT included amount for the invoice-->
+<!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
 
-<xs:choose>
-  <xs:when test="not(exists(//DeliveryDate[1]))">
+<!--BT-122--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.'))*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
+
+<xsl:choose>
+  <xsl:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:when>
-  <xs:otherwise>
+  </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
+
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
@@ -469,7 +512,6 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--Payee party details (EpiDetails in Finvoice)-->
 <xsl:for-each select="//EpiPartyDetails">
 <gl-cor:identifierReference>
-
 <gl-cor:identifierExternalReference>
 <!--BT-58--><xsl:variable name="value" select="//EpiBei"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
  contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
@@ -483,22 +525,11 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:for-each>
 <!--End of Payee Party-->
 
-<!--Country of origin-->
-<xsl:variable name="value" select="//CNOriginCountryCode"/>
-<xsl:if test="string($value)">
-<gl-cor:identifierReference>
-<gl-cor:identifierType contextRef="now">O</gl-cor:identifierType>
-<!--Country of origin Address Details-->
-<gl-bus:identifierAddress>
-<!--BT-125--><xsl:if test="string($value)"><gl-bus:identifierAddressPurpose contextRef="now">o</gl-bus:identifierAddressPurpose><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
-</gl-bus:identifierAddress>
-</gl-cor:identifierReference>
-</xsl:if>
 
 
 <!-- Alkuperäinen lähdeasiakirja on lasku -->
 <!--BT-1--><xsl:variable name="value" select="//InvoiceNumber"/><xsl:if test="string($value)">
-<gl-cor:documentType contextRef="now">receipt</gl-cor:documentType></xsl:if>
+<gl-cor:documentType contextRef="now">invoice</gl-cor:documentType></xsl:if>
 <xsl:variable name="value" select="//InvoiceTypeCode"/><xsl:if test="string($value)">
 <gl-cor:invoiceType contextRef="now"><xsl:value-of select="$value"/></gl-cor:invoiceType></xsl:if>
 <xsl:variable name="value" select="//InvoiceNumber"/><xsl:if test="string($value)">
@@ -506,9 +537,6 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
 -->
 </xsl:if>
-
-
-
 
 <!--BT-76--><xsl:variable name="value" select="//EpiRemittanceInfoIdentifier"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -524,7 +552,7 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--BT-18--><xsl:variable name="value" select="concat(//PaymentTermsFreeText[1], ',',//PaymentTermsFreeText[2])"/><xsl:if test="string($value)!=','"><gl-cor:terms contextRef="now"><xsl:value-of select="$value"/></gl-cor:terms></xsl:if>
 
 <gl-cor:taxes>
-<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*(-1)"/></gl-cor:taxAmount></xsl:if>
+<!--BT-144--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*$cur_factor"/></gl-cor:taxAmount></xsl:if>
 <!--BT-143--><xsl:variable name="value" select="./VatRatePercent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./VatCode"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./VatFreeText"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>
@@ -562,6 +590,7 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:if>
 
 
+
 <!--BT-14--><xsl:variable name="value" select="//DeliveryNoteIdentifier"/><xsl:if test="string($value)"><gl-taf:originatingDocumentStructure><gl-taf:originatingDocumentType contextRef="now">despatch-advice</gl-taf:originatingDocumentType><gl-taf:originatingDocumentNumber contextRef="now"><xsl:value-of select="$value"/></gl-taf:originatingDocumentNumber></gl-taf:originatingDocumentStructure></xsl:if>
 
 
@@ -576,30 +605,29 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:for-each>
 
 
+
+
 <!--BG-23-->
 <!--one per each InvoiceRow-->
 <xsl:for-each select="//InvoiceRow">
 <!--Entry Detail tuples-->
 <gl-cor:entryDetail>
+<!--Account tuple-->
 
-<!--Account tuples-->
-<!-- The finnish account to be used is "3000xx" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
+<!--first choice is to use invoice row level accounting references. If not given, the accounting reference for the entire invoice will be used--> 
+<xsl:variable name="value" select="./RowAccountDimensionText/text()"/>
+<xsl:variable name="value2" select="//AccountDimensionText/text()"/>
+<!-- For NSG 3 reference implementation the buyer's country code serves as a identifier for the standardized chart of accounts to be used (which countrie's CoA) (mainAccountTypeDescription)-->
+<xsl:variable name="cc" select="//BuyerPartyDetails/BuyerPostalAddressDetails/CountryCode/text()"/>
 <gl-cor:account>
-<gl-cor:accountMainID contextRef="now">3000xx</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="now">FI</gl-cor:mainAccountTypeDescription><xsl:comment>See the Finnish chart of accounts here, also in swedish: https://koodistot.suomi.fi/extension;registryCode=sbr-fi-code-lists;schemeCode=MC-2019-1;extensionCode=MC65</xsl:comment>
-<xsl:comment>
-Swedish standard chart of accounts: https://docs.google.com/spreadsheets/d/1MOZ_AlbkiQqFNCCQDjOucVxsElZgc_5yCKKV_KrrHjg/edit?usp=sharing
-Norwegian standard chart of accounts:
-https://drive.google.com/file/d/1oPllLYGpmKKPnF1IXHxsHltanrjevWuu/view?usp=sharing
-Danish standard chart of accounts:
-https://docs.google.com/spreadsheets/d/14KIXWaZEED6UNL4XhSVFtzEwqhCTxNAMJjpalSOyB8A/edit?usp=sharing
-Icelandic standard chart of accounts:
-https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
-</xsl:comment>
+<!--BT-124--><!--BT-17-->
+<xsl:choose><xsl:when test="string($value)"><gl-cor:accountMainID contextRef="now"><xsl:value-of select="$value"/></gl-cor:accountMainID></xsl:when><xsl:when test="string($value2)"><gl-cor:accountMainID contextRef="now"><xsl:value-of select="$value2"/></gl-cor:accountMainID></xsl:when><xsl:otherwise></xsl:otherwise></xsl:choose>
+<xsl:if test="string($value)"></xsl:if><gl-cor:mainAccountTypeDescription contextRef="now"><xsl:value-of select="$cc"/></gl-cor:mainAccountTypeDescription>
 </gl-cor:account>
 
-<!--For NSG 3 reference implementation. Add other countries accounting references too for the general sales.-->
-<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = 'FI' and gl-cor:accountMainID/text()='3000xx']/parent::gl-cor:entryDetail/child::gl-cor:account">
-<xsl:if test="gl-cor:mainAccountTypeDescription/text() != 'FI'">
+<!--For NSG 3 reference implementation. Add other countries accounting references.-->
+<xsl:for-each select="$ac_map//gl-cor:account[gl-cor:mainAccountTypeDescription/text() = $cc and (gl-cor:accountMainID/text()=$value or gl-cor:accountMainID/text()=$value2)]/parent::gl-cor:entryDetail/child::gl-cor:account">
+<xsl:if test="gl-cor:mainAccountTypeDescription/text() != $cc and (gl-cor:accountMainID/text()!=$value or gl-cor:accountMainID/text()!=$value2)">
  <gl-cor:account>
 		 <gl-cor:accountMainID contextRef="now"><xsl:value-of select="./gl-cor:accountMainID/text()"/></gl-cor:accountMainID>
 		 <gl-cor:mainAccountTypeDescription contextRef="now"><xsl:value-of select="./gl-cor:mainAccountTypeDescription/text()"/></gl-cor:mainAccountTypeDescription>
@@ -608,24 +636,22 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:for-each>
 
 
-
-<!--BT-122--><xsl:variable name="value" select="./RowVatExcludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*(-1)"/></gl-cor:amount><gl-muc:amountCurrency contextRef="now"><xsl:value-of select="$value/@AmountCurrencyIdentifier"/></gl-muc:amountCurrency></xsl:if>
+<!--BT-122--><xsl:variable name="value" select="./RowVatExcludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number(number(replace($value,',','.'))*$cur_factor, '0.00')"/></gl-cor:amount></xsl:if>
 
 
 <!--BT-8--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount/@AmountCurrencyIdentifier"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//DeliveryDate[1]))">
+<xsl:choose>
+  <xsl:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:when>
-  <xs:otherwise>
+  </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
-
 <!--BT-43--><xsl:variable name="value" select="//SellersBuyerIdentifier"/><xsl:if test="string($value)">
 <gl-cor:identifierReference>
 <gl-cor:identifierCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierCode>
@@ -695,19 +721,22 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:for-each>
 <!--end of Seller Party-->
 
-
-
-<!--Country of origin-->
-<xsl:variable name="value" select="//CNOriginCountryCode"/>
-<xsl:if test="string($value)">
+<!--Payee party details (EpiDetails in Finvoice)-->
+<xsl:for-each select="//EpiPartyDetails">
 <gl-cor:identifierReference>
-<gl-cor:identifierType contextRef="now">O</gl-cor:identifierType>
-<!--Country of origin Address Details-->
-<gl-bus:identifierAddress>
-<!--BT-125--><xsl:if test="string($value)"><gl-bus:identifierAddressPurpose contextRef="now">o</gl-bus:identifierAddressPurpose><gl-bus:identifierCountry contextRef="now"><xsl:value-of select="$value"/></gl-bus:identifierCountry></xsl:if>
-</gl-bus:identifierAddress>
+<gl-cor:identifierExternalReference>
+<!--BT-58--><xsl:variable name="value" select="//EpiBei"/><xsl:if test="string($value)"><gl-cor:identifierAuthorityCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierAuthorityCode><gl-cor:identifierAuthority
+ contextRef="now">ytunnus</gl-cor:identifierAuthority><xsl:comment>Business ID</xsl:comment></xsl:if>
+</gl-cor:identifierExternalReference>
+<!--Identifier Organization Type, organization-->
+<gl-cor:identifierOrganizationType contextRef="now">organization</gl-cor:identifierOrganizationType>
+<!--BT-56--><xsl:variable name="value" select="//EpiNameAddressDetails"/><xsl:if test="string($value)"><gl-cor:identifierDescription contextRef="now"><xsl:value-of select="$value"/></gl-cor:identifierDescription></xsl:if>
+
+<xsl:if test="string($value)"><gl-cor:identifierType contextRef="now">FI-P</gl-cor:identifierType></xsl:if>
 </gl-cor:identifierReference>
-</xsl:if>
+</xsl:for-each>
+<!--End of Payee Party-->
+
 
 
 <!-- Alkuperäinen lähdeasiakirja on lasku -->
@@ -720,9 +749,6 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <gl-cor:documentNumber contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentNumber>
 -->
 </xsl:if>
-
-
-
 
 <!--BT-76--><xsl:variable name="value" select="//EpiRemittanceInfoIdentifier"/><xsl:if test="string($value)"><gl-cor:documentReference contextRef="now"><xsl:value-of select="$value"/></gl-cor:documentReference></xsl:if>
 
@@ -757,7 +783,7 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 </xsl:if>
 
 <gl-cor:taxes>
-<!--BT-144--><xsl:variable name="value" select="./RowVatAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxAmount></xsl:if>
+<!--BT-144--><xsl:variable name="value" select="./RowVatAmount"/><xsl:if test="string($value)"><gl-cor:taxAmount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*$cur_factor"/></gl-cor:taxAmount></xsl:if>
 <!--BT-143--><xsl:variable name="value" select="./RowVatRatePercent"/><xsl:if test="string($value)"><gl-cor:taxPercentageRate contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="replace($value,',','.')"/></gl-cor:taxPercentageRate></xsl:if>
 <!--BT-142--><xsl:variable name="value" select="./RowVatCode"/><xsl:if test="string($value)"><gl-cor:taxCode contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCode></xsl:if>
 <!--BT-144--><xsl:variable name="value" select="./RowFreeText"/><xsl:if test="string($value)"><gl-cor:taxCommentExemption contextRef="now"><xsl:value-of select="$value"/></gl-cor:taxCommentExemption></xsl:if>

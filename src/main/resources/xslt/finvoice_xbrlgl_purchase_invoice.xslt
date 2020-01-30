@@ -172,7 +172,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <!--BT-122--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.'))*(-1)*$cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
@@ -421,7 +428,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--For the voucher entries to sum up to 0 the Header entries are multiplied with *(-1) where as the entries per invoice row and the VAT Header are positive numbers. The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
@@ -636,7 +650,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <xsl:if test="exists($value) and string($upc_code) and exists($vat)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) *number($vat[1]) div 100 * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
@@ -837,7 +858,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <xsl:if test="exists($value) and string($upc_code) and exists($vat)"><gl-cor:amount contextRef="now" unitRef="{$target_cur}" decimals="2"><xsl:value-of select="format-number((number(replace($value,',','.')) *number(replace($vat[1],',','.')) div 100 * (-1) * $cur_factor), '0.00')"/></gl-cor:amount></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
@@ -1044,7 +1072,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <!--BT-8--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount/@AmountCurrencyIdentifier"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
 
+<xs:choose>
+  <xs:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:when>
+  <xs:otherwise>
+    <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
+  </xs:otherwise>
+</xs:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
