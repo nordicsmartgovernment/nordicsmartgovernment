@@ -136,8 +136,10 @@ public class TransactionManager {
             }
 
             String invoiceTypeFilter = "";
-            if ("incoming".equals(filterInvoiceType) || "outgoing".equals(filterInvoiceType)) {
+            if ("incoming".equalsIgnoreCase(filterInvoiceType) || "outgoing".equalsIgnoreCase(filterInvoiceType)) {
                 invoiceTypeFilter = "AND t.direction=? ";
+            } else if (filterInvoiceType!=null && !"all".equalsIgnoreCase(filterInvoiceType)) {
+                throw new IllegalArgumentException("Please filter invoice type using \"incoming\", \"outgoing\" or \"all\"");
             }
 
             final String sql = "SELECT DISTINCT t.transactionid "
@@ -167,9 +169,9 @@ public class TransactionManager {
                 }
                 if (!invoiceTypeFilter.isEmpty()) {
                     int direction = TransactionDbo.NO_DIRECTION;
-                    if ("incoming".equals(filterInvoiceType)) {
+                    if ("incoming".equalsIgnoreCase(filterInvoiceType)) {
                         direction = TransactionDbo.INBOUND_DIRECTION;
-                    } else if ("outgoing".equals(filterInvoiceType)) {
+                    } else if ("outgoing".equalsIgnoreCase(filterInvoiceType)) {
                         direction = TransactionDbo.OUTBOUND_DIRECTION;
                     }
                     stmt.setInt(++i, direction);
