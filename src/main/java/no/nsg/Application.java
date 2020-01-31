@@ -31,7 +31,7 @@ import java.sql.SQLException;
 @SpringBootApplication
 @OpenAPIDefinition(
     info = @Info(
-        title = "Nordic SmartGovernment",
+        title = "Nordic Smart Government Reference API",
         version = ApplicationInfo.VERSION
     )
 )
