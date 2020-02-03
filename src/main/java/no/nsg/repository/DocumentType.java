@@ -27,7 +27,10 @@ public class DocumentType {
         CATALOGUE_ITEM,
         ORDER_RESPONSE_SIMPLE,
         ORDER_RESPONSE,
-        OTHER
+        OTHER,
+        IMAGE_JPG,
+        IMAGE_PNG,
+        DOCUMENT_PDF
     }
 
     public static boolean hasDirection(final Type type) {
@@ -48,6 +51,10 @@ public class DocumentType {
 
     public static boolean isPurchase(final Type type) {
         return (type==Type.PURCHASE_INVOICE || type==Type.PURCHASE_ORDER);
+    }
+
+    public static boolean isOther(final Type type) {
+        return (type==Type.OTHER || type==Type.IMAGE_JPG || type==Type.IMAGE_PNG || type==Type.DOCUMENT_PDF);
     }
 
     //Very explicit mapping from type to/from int. Mapped enums should NEVER get a new value! (they exist as int in database)
@@ -78,6 +85,9 @@ public class DocumentType {
             case ORDER_RESPONSE_SIMPLE:    return 22;
             case ORDER_RESPONSE:           return 23;
             case SALES_ORDER:              return 24;
+            case IMAGE_JPG:                return 25;
+            case IMAGE_PNG:                return 26;
+            case DOCUMENT_PDF:             return 27;
         }
     }
 
@@ -112,6 +122,9 @@ public class DocumentType {
             case 22: return Type.ORDER_RESPONSE_SIMPLE;
             case 23: return Type.ORDER_RESPONSE;
             case 24: return Type.SALES_ORDER;
+            case 25: return Type.IMAGE_JPG;
+            case 26: return Type.IMAGE_PNG;
+            case 27: return Type.DOCUMENT_PDF;
         }
     }
 
@@ -168,6 +181,12 @@ public class DocumentType {
             return Type.ORDER_RESPONSE_SIMPLE;
         } else if (MimeType.NSG_ORDER_RESPONSE.equalsIgnoreCase(mimeType)) {
             return Type.ORDER_RESPONSE;
+        } else if (MimeType.IMAGE_JPG.equalsIgnoreCase(mimeType)) {
+            return Type.IMAGE_JPG;
+        } else if (MimeType.IMAGE_PNG.equalsIgnoreCase(mimeType)) {
+            return Type.IMAGE_PNG;
+        } else if (MimeType.DOCUMENT_PDF.equalsIgnoreCase(mimeType)) {
+            return Type.DOCUMENT_PDF;
         } else {
             return null;
         }
@@ -204,6 +223,9 @@ public class DocumentType {
             case CATALOGUE_ITEM:           return MimeType.NSG_CATALOGUE_ITEM;
             case ORDER_RESPONSE_SIMPLE:    return MimeType.NSG_ORDER_RESPONSE_SIMPLE;
             case ORDER_RESPONSE:           return MimeType.NSG_ORDER_RESPONSE;
+            case IMAGE_JPG:                return MimeType.IMAGE_JPG;
+            case IMAGE_PNG:                return MimeType.IMAGE_PNG;
+            case DOCUMENT_PDF:             return MimeType.DOCUMENT_PDF;
         }
     }
 

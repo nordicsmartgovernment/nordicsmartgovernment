@@ -26,6 +26,9 @@ public class MimeType {
     public static final String NSG_CATALOGUE_ITEM           = "application/vnd.nordicsmartgovernment.catalogue-item";
     public static final String NSG_ORDER_RESPONSE_SIMPLE    = "application/vnd.nordicsmartgovernment.order-response-simple";
     public static final String NSG_ORDER_RESPONSE           = "application/vnd.nordicsmartgovernment.order-response";
+    public static final String IMAGE_JPG                    = "image/jpeg";
+    public static final String IMAGE_PNG                    = "image/png";
+    public static final String DOCUMENT_PDF                 = "application/pdf";
 
     public static final String XBRL_GL = "application/xbrl-instance+xml";
     public static final String SAF_T   = "application/vnd.saf-t+xml";

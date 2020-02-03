@@ -258,7 +258,7 @@ public class BusinessDocumentDbo {
     }
 
     private void setDirectionAndTransactionTimeFromDocument(final DocumentType.Type documentType, final DocumentFormat.Format documentFormat, final String document) throws IOException, SAXException {
-        if (documentType == DocumentType.Type.OTHER) {
+        if (DocumentType.isOther(documentType)) {
             return;
         }
 
