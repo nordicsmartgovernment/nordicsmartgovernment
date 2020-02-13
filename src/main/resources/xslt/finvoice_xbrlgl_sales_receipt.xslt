@@ -85,10 +85,12 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 <gl-cor:documentInfo>
 <!--generating journal entries --><gl-cor:entriesType contextRef="now">entries</gl-cor:entriesType>
 <!--current time--><gl-cor:creationDate contextRef="now"><xsl:value-of select="current-date()"/></gl-cor:creationDate>
+<gl-bus:creator contextRef="now">NSG reference implementation</gl-bus:creator>
 <!--BT-15--><xsl:variable name="value" select="//InvoiceFreeText"/><xsl:if test="string($value)"><gl-cor:entriesComment contextRef="now"><xsl:value-of select="$value"/></gl-cor:entriesComment></xsl:if>
-
-
-
+<gl-bus:sourceApplication contextRef="now">NSG reference implementation application</gl-bus:sourceApplication>
+<xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)">
+<gl-muc:defaultCurrency contextRef="now"><xsl:value-of select="$value/@AmountCurrencyIdentifier"/></gl-muc:defaultCurrency>
+</xsl:if>
 </gl-cor:documentInfo>
 
 <!--entity information tuple-->
@@ -102,10 +104,14 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
 <!--Entry Header tuple-->
 <gl-cor:entryHeader>
+<gl-cor:enteredBy contextRef="now">NSG example person</gl-cor:enteredBy>
 <gl-cor:sourceJournalID contextRef="now">cr</gl-cor:sourceJournalID>
+<gl-bus:sourceJournalDescription contextRef="now">journal</gl-bus:sourceJournalDescription>
+<gl-cor:entryComment contextRef="now">sales</gl-cor:entryComment>
 
 <!--Entry Detail tuples-->
 <gl-cor:entryDetail>
+<gl-cor:lineNumber>1</gl-cor:lineNumber>
 <!-- For NSG 3 reference implementation the buyer's country code serves as a identifier for the standardized chart of accounts to be used (which countrie's CoA) (mainAccountTypeDescription)-->
 <!-- For NSG 3 reference implementation default accounts are used on Header type entries where all are considered as entries of the "Trade debtors, short term account"-->
 
@@ -138,14 +144,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--For the voucher entries to sum up to 0 the Header entries are positive numbers where as the entries per invoice row and the VAT Header are multiplied with *(-1)(negitive numbers). The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="replace($value,',','.')"/></gl-cor:amount></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//DeliveryDate[1]))">
+<xsl:choose>
+  <xsl:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:when>
-  <xs:otherwise>
+  </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
 
 
 <!--Identifier refrence tuples-->
@@ -357,6 +363,7 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <xsl:for-each select="//VatSpecificationDetails">
 <!--Entry Detail tuples-->
 <gl-cor:entryDetail>
+<gl-cor:lineNumber>2</gl-cor:lineNumber>
 <!-- For NSG 3 reference implementation the buyer's country code serves as a identifier for the standardized chart of accounts to be used (which countrie's CoA) (mainAccountTypeDescription)-->
 
 <!--Account tuples-->
@@ -386,14 +393,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <!--BT-122--><xsl:variable name="value" select="./VatRateAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@AmountCurrencyIdentifier}" decimals="2"><xsl:value-of select="number(replace($value,',','.'))*(-1)"/></gl-cor:amount><gl-muc:amountCurrency contextRef="now"><xsl:value-of select="$value/@AmountCurrencyIdentifier"/></gl-muc:amountCurrency></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//DeliveryDate[1]))">
+<xsl:choose>
+  <xsl:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:when>
-  <xs:otherwise>
+  </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->
@@ -581,7 +588,7 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <xsl:for-each select="//InvoiceRow">
 <!--Entry Detail tuples-->
 <gl-cor:entryDetail>
-
+<gl-cor:lineNumber><xsl:value-of select="position()+2"/></gl-cor:lineNumber>
 <!--Account tuples-->
 <!-- The finnish account to be used is "3000xx" (Raportointikoodisto, Standard business reporting code set chart of accounts-->
 <gl-cor:account>
@@ -614,14 +621,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <!--BT-8--><xsl:variable name="value" select="//InvoiceTotalVatIncludedAmount/@AmountCurrencyIdentifier"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//DeliveryDate[1]))">
+<xsl:choose>
+  <xsl:when test="not(exists(//DeliveryDate[1]))">
 <!--BT-2--><xsl:variable name="value" select="//InvoiceDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:when>
-  <xs:otherwise>
+  </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//DeliveryDate[1]"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="concat(substring($value,1,4),'-',substring($value,5,2),'-',substring($value,7,2))"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer party-->

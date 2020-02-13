@@ -24,6 +24,7 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
   
   <xsl:variable name="schemaLoc" select="'urn:iso:std:iso:20022:tech:xsd:camt.053.001.08 camt.053.001.08.xsd'"/>
 
+<xsl:variable name="ccy" select="//Acct/Ccy"/>
     <!-- template for root element -->
     <!-- adds default namespace and schema location -->
   <xsl:template match="/*" priority="1">
@@ -77,10 +78,8 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 
 
 <!--current time--><gl-cor:creationDate contextRef="now"><xsl:value-of select="current-date()"/></gl-cor:creationDate>
-
+<gl-bus:creator contextRef="now">NSG reference implementation</gl-bus:creator>
 <!-- ISO Index:  1.2.11  --><xsl:variable name="value" select="//BkToCstmrStmt[1]/Stmt/Acct/Ccy"/><xsl:if test="string($value)"><gl-muc:defaultCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:defaultCurrency></xsl:if>
-
-
 
 
 </gl-cor:documentInfo>
@@ -89,7 +88,7 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 <gl-cor:entityInformation>
 <!--Organization Identifiers tuples-->
 <gl-bus:organizationIdentifiers>
-<!-- ISO Index:  9.1.16  --><xsl:variable name="value" select="//BkToCstmrStmt[1]/GrpHdr/MsgRcpt/Id/OrgId/Othr/Id"/><xsl:if test="string($value)"><gl-bus:organizationIdentifier contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationIdentifier></xsl:if>
+<!-- ISO Index:  9.1.16  --><xsl:variable name="value" select="//BkToCstmrStmt[1]/GrpHdr/MsgRcpt/Id/OrgId/Othr/Id"/><xsl:if test="string($value)"><gl-bus:organizationIdentifier contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationIdentifier><gl-bus:organizationDescription>ytunnus</gl-bus:organizationDescription></xsl:if>
 </gl-bus:organizationIdentifiers>
 
 <!--Organization Address tuple-->
@@ -124,7 +123,10 @@ xpath-default-namespace="urn:iso:std:iso:20022:tech:xsd:camt.053.001.08"
 </gl-cor:entityInformation>
 
 <gl-cor:entryHeader>
+<gl-cor:enteredBy contextRef="now">NSG example person</gl-cor:enteredBy>
          <gl-cor:sourceJournalID contextRef="now">gi</gl-cor:sourceJournalID>
+		 <gl-bus:sourceJournalDescription contextRef="now">journal</gl-bus:sourceJournalDescription>
+		 <gl-cor:entryComment contextRef="now">payments</gl-cor:entryComment>
          <gl-cor:entryDetail>
 <!-- For NSG 3 reference implementation default accounts are used on Header type entries where all are considered as entries of the "Trade creditors, short term account"-->
 

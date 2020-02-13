@@ -90,8 +90,11 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Order-2" x
 <gl-cor:documentInfo>
 <!--generating entries --><gl-cor:entriesType contextRef="now">entries</gl-cor:entriesType>
 <!--current time--><gl-cor:creationDate contextRef="now"><xsl:value-of select="current-date()"/></gl-cor:creationDate>
+<gl-bus:creator contextRef="now">NSG reference implementation</gl-bus:creator>
 <!--BT-15--><xsl:variable name="value" select="//cbc:Note"/><xsl:if test="string($value)"><gl-cor:entriesComment contextRef="now"><xsl:value-of select="$value"/></gl-cor:entriesComment></xsl:if>
-
+<gl-bus:sourceApplication contextRef="now">NSG reference implementation application</gl-bus:sourceApplication>
+<xsl:variable name="value" select="//cac:AnticipatedMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)">
+<gl-muc:defaultCurrency contextRef="now"><xsl:value-of select="$value/@currencyID"/></gl-muc:defaultCurrency></xsl:if>
 </gl-cor:documentInfo>
 
 <!--entity information tuple-->
@@ -113,7 +116,7 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Order-2" x
 <!--Organization Address tuple-->
 <gl-bus:organizationAddress>
 
-<!--BT-42--><xsl:variable name="value" select="//Order/cac:SellerSupplierParty/cac:Party/cac:PartyName/cbc:Name"/><xsl:if test="string($value)"><gl-bus:organizationAddressName contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressName><gl-bus:organizationAddressPurpose contextRef="now">billing</gl-bus:organizationAddressPurpose></xsl:if>
+<!--BT-42--><xsl:variable name="value" select="//Order/cac:SellerSupplierParty/cac:Party/cac:PartyName/cbc:Name"/><xsl:if test="string($value)"><gl-bus:organizationAddressName contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressName><gl-bus:organizationAddressPurpose contextRef="now">BillingAddress</gl-bus:organizationAddressPurpose></xsl:if>
 <!--BT-47--><xsl:variable name="value" select="//Order/cac:SellerSupplierParty/cac:Party/cac:PostalAddress/cbc:StreetName"/><xsl:if test="string($value)"><gl-bus:organizationAddressStreet contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressStreet></xsl:if>
 <!--BT-48--><xsl:variable name="value" select="//Order/cac:SellerSupplierParty/cac:Party/cac:PostalAddress/cbc:AdditionalStreetName"/><xsl:if test="string($value)"><gl-bus:organizationAddressStreet2 contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressStreet2></xsl:if>
 <!--BT-49--><xsl:variable name="value" select="//Order/cac:SellerSupplierParty/cac:Party/cac:PostalAddress/cbc:CityName"/><xsl:if test="string($value)"><gl-bus:organizationAddressCity contextRef="now"><xsl:value-of select="$value"/></gl-bus:organizationAddressCity></xsl:if>
@@ -143,9 +146,19 @@ xpath-default-namespace="urn:oasis:names:specification:ubl:schema:xsd:Order-2" x
 </gl-cor:entityInformation>
 
 <gl-cor:entryHeader>
+<gl-cor:enteredBy contextRef="now">NSG example person</gl-cor:enteredBy>
 <!--puchase invoice, entry from purchase journal-->
 <gl-cor:sourceJournalID contextRef="now">sj</gl-cor:sourceJournalID>
-<!--BT-119--><xsl:variable name="value" select="./cbc:Note"/><xsl:if test="string($value)"><gl-cor:entryComment contextRef="now"><xsl:value-of select="$value"/></gl-cor:entryComment></xsl:if>
+<gl-bus:sourceJournalDescription contextRef="now">journal</gl-bus:sourceJournalDescription>
+<!--BT-119--><xsl:variable name="value" select="./cbc:Note"/>
+<xsl:choose>
+  <xsl:when test="string($value)">
+    <gl-cor:entryComment contextRef="now"><xsl:value-of select="$value"/></gl-cor:entryComment>
+  </xsl:when>
+  <xsl:otherwise>
+    <gl-cor:entryComment contextRef="now">sales</gl-cor:entryComment>
+  </xsl:otherwise>
+</xsl:choose>
 <!--BT-118--><xsl:variable name="value" select="./cbc:ID"/><xsl:if test="string($value)"><gl-cor:entryNumberCounter contextRef="now" unitRef="NotUsed" decimals="0"><xsl:value-of select="$value"/></gl-cor:entryNumberCounter></xsl:if>
 
 <!--Entry "Header" tuple-->
@@ -183,14 +196,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--For the voucher entries to sum up to 0 the Header entries are positive numbers where as the entries per invoice row and the VAT Header are multiplied with *(-1)(negitive numbers). The accounts will be automatically balanced.-->
 <!--BT-122--><xsl:variable name="value" select="//cac:AnticipatedMonetaryTotal/cbc:TaxInclusiveAmount"/><xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value"/></gl-cor:amount></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
+<xsl:choose>
+  <xsl:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
 <!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
- </xs:when>
-  <xs:otherwise>
+ </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//cac:Delivery/cbc:ActualDeliveryDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -494,14 +507,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 <!--BT-122--><xsl:variable name="value" select="./cbc:TaxAmount"/>
 <xsl:if test="string($value)"><gl-cor:amount contextRef="now" unitRef="{$value/@currencyID}" decimals="2"><xsl:value-of select="$value*(-1)"/></gl-cor:amount></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
+<xsl:choose>
+  <xsl:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
 <!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
- </xs:when>
-  <xs:otherwise>
+ </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//cac:Delivery/cbc:ActualDeliveryDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
 
 <!--Identifier refrence tuples-->
 <!--Buyer Party-->
@@ -724,14 +737,14 @@ https://drive.google.com/open?id=18m-0i6DfcAmV1KKZcp-5XRt8mQq-HEsD
 
 <!--BT-8--><xsl:variable name="value" select="//Order/cbc:DocumentCurrencyCode"/><xsl:if test="string($value)"><gl-muc:amountOriginalCurrency contextRef="now"><xsl:value-of select="$value"/></gl-muc:amountOriginalCurrency></xsl:if>
 
-<xs:choose>
-  <xs:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
+<xsl:choose>
+  <xsl:when test="not(exists(//cac:Delivery/cbc:ActualDeliveryDate))">
 <!--BT-2--><xsl:variable name="value" select="//Order/cbc:IssueDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
- </xs:when>
-  <xs:otherwise>
+ </xsl:when>
+  <xsl:otherwise>
     <!--BT-2--><xsl:variable name="value" select="//cac:Delivery/cbc:ActualDeliveryDate"/><xsl:if test="string($value)"><gl-cor:postingDate contextRef="now"><xsl:value-of select="$value"/></gl-cor:postingDate></xsl:if>
-  </xs:otherwise>
-</xs:choose>
+  </xsl:otherwise>
+</xsl:choose>
 
 
 <!--Identifier refrence tuples-->
