@@ -233,7 +233,7 @@ public class TransactionManager {
                         for (int headerIndex=0; headerIndex<documentEntryHeaders.getLength(); headerIndex++) {
                             Node entryHeader = documentEntryHeaders.item(headerIndex);
 
-                            NodeList documentNumbers = ((Element)entryHeader).getElementsByTagNameNS("gl-cor", "documentNumber");
+                            NodeList documentNumbers = ((Element)entryHeader).getElementsByTagNameNS(TransformationManager.GL_COR_NS, "documentNumber");
                             if (documentNumbers != null && documentNumbers.getLength()>0) {
                                 documentNumbers.item(0).setTextContent(location);
                             }
