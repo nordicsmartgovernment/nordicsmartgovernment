@@ -229,13 +229,25 @@ public class TransactionManager {
                         String location = BusinessDocumentDbo.getLocationString(companyId, transactionId, documentId);
 
                         Document document = BusinessDocumentDbo.parseDocument(xbrl);
+
+                        //Iterate all entryHeaders, and append each and every one of them to the result document
                         NodeList documentEntryHeaders = document.getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryHeader");
-                        for (int headerIndex=0; headerIndex<documentEntryHeaders.getLength(); headerIndex++) {
+                        for (int headerIndex=0; documentEntryHeaders!=null && headerIndex<documentEntryHeaders.getLength(); headerIndex++) {
                             Node entryHeader = documentEntryHeaders.item(headerIndex);
 
-                            NodeList documentNumbers = ((Element)entryHeader).getElementsByTagNameNS(TransformationManager.GL_COR_NS, "documentNumber");
-                            if (documentNumbers != null && documentNumbers.getLength()>0) {
-                                documentNumbers.item(0).setTextContent(location);
+                            NodeList documentEntryDetails = ((Element)entryHeader).getElementsByTagNameNS(TransformationManager.GL_COR_NS, "entryDetail");
+                            for (int detailIndex=0; documentEntryDetails!=null && detailIndex<documentEntryDetails.getLength(); detailIndex++) {
+                                Node entryDetail = documentEntryDetails.item(detailIndex);
+
+                                NodeList documentNumbers = ((Element)entryDetail).getElementsByTagNameNS(TransformationManager.GL_COR_NS, "documentNumber");
+                                Node documentNumber = (documentNumbers!=null && documentNumbers.getLength()>0) ? documentNumbers.item(0) : null;
+
+                                if (documentNumber == null) {
+                                    documentNumber = document.createElementNS(TransformationManager.GL_COR_NS, "gl-cor:documentNumber");
+                                    entryDetail.appendChild(documentNumber);
+                                }
+
+                                documentNumber.setTextContent(location);
                             }
 
                             accountingEntry.appendChild(transactionDocument.importNode(entryHeader, true));
