@@ -16,7 +16,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
  -->
 <!-- string for default namespace uri and schema location -->
   <xsl:variable name="ns" select="'http://www.w3.org/2001/XMLSchema-instance'"/>
-  <xsl:variable name="schemaLoc" select="'http://www.xbrl.org/int/gl/plt/2015-03-25 ../../XBRL-GL-REC-2017-01-01-fi_draft/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd'"/>
+  <xsl:variable name="schemaLoc" select="'http://www.xbrl.org/int/gl/plt/2016-12-01 ../../XBRL-GL-REC-2017-01-01-fi_draft/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd'"/>
 
     <!-- template for root element -->
     <!-- adds default namespace and schema location -->

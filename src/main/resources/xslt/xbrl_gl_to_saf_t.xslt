@@ -97,8 +97,8 @@ xpath-default-namespace="urn:StandardAuditFile-Taxation-Financial:NO">
 
 
 <Company>
-<xsl:variable name="value" select="//gl-bus:organizationIdentifier[following-sibling::gl-bus:organizationDescription='ytunnus']"/><xsl:if test="string($value)"><RegistrationNumber><xsl:value-of select="$value"/></RegistrationNumber></xsl:if>
-<xsl:variable name="value" select="//gl-bus:organizationAddressName"/><xsl:if test="string($value)"><Name><xsl:value-of select="$value"/></Name></xsl:if>
+<xsl:variable name="value" select="//gl-bus:organizationIdentifier"/><RegistrationNumber><xsl:value-of select="$value"/></RegistrationNumber>
+<xsl:variable name="value" select="//gl-bus:organizationAddressName"/><Name><xsl:value-of select="$value"/></Name>
 
 <Address>
 <xsl:variable name="value" select="//gl-bus:organizationAddressStreet"/><xsl:if test="string($value)">
@@ -239,8 +239,8 @@ xpath-default-namespace="urn:StandardAuditFile-Taxation-Financial:NO">
 <GeneralLedgerEntries>
 <xsl:variable name="value" select="count(//gl-cor:entryDetail)"/><xsl:if test="string($value)"><NumberOfEntries><xsl:value-of select="$value"/></NumberOfEntries></xsl:if>
 
-<xsl:variable name="value" select="sum(//gl-cor:amount[following-sibling::gl-cor:debitCreditCode='D' or following-sibling::gl-cor:debitCreditCode='Debit'])"/><xsl:if test="string($value)"><TotalDebit><xsl:value-of select="$value"/></TotalDebit></xsl:if>
-<xsl:variable name="value" select="sum(//gl-cor:amount[number(.) &lt; 0 or following-sibling::gl-cor:debitCreditCode='C' or following-sibling::gl-cor:debitCreditCode='Credit'])"/><xsl:if test="string($value)"><TotalCredit>
+<xsl:variable name="value" select="format-number(sum(//gl-cor:amount[number(.) &gt; 0 or following-sibling::gl-cor:debitCreditCode='D' or following-sibling::gl-cor:debitCreditCode='Debit']),'0.00')"/><xsl:if test="string($value)"><TotalDebit><xsl:value-of select="$value"/></TotalDebit></xsl:if>
+<xsl:variable name="value" select="format-number(sum(//gl-cor:amount[number(.) &lt; 0 or following-sibling::gl-cor:debitCreditCode='C' or following-sibling::gl-cor:debitCreditCode='Credit']),'0.00')"/><xsl:if test="string($value)"><TotalCredit>
 <xsl:choose>
   <xsl:when test="number($value) &lt; 0">
     <xsl:value-of select="number($value)*(-1)"/>
@@ -251,9 +251,8 @@ xpath-default-namespace="urn:StandardAuditFile-Taxation-Financial:NO">
 </xsl:choose>
 </TotalCredit></xsl:if>
 <Journal>
-<xsl:variable name="value" select="//gl-cor:sourceJournalID[1]"/><xsl:if test="string($value)"><JournalID><xsl:value-of select="$value"/></JournalID></xsl:if>
-
-<xsl:variable name="value" select="//gl-bus:sourceJournalDescription[1]"/><xsl:if test="string($value)"><Description><xsl:value-of select="$value"/></Description></xsl:if>
+<JournalID>GL</JournalID>
+<xsl:variable name="value" select="//gl-cor:entryHeader[1]/gl-bus:sourceJournalDescription"/><Description><xsl:value-of select="$value"/></Description>
 
 <Type>GL</Type>
   
@@ -309,9 +308,9 @@ xpath-default-namespace="urn:StandardAuditFile-Taxation-Financial:NO">
 </xsl:for-each>
 
 <xsl:variable name="value" select="./gl-cor:documentNumber"/><xsl:if test="string($value)"><SourceDocumentID><xsl:value-of select="$value"/></SourceDocumentID></xsl:if>
-<xsl:variable name="value" select="./gl-cor:identifierReference/gl-cor:identifierCode[following-sibling::gl-cor:identifierType='C' or following-sibling::gl-cor:identifierType='FI-B']"/><xsl:if test="string($value)"><CustomerID><xsl:value-of select="$value"/></CustomerID></xsl:if>
-<xsl:variable name="value" select="./gl-cor:identifierReference/gl-cor:identifierCode[following-sibling::gl-cor:identifierType='V' or following-sibling::gl-cor:identifierType='FI-S']"/><xsl:if test="string($value)"><SupplierID><xsl:value-of select="$value"/></SupplierID></xsl:if>
-<xsl:variable name="value" select="./gl-cor:detailComment"/><xsl:if test="string($value)"><Description><xsl:value-of select="$value"/></Description></xsl:if>
+<xsl:variable name="value" select="./gl-cor:identifierReference/gl-cor:identifierCode[following-sibling::gl-cor:identifierType='C' or following-sibling::gl-cor:identifierType='FI-B']"/><CustomerID><xsl:value-of select="$value"/></CustomerID>
+<xsl:variable name="value" select="./gl-cor:identifierReference/gl-cor:identifierCode[following-sibling::gl-cor:identifierType='V' or following-sibling::gl-cor:identifierType='FI-S']"/><SupplierID><xsl:value-of select="$value"/></SupplierID>
+<xsl:variable name="value" select="./gl-cor:detailComment"/><Description><xsl:value-of select="$value"/></Description>
 
 <xsl:variable name="value" select="./gl-cor:amount"/><xsl:if test="number($value)&gt; 0 or $value[following-sibling::gl-cor:debitCreditCode='D' or following-sibling::gl-cor:debitCreditCode='Debit']"><DebitAmount><Amount><xsl:value-of select="$value"/></Amount>
 <xsl:if test="./gl-muc:amountCurrency!=//gl-muc:defaultCurrency">
@@ -346,7 +345,17 @@ xpath-default-namespace="urn:StandardAuditFile-Taxation-Financial:NO">
 <xsl:variable name="value" select="./gl-cor:taxPercentageRate"/><xsl:if test="string($value)"><TaxPercentage><xsl:value-of select="$value"/></TaxPercentage></xsl:if>
 <xsl:variable name="value" select="./gl-cor:taxBasis"/><xsl:if test="string($value)"><TaxBase><xsl:value-of select="$value"/></TaxBase></xsl:if>
 <xsl:variable name="value" select="./gl-cor:taxBasis"/><xsl:if test="string($value)"><TaxBaseDescription><xsl:value-of select="$value"/></TaxBaseDescription></xsl:if>
-<xsl:variable name="value" select="./gl-cor:taxAmount"/><xsl:if test="string($value)"><TaxAmount><Amount><xsl:value-of select="abs(number($value))"/></Amount></TaxAmount></xsl:if>
+<xsl:variable name="value" select="./gl-cor:taxAmount"/>
+<TaxAmount>
+<xsl:choose>
+  <xsl:when test="string($value)">
+    <Amount><xsl:value-of select="$value"/></Amount>
+  </xsl:when>
+  <xsl:otherwise>
+    <Amount>0.00</Amount>
+  </xsl:otherwise>
+</xsl:choose>
+</TaxAmount>
 <xsl:variable name="value" select="./gl-cor:taxCommentExemption"/><xsl:if test="string($value)"><TaxExemptionReason><xsl:value-of select="$value"/></TaxExemptionReason></xsl:if>
 </TaxInformation>
 </xsl:for-each>
