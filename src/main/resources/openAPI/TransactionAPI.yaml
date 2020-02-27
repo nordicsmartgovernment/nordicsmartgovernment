@@ -87,6 +87,9 @@ paths:
             application/xbrl-instance+xml:
               schema:
                 type: object
+            application/vnd.saf-t+xml:
+              schema:
+                type: object
             application/json:
               schema:
                 type: object

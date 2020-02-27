@@ -90,8 +90,8 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
                 returnValue = transactionManager.getTransactionDocumentAsXbrlGl(transactionIds);
                 response.setContentType(MimeType.XBRL_GL);
             } else if (MimeType.SAF_T.equalsIgnoreCase(accept)) {
-                    returnValue = transactionManager.getTransactionDocumentAsSafT(transactionIds);
-                    response.setContentType(MimeType.SAF_T);
+                returnValue = transactionManager.getTransactionDocumentAsSafT(transactionIds);
+                response.setContentType(MimeType.SAF_T);
             } else if (MimeType.JSON.equalsIgnoreCase(accept)) {
                 returnValue = transactionIds;
                 noContent = (transactionIds==null || transactionIds.isEmpty());
@@ -106,6 +106,13 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
             } catch (IOException e2) {
             }
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (SAXException e) {
+            LOGGER.error("GET_GETTRANSACTIONS failed:", e);
+            try {
+                response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage());
+            } catch (IOException e2) {
+            }
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             LOGGER.error("GET_GETTRANSACTIONS failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

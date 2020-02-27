@@ -315,10 +315,10 @@ public class TransactionManager {
             return baos.toString(StandardCharsets.UTF_8.name());
         } catch (SaxonApiException e) {
             LOGGER.info("Failed converting to SAF-T");
-            return null;
+            throw new SAXException(e);
         } catch (UnsupportedEncodingException e) {
             LOGGER.error("Converting to SAF-T using unsupported encoding");
-            return null;
+            throw new SAXException(e);
         }
     }
 
