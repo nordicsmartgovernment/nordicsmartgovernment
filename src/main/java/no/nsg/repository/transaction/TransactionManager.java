@@ -195,11 +195,11 @@ public class TransactionManager {
         return transactionIds;
     }
 
-    public String getTransactionDocumentAsXbrlGl(final String transactionId) throws SQLException, IOException, SAXException {
-        return getTransactionDocumentAsXbrlGl(Collections.singletonList(transactionId));
+    public String getTransactionDocumentAsXbrlGl(final String transactionId, final LocalDate filterStartDate, final LocalDate filterEndDate) throws SQLException, IOException, SAXException {
+        return getTransactionDocumentAsXbrlGl(Collections.singletonList(transactionId), filterStartDate, filterEndDate);
     }
 
-    public String getTransactionDocumentAsXbrlGl(final List<String> transactionIds) throws SQLException, IOException, SAXException {
+    public String getTransactionDocumentAsXbrlGl(final List<String> transactionIds, final LocalDate filterStartDate, final LocalDate filterEndDate) throws SQLException, IOException, SAXException {
         Document transactionDocument = null;
         Node accountingEntry = null;
 
@@ -217,7 +217,7 @@ public class TransactionManager {
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
                     if (transactionDocument == null) {
-                        transactionDocument = createEmptyXbrlGlDocument(rs.getString("orgno"));
+                        transactionDocument = createEmptyXbrlGlDocument(rs.getString("orgno"), filterStartDate, filterEndDate);
                         accountingEntry = transactionDocument.getElementsByTagNameNS(TransformationManager.GL_COR_NS,"accountingEntries").item(0);
                     }
 
@@ -258,7 +258,7 @@ public class TransactionManager {
 
                 //In case we didn't find any documents, return an empty XBRL-GL document
                 if (transactionDocument == null) {
-                    transactionDocument = createEmptyXbrlGlDocument(null);
+                    transactionDocument = createEmptyXbrlGlDocument(null, null, null);
                 }
             } catch (SQLException e) {
                 try {
@@ -272,7 +272,7 @@ public class TransactionManager {
         return BusinessDocumentDbo.documentToString(transactionDocument);
     }
 
-    private Document createEmptyXbrlGlDocument(final String companyId) throws IOException, SAXException {
+    private Document createEmptyXbrlGlDocument(final String companyId, final LocalDate filterStartDate, final LocalDate filterEndDate) throws IOException, SAXException {
         String transactionXbrl =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
                         "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\" xmlns:fn=\"http://www.w3.org/2005/02/xpath-functions\" xmlns:gl-bus=\"http://www.xbrl.org/int/gl/bus/2015-03-25\" xmlns:gl-cor=\"http://www.xbrl.org/int/gl/cor/2016-12-01\" xmlns:gl-cor-fi=\"http://www.xbrl.org/int/gl/cor/fi/2017-01-01\" xmlns:gl-muc=\"http://www.xbrl.org/int/gl/muc/2015-03-25\" xmlns:gl-plt=\"http://www.xbrl.org/int/gl/plt/2015-03-25\" xmlns:gl-rapko=\"http://www.xbrl.org/int/gl/rapko/2015-07-01\" xmlns:gl-taf=\"http://www.xbrl.org/int/gl/taf/2015-03-25\" xmlns:iso4217=\"http://www.xbrl.org/2003/iso4217\" xmlns:iso639=\"http://www.xbrl.org/2005/iso639\" xmlns:ix=\"http://www.xbrl.org/2008/inlineXBRL\" xmlns:ixt=\"http://www.xbrl.org/inlineXBRL/transformation/2010-04-20\" xmlns:link=\"http://www.xbrl.org/2003/linkbase\" xmlns:xbrll=\"http://www.xbrl.org/2003/linkbase\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.xbrl.org/int/gl/plt/2015-03-25 ../../../taxonomies/XBRL-GL-REC-2017-01-01-fi/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd\">" +
@@ -280,7 +280,16 @@ public class TransactionManager {
                         "  <gl-cor:documentInfo>\n" +
                         "   <gl-cor:entriesType contextRef=\"now\">journal</gl-cor:entriesType>\n" +
                         "   <gl-cor:creationDate contextRef=\"now\">2019-07-12+03:00</gl-cor:creationDate>\n" +
-                        "   <gl-muc:defaultCurrency contextRef=\"now\">DKK</gl-muc:defaultCurrency>\n" +
+                        "   <gl-muc:defaultCurrency contextRef=\"now\">DKK</gl-muc:defaultCurrency>\n";
+
+        if (filterStartDate!=null) {
+            transactionXbrl += "    <gl-cor:periodCoveredStart contextRef=\"now\">" + filterStartDate + "</gl-cor:periodCoveredStart>\n";
+        }
+        if (filterEndDate!=null) {
+            transactionXbrl += "    <gl-cor:periodCoveredEnd contextRef=\"now\">" + filterEndDate + "</gl-cor:periodCoveredEnd>\n";
+        }
+
+        transactionXbrl +=
                         "  </gl-cor:documentInfo>\n" +
                         "  <gl-cor:entityInformation>\n" +
                         "   <gl-bus:organizationIdentifiers>\n";
@@ -303,12 +312,12 @@ public class TransactionManager {
         return BusinessDocumentDbo.parseDocument(transactionXbrl);
     }
 
-    public String getTransactionDocumentAsSafT(final String transactionId) throws SQLException, IOException, SAXException {
-        return getTransactionDocumentAsSafT(Collections.singletonList(transactionId));
+    public String getTransactionDocumentAsSafT(final String transactionId, final LocalDate filterStartDate, final LocalDate filterEndDate) throws SQLException, IOException, SAXException {
+        return getTransactionDocumentAsSafT(Collections.singletonList(transactionId), filterStartDate, filterEndDate);
     }
 
-    public String getTransactionDocumentAsSafT(final List<String> transactionIds) throws SQLException, IOException, SAXException {
-        String xbrl = getTransactionDocumentAsXbrlGl(transactionIds);
+    public String getTransactionDocumentAsSafT(final List<String> transactionIds, final LocalDate filterStartDate, final LocalDate filterEndDate) throws SQLException, IOException, SAXException {
+        String xbrl = getTransactionDocumentAsXbrlGl(transactionIds, filterStartDate, filterEndDate);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
             TransformationManager.transform(new ByteArrayInputStream(xbrl.getBytes(StandardCharsets.UTF_8)), DocumentFormat.Format.XBRL_GL_TO_SAF_T, baos);

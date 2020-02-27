@@ -58,10 +58,10 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
         try {
             final String accept = httpServletRequest.getHeader("Accept");
             if (MimeType.XBRL_GL.equalsIgnoreCase(accept)) {
-                transaction = transactionManager.getTransactionDocumentAsXbrlGl(transactionId);
+                transaction = transactionManager.getTransactionDocumentAsXbrlGl(transactionId, null, null);
                 response.setContentType(MimeType.XBRL_GL);
             } else if (MimeType.SAF_T.equalsIgnoreCase(accept)) {
-                transaction = transactionManager.getTransactionDocumentAsSafT(transactionId);
+                transaction = transactionManager.getTransactionDocumentAsSafT(transactionId, null, null);
                 response.setContentType(MimeType.SAF_T);
             } else {
                 throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.SAF_T+"\" or \""+MimeType.XBRL_GL+"\"");
@@ -87,10 +87,10 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
 
             final String accept = httpServletRequest.getHeader("Accept");
             if (MimeType.XBRL_GL.equalsIgnoreCase(accept)) {
-                returnValue = transactionManager.getTransactionDocumentAsXbrlGl(transactionIds);
+                returnValue = transactionManager.getTransactionDocumentAsXbrlGl(transactionIds, filterStartDate, filterEndDate);
                 response.setContentType(MimeType.XBRL_GL);
             } else if (MimeType.SAF_T.equalsIgnoreCase(accept)) {
-                returnValue = transactionManager.getTransactionDocumentAsSafT(transactionIds);
+                returnValue = transactionManager.getTransactionDocumentAsSafT(transactionIds, filterStartDate, filterEndDate);
                 response.setContentType(MimeType.SAF_T);
             } else if (MimeType.JSON.equalsIgnoreCase(accept)) {
                 returnValue = transactionIds;
