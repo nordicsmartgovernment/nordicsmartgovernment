@@ -30,7 +30,8 @@ public class DocumentType {
         OTHER,
         IMAGE_JPG,
         IMAGE_PNG,
-        DOCUMENT_PDF
+        DOCUMENT_PDF,
+        XBRL_GL
     }
 
     public static boolean hasDirection(final Type type) {
@@ -54,7 +55,7 @@ public class DocumentType {
     }
 
     public static boolean isOther(final Type type) {
-        return (type==Type.OTHER || type==Type.IMAGE_JPG || type==Type.IMAGE_PNG || type==Type.DOCUMENT_PDF);
+        return (type==Type.OTHER || type==Type.IMAGE_JPG || type==Type.IMAGE_PNG || type==Type.DOCUMENT_PDF || type==Type.XBRL_GL);
     }
 
     //Very explicit mapping from type to/from int. Mapped enums should NEVER get a new value! (they exist as int in database)
@@ -88,6 +89,7 @@ public class DocumentType {
             case IMAGE_JPG:                return 25;
             case IMAGE_PNG:                return 26;
             case DOCUMENT_PDF:             return 27;
+            case XBRL_GL:                  return 28;
         }
     }
 
@@ -125,6 +127,7 @@ public class DocumentType {
             case 25: return Type.IMAGE_JPG;
             case 26: return Type.IMAGE_PNG;
             case 27: return Type.DOCUMENT_PDF;
+            case 28: return Type.XBRL_GL;
         }
     }
 
@@ -187,6 +190,8 @@ public class DocumentType {
             return Type.IMAGE_PNG;
         } else if (MimeType.DOCUMENT_PDF.equalsIgnoreCase(mimeType)) {
             return Type.DOCUMENT_PDF;
+        } else if (MimeType.XBRL_GL.equalsIgnoreCase(mimeType)) {
+            return Type.XBRL_GL;
         } else {
             return null;
         }
@@ -226,6 +231,7 @@ public class DocumentType {
             case IMAGE_JPG:                return MimeType.IMAGE_JPG;
             case IMAGE_PNG:                return MimeType.IMAGE_PNG;
             case DOCUMENT_PDF:             return MimeType.DOCUMENT_PDF;
+            case XBRL_GL:                  return MimeType.XBRL_GL;
         }
     }
 

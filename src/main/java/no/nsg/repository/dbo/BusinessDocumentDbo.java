@@ -245,15 +245,19 @@ public class BusinessDocumentDbo {
     }
 
     private void transformXbrlFromOriginal(final DocumentFormat.Format documentFormat) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try {
-            TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
-            this.xbrl = baos.toString(StandardCharsets.UTF_8.name());
-        } catch (SaxonApiException e) {
-            LOGGER.info("Invoice failed converting to XBRL");
-            this.xbrl = null;
-        } catch (UnsupportedEncodingException e) {
-            LOGGER.error("Converting to XBRL using unsupported encoding");
+        if (documentFormat == DocumentFormat.Format.XBRL_GL) { //COPY
+            this.xbrl = new String(this.original, StandardCharsets.UTF_8);
+        } else { //Transform
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            try {
+                TransformationManager.transform(new ByteArrayInputStream(this.original), documentFormat, baos);
+                this.xbrl = baos.toString(StandardCharsets.UTF_8.name());
+            } catch (SaxonApiException e) {
+                LOGGER.info("Invoice failed converting to XBRL");
+                this.xbrl = null;
+            } catch (UnsupportedEncodingException e) {
+                LOGGER.error("Converting to XBRL using unsupported encoding");
+            }
         }
     }
 

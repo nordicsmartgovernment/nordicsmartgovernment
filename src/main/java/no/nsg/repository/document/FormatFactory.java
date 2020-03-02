@@ -44,6 +44,8 @@ public class FormatFactory {
             } else {
                 return DocumentFormat.Format.UBL_2_1;
             }
+        } else if (document.contains("<xbrli:xbrl")) {
+            return DocumentFormat.Format.XBRL_GL;
         } else {
             return DocumentFormat.Format.OTHER;
         }

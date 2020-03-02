@@ -19,6 +19,7 @@ public abstract class DocumentFormat {
         UBL_2_1_SALES_ORDER,
         UBL_2_1,
         UBL_2_1_PURCHASE_ORDER,
+        XBRL_GL,
         XBRL_GL_TO_SAF_T,
         OTHER
     }
