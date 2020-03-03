@@ -1,65 +1,1086 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xbrli:xbrl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gl-plt="http://www.xbrl.org/int/gl/plt/2016-12-01" xmlns:xbrll="http://www.xbrl.org/2003/linkbase" xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2016-12-01" xmlns:iso639="http://www.xbrl.org/2005/iso639" xmlns:gl-taf="http://www.xbrl.org/int/gl/taf/2016-12-01" xmlns:gl-muc="http://www.xbrl.org/int/gl/muc/2016-12-01" xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:gl-srcd="http://www.xbrl.org/int/gl/srcd/2016-12-01" xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01" xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2016-12-01" xmlns:iso4217="http://www.xbrl.org/2003/iso4217" xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xbrldi="http://xbrl.org/2006/xbrldi" xmlns:xbrldt="http://xbrl.org/2005/xbrldt" xmlns:xl="http://www.xbrl.org/2003/XLink" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema"><xbrll:schemaRef xlink:type="simple" xlink:href="../../../Nordic SmartGovernment/Demo/taxonomies/XBRL-GL-PWD-2016-12-01-fi-2017-12-01/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/><xbrli:context id="ctx1"><xbrli:entity><xbrli:identifier scheme="http://www.xbrl.org/xbrlgl/sample">1234567-1</xbrli:identifier></xbrli:entity><xbrli:period><xbrli:instant>2017-12-01+02:00</xbrli:instant></xbrli:period></xbrli:context><xbrli:unit id="na"><xbrli:measure>pure</xbrli:measure></xbrli:unit><gl-cor:accountingEntries><gl-cor:documentInfo><gl-cor:entriesType contextRef="ctx1">mapping</gl-cor:entriesType></gl-cor:documentInfo><gl-cor:entryHeader>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">17601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1610</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
+<xbrli:xbrl xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gl-plt="http://www.xbrl.org/int/gl/plt/2016-12-01" xmlns:xbrll="http://www.xbrl.org/2003/linkbase" xmlns:gl-cor="http://www.xbrl.org/int/gl/cor/2016-12-01" xmlns:iso639="http://www.xbrl.org/2005/iso639" xmlns:gl-taf="http://www.xbrl.org/int/gl/taf/2016-12-01" xmlns:gl-muc="http://www.xbrl.org/int/gl/muc/2016-12-01" xmlns:xbrli="http://www.xbrl.org/2003/instance" xmlns:gl-srcd="http://www.xbrl.org/int/gl/srcd/2016-12-01" xmlns:gl-rapko="http://www.xbrl.org/int/gl/rapko/2015-07-01" xmlns:gl-bus="http://www.xbrl.org/int/gl/bus/2016-12-01" xmlns:iso4217="http://www.xbrl.org/2003/iso4217" xmlns:link="http://www.xbrl.org/2003/linkbase" xmlns:xbrldi="http://xbrl.org/2006/xbrldi" xmlns:xbrldt="http://xbrl.org/2005/xbrldt" xmlns:xl="http://www.xbrl.org/2003/XLink" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xbrll:schemaRef xlink:type="simple" xlink:href="../../../Nordic SmartGovernment/Demo/taxonomies/XBRL-GL-PWD-2016-12-01-fi-2017-12-01/gl/plt/case-c-b-m-u-t-s-r/gl-plt-fi-all-2017-01-01.xsd" xlink:arcrole="http://www.w3.org/1999/xlink/properties/linkbase"/>
+	<xbrli:context id="ctx1">
+		<xbrli:entity>
+			<xbrli:identifier scheme="http://www.xbrl.org/xbrlgl/sample">1234567-1</xbrli:identifier>
+		</xbrli:entity>
+		<xbrli:period>
+			<xbrli:instant>2017-12-01+02:00</xbrli:instant>
+		</xbrli:period>
+	</xbrli:context>
+	<xbrli:unit id="na">
+		<xbrli:measure>pure</xbrli:measure>
+	</xbrli:unit>
+	<gl-cor:accountingEntries>
+		<gl-cor:documentInfo>
+			<gl-cor:entriesType contextRef="ctx1">mapping</gl-cor:entriesType>
+		</gl-cor:documentInfo>
+		<gl-cor:entryHeader>
 
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">10201</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5610-5699</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1000</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1010</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">10301</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5210-5299</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">10401</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5110-5199</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1080</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1070</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1070</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1"></gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1080</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1160x1</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1100</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1210</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1170x1</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5510-5599</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1250</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">11801</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5710-5799</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1280</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">14101</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1300</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1310</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">14200</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5810</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1320</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1320</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">143111</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1330</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">14410</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1325</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1462</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1370</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1510</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6110</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1409</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1520</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6160</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1420</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1530</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6210</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1440</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1551</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6260</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1480</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">17001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7440</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1510</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">17621</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7740</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2640</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">17601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7190</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">17111</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1800</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">17631</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6520</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1780</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1811</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5810</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1805</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1821</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2010</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">18301</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">5890</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1889</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">191001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6640</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1930</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">201111</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6730</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2000</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2010</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">20121</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6760</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2010</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">20131</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2020</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">201611</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6870</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2050</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">20180</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6930</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2050</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2098</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2030</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">6960</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">8990</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2099</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">26001</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7040</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2100</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">26101</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7010</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">26201</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7040</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2180</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2290</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">29030</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7310</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2380</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2410</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">18031x</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7110</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2220</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">18311</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">290501</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7410</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2900</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">280501</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7410</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2900</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2390</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">280501</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">290601</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7440</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2440</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2920411</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">7680</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2610</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2920421</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1"></gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2620</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2920431</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1"></gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2630</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2920451</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1"></gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">2920461</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1"></gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3000xx</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3000</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3000xx</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3002</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">302100</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3106</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">303104</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3105</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3700</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">4900</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">3800</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">4000</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">1610</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">4030</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">4416</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">10201</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5610-5699</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1000</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1010</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
 
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">4080</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">50000</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">50100</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">90830</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">90831</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">90600</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">8910</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail>
-<gl-cor:entryDetail><gl-cor:account><gl-cor:accountMainID contextRef="ctx1">9700</gl-cor:accountMainID><gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription></gl-cor:account></gl-cor:entryDetail></gl-cor:entryHeader></gl-cor:accountingEntries></xbrli:xbrl>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">10301</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5210-5299</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">10401</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5110-5199</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1080</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1070</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1070</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">n/a</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1080</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1160x1</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5410</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1200</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1211</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1165x1</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5510</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6540</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1232</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1170x1</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5510-5599</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1250</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">11801</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5710-5799</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1280</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">14101</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1300</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1310</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">14200</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5810</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1320</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1320</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">143111</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1330</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">14410</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1325</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1462</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1370</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1510</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6110</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1409</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1520</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6160</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1420</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1530</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6210</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1440</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1551</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6260</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1480</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">17001</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7440</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1510</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">17621</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7740</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2640</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">17601</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7190</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">17111</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1800</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">17631</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6520</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1780</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1811</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5810</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1805</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1821</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2010</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">18301</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5890</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1889</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">191001</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6640</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1930</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">201111</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6730</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2000</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2010</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">20121</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6760</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2010</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">20131</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2020</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">201611</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6870</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2050</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">20180</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6930</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2050</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2098</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2030</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6960</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">8990</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2099</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">26001</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7040</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2100</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">26101</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7010</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">26201</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7040</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2180</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2290</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">29030</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7310</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2380</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2410</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">18031x</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7110</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2220</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">18311</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">290501</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7410</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2900</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">280501</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7410</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2900</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2390</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">280501</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">290601</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7440</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2440</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2920411</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7680</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2610</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2920421</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">n/a</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2620</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2920431</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">n/a</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2630</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2920451</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">n/a</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2920461</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">n/a</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3000xx</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3000</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3000xx</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3002</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">302100</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3106</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">303104</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3105</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3700</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4900</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">3800</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4000</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1610</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4030</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4416</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">40004</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1950</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6200</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5120</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">40201</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1630</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4082</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4516</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">40301</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1650</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4082</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4546</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">40003</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1710</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4600</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5440</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4080</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6212</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">70300</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2490</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6903</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6230</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">70300</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2490</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6907</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">Sum</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">701000</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1910</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6260</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5140</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">701000</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1990</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6260</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5140</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">701007</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2130</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">709100</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2530</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6800</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6110</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">709100</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2540</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7770</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6570</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">70701</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">1730</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">7320</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5910</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">70900</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2750</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">4700</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6421</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">70209</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">2690</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">DK</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">6440</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">NO</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">5620</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">50000</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">50100</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">90830</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">90831</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">90600</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">8910</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">SE</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+			<gl-cor:entryDetail>
+				<gl-cor:account>
+					<gl-cor:accountMainID contextRef="ctx1">9700</gl-cor:accountMainID>
+					<gl-cor:mainAccountTypeDescription contextRef="ctx1">FI</gl-cor:mainAccountTypeDescription>
+				</gl-cor:account>
+			</gl-cor:entryDetail>
+
+		</gl-cor:entryHeader>
+	</gl-cor:accountingEntries>
+</xbrli:xbrl>
