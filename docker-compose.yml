@@ -20,7 +20,7 @@ services:
     ports:
       - 5432:5432
     environment:
-      - POSTGRES_USER="${NSG_POSTGRES_DBO_USER}"
-      - POSTGRES_PASSWORD="${NSG_POSTGRES_DBO_PASSWORD}"
+      - POSTGRES_USER=${NSG_POSTGRES_DBO_USER}
+      - POSTGRES_PASSWORD=${NSG_POSTGRES_DBO_PASSWORD}
     volumes:
       - /var/lib/postgresql/data
