@@ -38,9 +38,11 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
 
     static class Document {
         public final String documentid;
+        public final String mimeType;
         public final byte[] original;
-        Document(final String documentid, final byte[] original) {
+        Document(final String documentid, final String mimeType, final byte[] original) {
             this.documentid = documentid;
+            this.mimeType = mimeType;
             this.original = original;
         }
     }
@@ -101,7 +103,7 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
             BusinessDocumentDbo document = documentManager.getDocumentByGuid(documentId);
             if (document != null) {
                 response.setContentType(DocumentType.toMimeType(document.getDocumenttype()));
-                returnValue = new Document(document.getDocumentid(), document.getOriginal());
+                returnValue = new Document(document.getDocumentid(), DocumentType.toMimeType(document.getDocumenttype()), document.getOriginal());
             }
         } catch (Exception e) {
             LOGGER.error("GET_GETDOCUMENT failed:", e);
@@ -205,7 +207,7 @@ public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
         List<Document> returnValue = new ArrayList<>();
         List<BusinessDocumentDbo> invoices = documentManager.getDocuments(companyId, documentTypes);
         for (BusinessDocumentDbo invoice : invoices) {
-            returnValue.add(new Document(invoice.getDocumentid(), invoice.getOriginal()));
+            returnValue.add(new Document(invoice.getDocumentid(), DocumentType.toMimeType(invoice.getDocumenttype()), invoice.getOriginal()));
         }
         return returnValue;
     }
