@@ -9,16 +9,20 @@ public class FormatFactory {
     public static DocumentFormat create(DocumentFormat.Format format) {
         switch (format) {
             case CAMT_053_001_08:           return new CamtFormat();
-            case FINVOICE:                  return new FinvoiceFormat();
-            case FINVOICE_PURCHASE_INVOICE: return new FinvoiceFormat();
-            case FINVOICE_PURCHASE_RECEIPT: return new FinvoiceFormat();
-            case FINVOICE_SALES_INVOICE:    return new FinvoiceFormat();
+
+            case FINVOICE:
+            case FINVOICE_PURCHASE_INVOICE:
+            case FINVOICE_PURCHASE_RECEIPT:
+            case FINVOICE_SALES_INVOICE:
             case FINVOICE_SALES_RECEIPT:    return new FinvoiceFormat();
-            case UBL_2_1_SALES_INVOICE:     return new UBLInvoiceFormat();
+
+            case UBL_2_1:
+            case UBL_2_1_SALES_INVOICE:
             case UBL_2_1_PURCHASE_INVOICE:  return new UBLInvoiceFormat();
-            case UBL_2_1_SALES_ORDER:       return new UBLOrderFormat();
+
+            case UBL_2_1_SALES_ORDER:
             case UBL_2_1_PURCHASE_ORDER:    return new UBLOrderFormat();
-            case UBL_2_1:                   return new UBLInvoiceFormat();
+
             default:                        return new UnknownDocumentFormat();
         }
     }
