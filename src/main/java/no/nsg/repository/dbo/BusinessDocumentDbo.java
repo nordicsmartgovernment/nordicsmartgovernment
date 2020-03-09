@@ -73,9 +73,9 @@ public class BusinessDocumentDbo {
     private LocalDateTime tmpTransactionTime = null; //Not persisted - only for forwarding info from DocumentRowDbo to TrasactionDbo
 
     @JsonIgnore
-    List<EntryDbo> entryRows = new ArrayList<>();
+    private final List<EntryDbo> entryRows = new ArrayList<>();
     @JsonIgnore
-    boolean removeOldEntries = false;
+    private boolean removeOldEntries = false;
 
 
     public BusinessDocumentDbo() {

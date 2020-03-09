@@ -136,10 +136,10 @@ public class BankstatementsApiControllerTest {
 
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> responseDocumentsByTransaction = bankstatementsApiController.getDocumentsByTransactionId(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
-        Assert.assertTrue(responseDocumentsByTransaction.getStatusCode()==HttpStatus.OK);
+        Assert.assertSame(responseDocumentsByTransaction.getStatusCode(), HttpStatus.OK);
         ArrayList<String> documentArray = (ArrayList<String>) responseDocumentsByTransaction.getBody();
-        Assert.assertTrue(documentArray.size() == 1);
-        Assert.assertTrue(createdDocumentId.equals(documentArray.get(0)));
+        Assert.assertEquals(1, documentArray.size());
+        Assert.assertEquals(createdDocumentId, documentArray.get(0));
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {

@@ -85,13 +85,7 @@ public class AccountDbo {
     private static synchronized void putAccountInCache(final Connection connection, final String account, final Integer id) throws SQLException {
         AccountDbo.initializeAccountCache(connection);
 
-        Iterator<Map.Entry<String, Integer>> iterator = accountCache.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Integer> entry = iterator.next();
-            if (entry.getValue().equals(id)) {
-                iterator.remove();
-            }
-        }
+        accountCache.entrySet().removeIf(entry -> entry.getValue().equals(id));
 
         accountCache.put(account, id);
     }

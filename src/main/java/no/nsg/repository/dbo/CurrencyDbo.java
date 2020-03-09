@@ -80,13 +80,7 @@ public class CurrencyDbo {
     private static synchronized void putCurrencyInCache(final Connection connection, final String currency, final Integer id) throws SQLException {
         CurrencyDbo.initializeCurrencyCache(connection);
 
-        Iterator<Map.Entry<String, Integer>> iterator = currencyCache.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, Integer> entry = iterator.next();
-            if (entry.getValue().equals(id)) {
-                iterator.remove();
-            }
-        }
+        currencyCache.entrySet().removeIf(entry -> entry.getValue().equals(id));
 
         currencyCache.put(currency, id);
     }

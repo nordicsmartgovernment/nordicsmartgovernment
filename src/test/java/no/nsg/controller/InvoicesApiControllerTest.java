@@ -187,7 +187,7 @@ public class InvoicesApiControllerTest {
 
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
         ResponseEntity<Object> transactionResponse = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
-        Assert.assertTrue(transactionResponse.getStatusCode()==HttpStatus.OK);
+        Assert.assertSame(transactionResponse.getStatusCode(), HttpStatus.OK);
     }
 
     @Test
@@ -236,8 +236,8 @@ public class InvoicesApiControllerTest {
         byte[] hash = digest.digest(content);
 
         StringBuilder sb = new StringBuilder();
-        for (int i=0; i<hash.length; i++) {
-            sb.append(String.format("%02X", hash[i]));
+        for (byte b : hash) {
+            sb.append(String.format("%02X", b));
         }
         return sb.toString();
     }
