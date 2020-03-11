@@ -64,8 +64,19 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
                 transaction = transactionManager.getTransactionDocumentAsSafT(transactionId, null, null);
                 response.setContentType(MimeType.SAF_T);
             } else {
-                throw new IllegalArgumentException("Please set Accept:-header to either \""+MimeType.SAF_T+"\" or \""+MimeType.XBRL_GL+"\"");
+                try {
+                    response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), "Please set Accept:-header to either \""+MimeType.SAF_T+"\" or \""+MimeType.XBRL_GL+"\"");
+                } catch (IOException e2) {
+                }
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
             }
+        } catch (IllegalArgumentException e) {
+            LOGGER.error("GET_GETTRANSACTION failed: " + e.getMessage());
+            try {
+                response.sendError(HttpStatus.NOT_ACCEPTABLE.value(), e.getMessage());
+            } catch (IOException e2) {
+            }
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception e) {
             LOGGER.error("GET_GETTRANSACTION failed:", e);
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -126,7 +137,7 @@ public class TransactionsApi implements no.nsg.generated.transaction_api.Transac
     }
 
     @Override
-    public ResponseEntity<Void> putTransactionByDocumentId(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String documentId, String body) {
+    public ResponseEntity<Void> putTransactionByDocumentId(HttpServletRequest httpServletRequest, HttpServletResponse response, String companyId, String transactionId, String documentId, String body) {
         try {
             transactionManager.putTransactionByDocumentGuid(documentId, body);
         } catch (NoSuchElementException e) {

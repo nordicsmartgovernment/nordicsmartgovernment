@@ -122,6 +122,7 @@ paths:
             application/vnd.saf-t+xml:
               schema:
                 $ref: "#/components/schemas/Transaction"
+  /transactions/{companyId}/{transactionid}/{documentid}:
     put:
       tags:
         - writeTransaction
@@ -134,7 +135,13 @@ paths:
           required: true
           schema:
             type: string
-        - name: id
+        - name: transactionid
+          in: path
+          required: true
+          description: The transaction id of the document to replace
+          schema:
+            type: string
+        - name: documentid
           in: path
           required: true
           description: The document id of the document to replace
