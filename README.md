@@ -7,7 +7,7 @@ For instance, by POST-ing a Peppol BIS 3 invoice, a transaction is created based
 **Be aware** that there are **NO GUARANTEES** for stability and availability of the Reference Implementation or it's data! Please [let us know](mailto:steinar.skagemo@brreg.no) in advance if you are planning to do some extensive testing of the reference implementation in a specific period, so that we can try to avoid re-setting the data while you are testing.
 
 ## Exploring the API
-Swagger UI: https://nsg.fellesdatakatalog.brreg.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#
+The API can be explored using [Swagger UI](https://nsg.fellesdatakatalog.brreg.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#) that is based on our [Open API Specification](https://nsg.fellesdatakatalog.brreg.no/v3/api-docs) of the API.
 
 Example Curl-request that will return a list of transactionIds for the company with companyId 20202020
 ```bash
