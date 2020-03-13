@@ -32,10 +32,11 @@ By POST-ing invoices and other supported business transaction documents, you wil
 ## More detailed documentation
 The NSG-project has created a [more detailed introduction](https://docs.google.com/document/d/12a1i9_e4s-zC_JH-KQeuvCy9taYPO0aLUDR6DEzobQM/edit#) to the purpose and the functionality of the NSG Reference Implementation.
 
-
 ## Feedback
 All feedback is welcome, whether it is related to technical issues, ideas for improvements of the APIs or questions about the available documentation. Please give feedback as [issues](https://github.com/nordicsmartgovernment/nordicsmartgovernment/issues) or by [e-mail](steinar.skagemo@brreg.no).
 
+## Architecture
+![Software Architecture](https://nordicsmartgovernment.github.io/SA_NordicSmartGovernment/54e87e47-f01c-49fe-af55-2068f4564bd2/images/c4837879-c378-4e61-958f-9159fa9e26e7.png)
 
 # Running your own instance of the NSG Reference Implementation
 
