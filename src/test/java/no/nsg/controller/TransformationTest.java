@@ -32,16 +32,16 @@ public class TransformationTest {
     @Test
     public void finvoiceHappydayTransformTest() throws SaxonApiException, UnsupportedEncodingException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE, baos);
+        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE_INVOICE, baos);
     }
 
     @Test
     public void finvoiceTransformTest() throws SaxonApiException, UnsupportedEncodingException {
-        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 75 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 76 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 77 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 78 myynti.xml"), DocumentFormat.Format.FINVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 75 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 76 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 77 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
+        transformationManager.transform(getResourceAsStream("finvoice/finvoice 78 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
     }
 
     @Test

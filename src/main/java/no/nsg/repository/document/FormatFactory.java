@@ -11,6 +11,8 @@ public class FormatFactory {
             case CAMT_053_001_08:           return new CamtFormat();
 
             case FINVOICE:
+            case FINVOICE_INVOICE:
+            case FINVOICE_RECEIPT:
             case FINVOICE_PURCHASE_INVOICE:
             case FINVOICE_PURCHASE_RECEIPT:
             case FINVOICE_SALES_INVOICE:
@@ -29,7 +31,11 @@ public class FormatFactory {
 
     public static DocumentFormat.Format guessFormat(final DocumentType.Type documentType, final String document) {
         if (document.contains("<Finvoice ")) {
-            return DocumentFormat.Format.FINVOICE;
+            if (document.contains("<InvoiceTypeCode>REC")) {
+                return DocumentFormat.Format.FINVOICE_RECEIPT;
+            } else {
+                return DocumentFormat.Format.FINVOICE_INVOICE;
+            }
         } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.")) {
             return DocumentFormat.Format.CAMT_053_001_08;
         } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"") || document.contains("<Invoice ")) {

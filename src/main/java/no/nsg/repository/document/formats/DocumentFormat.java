@@ -10,9 +10,11 @@ public abstract class DocumentFormat {
     public enum Format {
         CAMT_053_001_08,
         FINVOICE,
+        FINVOICE_INVOICE,
         FINVOICE_PURCHASE_INVOICE,
-        FINVOICE_PURCHASE_RECEIPT,
         FINVOICE_SALES_INVOICE,
+        FINVOICE_RECEIPT,
+        FINVOICE_PURCHASE_RECEIPT,
         FINVOICE_SALES_RECEIPT,
         UBL_2_1_PURCHASE_INVOICE,
         UBL_2_1_SALES_INVOICE,
@@ -29,7 +31,7 @@ public abstract class DocumentFormat {
     public abstract LocalDateTime getTransactionTime(final Document parsedDocument);
 
     public static boolean isInvoice(final DocumentFormat.Format format) {
-        return (format == Format.FINVOICE ||
+        return (format == Format.FINVOICE_INVOICE ||
                 format == Format.FINVOICE_PURCHASE_INVOICE ||
                 format == Format.FINVOICE_SALES_INVOICE ||
                 format == Format.UBL_2_1_PURCHASE_INVOICE ||
