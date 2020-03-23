@@ -196,7 +196,8 @@ public class BusinessDocumentDbo {
         setDocumenttype(documentType);
         DocumentFormat.Format documentFormat = FormatFactory.guessFormat(documentType, original);
         if (!FormatFactory.isCompatible(documentType, documentFormat)) {
-            throw new IllegalArgumentException("Document format seems to not match given document type");
+            throw new IllegalArgumentException("Document format \"" + documentFormat.name()
+                                             + "\" seems to not match given document type \"" + documentType.name() + "\"");
         }
 
         setDirectionAndTransactionTimeFromDocument(documentType, documentFormat, original);
