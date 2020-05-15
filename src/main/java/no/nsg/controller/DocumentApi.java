@@ -26,6 +26,7 @@ import java.util.*;
 
 @Controller
 @RestControllerAdvice
+@CrossOrigin
 public class DocumentApi implements no.nsg.generated.document_api.DocumentApi {
     private static final Logger LOGGER = LoggerFactory.getLogger(DocumentApi.class);
 
