@@ -78,23 +78,22 @@ sudo adduser ${USER} mvn
 Check that they have been added with "id -nG", force the update with a reboot or with "su - ${USER}"
 
 ## Environment variables
-These are needed to connect to the local database
+These are needed to connect to the local database.
 ```
 NSG_POSTGRES_DB="nsg_db"
 NSG_POSTGRES_DBO_PASSWORD="Passw0rd"
-NSG_POSTGRES_DBO_USER="nsg_dbo"
-NSG_POSTGRES_HOST="postgres:5432"
+NSG_POSTGRES_DBO_USER="nsg"
+NSG_POSTGRES_HOST="jdbc:postgresql://localhost:5432/nsg_db"
 NSG_POSTGRES_PASSWORD="Passw0rd"
 NSG_POSTGRES_USER="nsg"
 ```
-
 ##### For linux
 Open ~/.bashrc and add the lines
 ```
 export NSG_POSTGRES_DB="nsg_db"
 export NSG_POSTGRES_DBO_PASSWORD="Passw0rd"
-export NSG_POSTGRES_DBO_USER="nsg_dbo"
-export NSG_POSTGRES_HOST="postgres:5432"
+export NSG_POSTGRES_DBO_USER="nsg"
+export NSG_POSTGRES_HOST="jdbc:postgresql://localhost:5432/nsg_db"
 export NSG_POSTGRES_PASSWORD="Passw0rd"
 export NSG_POSTGRES_USER="nsg"
 ```
@@ -108,6 +107,27 @@ Check that they have been added with "printenv"
 ##### For windows
 “Advanced system settings” → “Environment Variables”
 
+##### Alternatively, use the "local" spring profile
+The properties for running locally is set in the local profile in [application.yml](src/main/resources/application.yml)
+You can set the spring profile in multiple ways:
+
++ If you are using intellij ultimate, simply set this in the run configuration for this application.
+
++ Spring will also be able to read the property direcltly from an environment variable by setting
+"spring_profiles_active" to "local".
+
++ You can also set profile by passing an argument to the jvm when running the application
+    ```
+    -Dspring.profiles.active=local
+    ```
+
+## Creating your own postgres instance
+First install docker: https://docs.docker.com/get-docker/
+and run the following commands:
+```
+docker pull postgres
+docker run --name postgres-localtest -e POSTGRES_PASSWORD=Passw0rd -e POSTGRES_USER=nsg -e POSTGRES_DB=nsg_db -d -p 5432:5432 postgres
+```
 ## Nice to have
 #### Postman
 https://www.getpostman.com/

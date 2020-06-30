@@ -21,3 +21,13 @@ server:
 #logging:
 #  level:
 #    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: TRACE
+
+---
+spring.profiles: local
+postgres:
+  nsg:
+    db_url: ${NSG_POSTGRES_DB_URL:jdbc:postgresql://localhost:5432/nsg_db}
+    dbo_user: ${NSG_POSTGRES_DBO_USER:nsg}
+    dbo_password: ${NSG_POSTGRES_DBO_PASSWORD:Passw0rd}
+    user: ${NSG_POSTGRES_USER:nsg}
+    password: ${NSG_POSTGRES_PASSWORD:Passw0rd}
