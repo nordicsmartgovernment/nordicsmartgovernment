@@ -3,6 +3,11 @@ As part of the project [Nordic Smart Government](https://nordicsmartgovernment.o
 
 For instance, by POST-ing a Peppol BIS 3 invoice, a transaction is created based on the invoice, and the details about the transaction can then be retreived as XBRL GL.
 
+## XBRL GL or SAF-T
+The Reference Implementation transforms all the different document formats to XBRL GL as an internal storage format for documentation of each transaction. When requesting information about transactions, you can specify ```application/xbrl-instance+xml``` as the accept-header to get the XBRL GL representation. It is also possible to specify ```application/vnd.saf-t+xml``` to get information about the transactions in accordance with the SAF-T-standard. This is achieved through transformation of the XBRL GL-data to SAF-T-data, XBRL GL --> SAF-T.
+
+[AccountFlow](https://accountflow.no/) has made a Proof Of Concept that supports the same API-operations for accessing transactions, but where the internal storage format is SAF-T, and the data is transformed from SAF-T to XBRL GL before the response is sent, SAF-T --> XBRL GL. See [source code on Gitlab](https://gitlab.com/accountflow/nsg-poc) and [Swagger-UI](https://nsg.test.accountflow.net/swagger-ui.html).
+
 ## Important Disclaimer
 **Be aware** that there are **NO GUARANTEES** for stability and availability of the Reference Implementation or it's data! Please [let us know](mailto:steinar.skagemo@brreg.no) in advance if you are planning to do some extensive testing of the reference implementation in a specific period, so that we can try to avoid re-setting the data while you are testing.
 
