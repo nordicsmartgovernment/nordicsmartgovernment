@@ -8,7 +8,8 @@ public class MimeType {
     public static final String NSG_SALES_INVOICE            = "application/vnd.nordicsmartgovernment.sales-invoice";
     public static final String NSG_CASH_MEMO                = "application/vnd.nordicsmartgovernment.cash-memo";
     public static final String NSG_PAYROLL_SLIP             = "application/vnd.nordicsmartgovernment.payroll-slip";
-    public static final String NSG_RECEIPT                  = "application/vnd.nordicsmartgovernment.receipt";
+    public static final String NSG_PURCHASE_RECEIPT         = "application/vnd.nordicsmartgovernment.purchase-receipt";
+    public static final String NSG_SALES_RECEIPT            = "application/vnd.nordicsmartgovernment.sales-receipt";
     public static final String NSG_CREDIT_NOTE              = "application/vnd.nordicsmartgovernment.credit-note";
     public static final String NSG_DEBIT_NOTE               = "application/vnd.nordicsmartgovernment.debit-note";
     public static final String NSG_STATEMENT_OF_ACCOUNT     = "application/vnd.nordicsmartgovernment.statement-of-account";

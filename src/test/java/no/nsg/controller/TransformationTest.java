@@ -23,40 +23,38 @@ import java.nio.charset.StandardCharsets;
 public class TransformationTest {
     private static Logger LOGGER = LoggerFactory.getLogger(TransformationTest.class);
 
-    TransformationManager transformationManager = new TransformationManager();
-
     private InputStream getResourceAsStream(final String resource) {
         return getClass().getClassLoader().getResourceAsStream(resource);
     }
 
     @Test
-    public void finvoiceHappydayTransformTest() throws SaxonApiException, UnsupportedEncodingException {
+    public void finvoiceHappydayTransformTest() throws SaxonApiException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE_INVOICE, baos);
+        TransformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE_PURCHASE_INVOICE, baos);
     }
 
     @Test
-    public void finvoiceTransformTest() throws SaxonApiException, UnsupportedEncodingException {
-        transformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 75 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 76 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 77 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("finvoice/finvoice 78 myynti.xml"), DocumentFormat.Format.FINVOICE_INVOICE, new ByteArrayOutputStream());
+    public void finvoiceTransformTest() throws SaxonApiException {
+        TransformationManager.transform(getResourceAsStream("finvoice/Finvoice.xml"), DocumentFormat.Format.FINVOICE_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        TransformationManager.transform(getResourceAsStream("finvoice/finvoice 75 myynti.xml"), DocumentFormat.Format.FINVOICE_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        TransformationManager.transform(getResourceAsStream("finvoice/finvoice 76 myynti.xml"), DocumentFormat.Format.FINVOICE_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        TransformationManager.transform(getResourceAsStream("finvoice/finvoice 77 myynti.xml"), DocumentFormat.Format.FINVOICE_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        TransformationManager.transform(getResourceAsStream("finvoice/finvoice 78 myynti.xml"), DocumentFormat.Format.FINVOICE_PURCHASE_INVOICE, new ByteArrayOutputStream());
     }
 
     @Test
     public void ublTransformTest() throws SaxonApiException, UnsupportedEncodingException {
-        transformationManager.transform(getResourceAsStream("ubl/Invoice_base-example.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("ubl/ehf-2-faktura-1.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
-        transformationManager.transform(getResourceAsStream("ubl/ehf-3-faktura-1.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        TransformationManager.transform(getResourceAsStream("ubl/Invoice_base-example.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        TransformationManager.transform(getResourceAsStream("ubl/ehf-2-faktura-1.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
+        TransformationManager.transform(getResourceAsStream("ubl/ehf-3-faktura-1.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, new ByteArrayOutputStream());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        transformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, baos);
+        TransformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, baos);
         String result = baos.toString(StandardCharsets.UTF_8.name());
         Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
 
         baos = new ByteArrayOutputStream();
-        transformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_SALES_INVOICE, baos);
+        TransformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_SALES_INVOICE, baos);
         result = baos.toString(StandardCharsets.UTF_8.name());
         Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
     }

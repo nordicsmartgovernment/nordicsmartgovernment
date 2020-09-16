@@ -27,21 +27,28 @@ public class TransformationManager {
         }
 
         switch (documentFormat) {
-            default: return null;
-            case CAMT_053_001_08:           return XSLT_BASE+"camt_053_001_08_to_xbrlgl.xslt";
-            case FINVOICE_SALES_INVOICE:    return XSLT_BASE+"finvoice_xbrlgl_sales_invoice.xslt";
-            case FINVOICE_PURCHASE_INVOICE: return XSLT_BASE+"finvoice_xbrlgl_purchase_invoice.xslt";
-            case FINVOICE_SALES_RECEIPT:    return XSLT_BASE+"finvoice_xbrlgl_sales_receipt.xslt";
-            case FINVOICE_PURCHASE_RECEIPT: return XSLT_BASE+"finvoice_xbrlgl_purchase_receipt.xslt";
-            case FINVOICE_INVOICE:          return XSLT_BASE+"finvoice_to_xbrl.xslt";
-            case FINVOICE_RECEIPT:          return XSLT_BASE+"finvoice_to_xbrl.xslt";
-            case FINVOICE:                  return XSLT_BASE+"finvoice_to_xbrl.xslt";
-            case UBL_2_1_SALES_INVOICE:     return XSLT_BASE+"ubl_2_1_sales_invoice_xbrl_gl.xslt";
-            case UBL_2_1_PURCHASE_INVOICE:  return XSLT_BASE+"ubl_2_1_xbrl_gl.xslt";
-            case UBL_2_1_SALES_ORDER:       return XSLT_BASE+"ubl_2_1_sales_order_xbrl_gl.xslt";
-            case UBL_2_1_PURCHASE_ORDER:    return XSLT_BASE+"ubl_2_1_xbrl_gl_purchase_order.xslt";
-            case UBL_2_1:                   return XSLT_BASE+"ubl_2_1_xbrl_gl.xslt";
-            case XBRL_GL_TO_SAF_T:          return XSLT_BASE+"xbrl_gl_to_saf_t.xslt";
+            default:
+                return null;
+            case CAMT_053_001_08:
+                return XSLT_BASE + "camt_053_001_08_to_xbrlgl.xslt";
+            case FINVOICE_SALES_INVOICE:
+                return XSLT_BASE + "finvoice_xbrlgl_sales_invoice.xslt";
+            case FINVOICE_PURCHASE_INVOICE:
+                return XSLT_BASE + "finvoice_xbrlgl_purchase_invoice.xslt";
+            case FINVOICE_SALES_RECEIPT:
+                return XSLT_BASE + "finvoice_xbrlgl_sales_receipt.xslt";
+            case FINVOICE_PURCHASE_RECEIPT:
+                return XSLT_BASE + "finvoice_xbrlgl_purchase_receipt.xslt";
+            case UBL_2_1_SALES_INVOICE:
+                return XSLT_BASE + "ubl_2_1_sales_invoice_xbrl_gl.xslt";
+            case UBL_2_1_PURCHASE_INVOICE:
+                return XSLT_BASE + "ubl_2_1_xbrl_gl.xslt";
+            case UBL_2_1_SALES_ORDER:
+                return XSLT_BASE + "ubl_2_1_sales_order_xbrl_gl.xslt";
+            case UBL_2_1_PURCHASE_ORDER:
+                return XSLT_BASE + "ubl_2_1_xbrl_gl_purchase_order.xslt";
+            case XBRL_GL_TO_SAF_T:
+                return XSLT_BASE + "xbrl_gl_to_saf_t.xslt";
         }
     }
 
@@ -52,10 +59,10 @@ public class TransformationManager {
         SALES     //outbound
     }
 
-    public static final String CAC_NS    = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
-    public static final String CBC_NS    = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
+    public static final String CAC_NS = "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2";
+    public static final String CBC_NS = "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2";
     public static final String GL_COR_NS = "http://www.xbrl.org/int/gl/cor/2016-12-01";
-    public static final String XBRLI_NS  = "http://www.xbrl.org/2003/instance";
+    public static final String XBRLI_NS = "http://www.xbrl.org/2003/instance";
 
     private static Map<String, Xslt30Transformer> xsltCache = null;
     private static Processor processor = null;
@@ -71,14 +78,14 @@ public class TransformationManager {
             processor = new Processor(false);
             Configuration config = processor.getUnderlyingConfiguration();
             config.setURIResolver((href, base)
-                                    -> new SAXSource(new InputSource(TransformationManager.class.getClassLoader().getResourceAsStream(XSLT_BASE+href))));
+                    -> new SAXSource(new InputSource(TransformationManager.class.getClassLoader().getResourceAsStream(XSLT_BASE + href))));
             compiler = processor.newXsltCompiler();
         }
 
         if (!xsltCache.containsKey(xslt)) {
             InputStream xsltStream = TransformationManager.class.getClassLoader().getResourceAsStream(xslt);
             if (xsltStream == null) {
-                throw new IllegalArgumentException("xslt '"+xslt+"' not found");
+                throw new IllegalArgumentException("xslt '" + xslt + "' not found");
             }
             xsltCache.put(xslt, compiler.compile(new StreamSource(xsltStream)).load30());
         }
@@ -91,7 +98,7 @@ public class TransformationManager {
     }
 
     public static synchronized void transform(final InputStream xmlStream, final String xslt, final OutputStream outputStream) throws SaxonApiException {
-        if (xslt==null || xslt.isEmpty()) {
+        if (xslt == null || xslt.isEmpty()) {
             throw new RuntimeException("Uninitialized/unknown XSLT format");
         }
 
