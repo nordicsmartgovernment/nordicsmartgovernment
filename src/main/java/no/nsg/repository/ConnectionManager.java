@@ -302,8 +302,10 @@ public class ConnectionManager {
 						documentManager.createDocument(companyId, null, DocumentType.Type.BANK_STATEMENT, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith("orders/")) {
 						documentManager.createDocument(companyId, null, DocumentType.Type.PURCHASE_ORDER, xmlDocument, true, connection);
-					} else if (ze.getName().startsWith("receipts/")) {
-						documentManager.createDocument(companyId, null, DocumentType.Type.RECEIPT, xmlDocument, true, connection);
+					} else if (ze.getName().startsWith("purchase_receipts/")) {
+						documentManager.createDocument(companyId, null, DocumentType.Type.PURCHASE_RECEIPT, xmlDocument, true, connection);
+					} else if (ze.getName().startsWith("sales_receipts/")) {
+						documentManager.createDocument(companyId, null, DocumentType.Type.SALES_RECEIPT, xmlDocument, true, connection);
 					} else if (ze.getName().startsWith("other/")) {
 						documentManager.createDocument(companyId, null, DocumentType.Type.OTHER, xmlDocument, true, connection);
 					}
