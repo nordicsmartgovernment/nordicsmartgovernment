@@ -1,12 +1,20 @@
 package no.nsg.repository;
 
+import liquibase.Contexts;
+import liquibase.LabelExpression;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
+import no.nsg.PostgresProperties;
 import no.nsg.repository.dbo.AccountDbo;
 import no.nsg.repository.dbo.CurrencyDbo;
 import no.nsg.repository.document.DocumentManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -33,21 +41,6 @@ public class ConnectionManager {
 	public static final String DB        = "postgres";
 	public static final String DB_SCHEMA = "nsg";
 
-	@Value("${postgres.nsg.db_url}")
-	private String postgresDbUrl;
-
-	@Value("${postgres.nsg.dbo_user}")
-	private String postgresDboUser;
-
-	@Value("${postgres.nsg.dbo_password}")
-	private String postgresDboPassword;
-
-	@Value("${postgres.nsg.user}")
-	private String postgresUser;
-
-	@Value("${postgres.nsg.password}")
-	private String postgresPassword;
-
 	//For synthetic data
 	@Autowired
 	private DocumentManager documentManager;
@@ -65,6 +58,48 @@ public class ConnectionManager {
 	private boolean databaseIsReady = false;
 	private final Object databaseIsReadyLock = new Object();
 
+	@Autowired
+	PostgresProperties postgresProperties;
+
+
+	public void updateDbUrl(final String dbUrl) {
+		if ((postgresProperties.getDbUrl()==null && dbUrl!=null) ||
+				!postgresProperties.getDbUrl().equals(dbUrl)) {
+			postgresProperties.setDbUrl(dbUrl);
+			initializeDatabase();
+		}
+	}
+
+	public void initializeDatabase() {
+		try (Connection connection = getConnection(true)) {
+			try {
+				Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+				database.setLiquibaseSchemaName(ConnectionManager.DB_SCHEMA);
+				Liquibase liquibase = new Liquibase("liquibase/changelog/changelog-master.xml", new ClassLoaderResourceAccessor(), database);
+				liquibase.update(new Contexts(), new LabelExpression());
+				LOGGER.info("Liquibase synced OK.");
+				createRegularUser(connection);
+				initializeCaches(connection);
+				connection.commit();
+				setDatabaseIsReady();
+			} catch (LiquibaseException | SQLException e) {
+				try {
+					LOGGER.error("Initializing DB failed: "+e.getMessage());
+					connection.rollback();
+					throw new SQLException(e);
+				} catch (SQLException e2) {
+					LOGGER.error("Rollback after fail failed: "+e2.getMessage());
+					throw new SQLException(e2);
+				}
+			}
+		} catch (SQLException e) {
+			LOGGER.error("Getting connection for Liquibase update failed: "+e.getMessage(), e);
+			throw new RuntimeException(e);
+		} catch (Exception e) {
+			LOGGER.error("Generic error when getting connection for Liquibase failed: "+e.getMessage(), e);
+			throw new RuntimeException(e);
+		}
+	}
 
 	public Connection getConnection() throws SQLException {
 		return getConnection(false);
@@ -84,25 +119,25 @@ public class ConnectionManager {
 			String username = null;
 			String password = null;
 			if (requireDboPermissions) {
-				username = postgresDboUser;
-				password = postgresDboPassword;
+				username = postgresProperties.getDboUser();
+				password = postgresProperties.getDboPassword();
 			}
 			if (username==null) {
-				username = postgresUser;
-				password = postgresPassword;
+				username = postgresProperties.getUser();
+				password = postgresProperties.getPassword();
 			}
 
-			if (postgresDbUrl==null || username==null || password==null) {
+			if (postgresProperties.getDbUrl()==null || username==null || password==null) {
 				throw new RuntimeException("System environment variable NSG_POSTGRES_DB_URL, NSG_POSTGRES_DBO_USER/NSG_POSTGRES_USER and NSG_POSTGRES_DBO_PASSWORD/NSG_POSTGRES_PASSWORD not set correctly.");
 			}
 
 			if (requireDboPermissions) { //This happens only at application startup. Do some extra logging
-				LOGGER.info("postgres.nsg.db_url  : " + postgresDbUrl);
-				LOGGER.info("postgres.nsg.dbo_user: " + postgresDboUser);
-				LOGGER.info("postgres.nsg.user    : " + postgresUser);
+				LOGGER.info("postgres.nsg.db_url  : " + postgresProperties.getDbUrl());
+				LOGGER.info("postgres.nsg.dbo_user: " + postgresProperties.getDboUser());
+				LOGGER.info("postgres.nsg.user    : " + postgresProperties.getUser());
 			}
 
-			Connection connection = DriverManager.getConnection(postgresDbUrl, username, password);
+			Connection connection = DriverManager.getConnection(postgresProperties.getDbUrl(), username, password);
 			connection.setAutoCommit(false);
 
 			if (requireDboPermissions) {
@@ -126,7 +161,7 @@ public class ConnectionManager {
 			// Is the regular user created?
 			int user_count = 1;
 			try (PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(1) FROM pg_user WHERE pg_user.usename=?")) {
-				stmt.setString(1, postgresUser);
+				stmt.setString(1, postgresProperties.getUser());
 				ResultSet rs = stmt.executeQuery();
 				if (rs.next()) {
 					user_count = rs.getInt(1);
@@ -138,8 +173,8 @@ public class ConnectionManager {
 			// If not created, create it now
 			if (user_count < 1) {
 				try (Statement stmt = connection.createStatement()) {
-					final String safeUser = StringUtils.replace(postgresUser, "'", "''");
-					final String safePassword = StringUtils.replace(postgresPassword, "'", "''");
+					final String safeUser = StringUtils.replace(postgresProperties.getUser(), "'", "''");
+					final String safePassword = StringUtils.replace(postgresProperties.getPassword(), "'", "''");
 
 					LOGGER.info("Creating regular user " + safeUser);
 					stmt.executeUpdate("CREATE USER " +	safeUser + " WITH PASSWORD '" + safePassword + "'");

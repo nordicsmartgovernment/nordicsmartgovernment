@@ -20,6 +20,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.servlet.DispatcherServlet;
@@ -37,6 +38,7 @@ import java.sql.SQLException;
         version = ApplicationInfo.VERSION
     )
 )
+@EnableConfigurationProperties({PostgresProperties.class})
 public class Application {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class);
@@ -52,31 +54,7 @@ public class Application {
 
     @EventListener(ApplicationReadyEvent.class)
     public void initializeDatabase() {
-        try (Connection connection = connectionManager.getConnection(true)) {
-            try {
-                Database database = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-                database.setLiquibaseSchemaName(ConnectionManager.DB_SCHEMA);
-                Liquibase liquibase = new Liquibase("liquibase/changelog/changelog-master.xml", new ClassLoaderResourceAccessor(), database);
-                liquibase.update(new Contexts(), new LabelExpression());
-                LOGGER.info("Liquibase synced OK.");
-                connectionManager.createRegularUser(connection);
-                connectionManager.initializeCaches(connection);
-                connection.commit();
-                connectionManager.setDatabaseIsReady();
-            } catch (LiquibaseException | SQLException e) {
-                try {
-                    LOGGER.error("Initializing DB failed: "+e.getMessage());
-                    connection.rollback();
-                    throw new SQLException(e);
-                } catch (SQLException e2) {
-                    LOGGER.error("Rollback after fail failed: "+e2.getMessage());
-                    throw new SQLException(e2);
-                }
-            }
-        } catch (SQLException e) {
-            LOGGER.error("Getting connection for Liquibase update failed: "+e.getMessage());
-            System.exit(-1);
-        }
+        connectionManager.initializeDatabase();
     }
 
     public static void main(String[] args) {

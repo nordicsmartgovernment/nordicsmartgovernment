@@ -2,22 +2,13 @@ package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
+import no.nsg.utils.EmbeddedPostgresSetup;
 import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.util.TestPropertyValues;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,12 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(initializers = {BankstatementsApiControllerTest.Initializer.class})
 @Tag("ServiceTest")
-@Testcontainers
-public class BankstatementsApiControllerTest {
+public class BankstatementsApiControllerTest extends EmbeddedPostgresSetup {
 
     @Mock
     HttpServletRequest httpServletRequestMock;
@@ -49,28 +36,6 @@ public class BankstatementsApiControllerTest {
 
     @Autowired
     ConnectionManager connectionManager;
-
-    @Container
-    public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
-            .withDatabaseName("integration-tests-db")
-            .withUsername("testuser")
-            .withPassword("testpassword");
-
-    static class Initializer
-            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
-        public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
-            TestPropertyValues.of(
-                    "spring.datasource.url=" + postgreSQLContainer.getJdbcUrl(),
-                    "spring.datasource.username=" + postgreSQLContainer.getUsername(),
-                    "spring.datasource.password=" + postgreSQLContainer.getPassword(),
-                    "postgres.nsg.db_url=" + postgreSQLContainer.getJdbcUrl(),
-                    "postgres.nsg.dbo_user=" + postgreSQLContainer.getUsername(),
-                    "postgres.nsg.dbo_password=" + postgreSQLContainer.getPassword(),
-                    "postgres.nsg.user=" + postgreSQLContainer.getUsername(),
-                    "postgres.nsg.password=" + postgreSQLContainer.getPassword()
-            ).applyTo(configurableApplicationContext.getEnvironment());
-        }
-    }
 
     @BeforeEach
     public void before() throws IOException {
