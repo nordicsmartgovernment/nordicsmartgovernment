@@ -23,12 +23,14 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.servlet.DispatcherServlet;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 
 @SpringBootApplication
+@EnableWebMvc
 @OpenAPIDefinition(
     info = @Info(
         title = "Nordic Smart Government Reference API",

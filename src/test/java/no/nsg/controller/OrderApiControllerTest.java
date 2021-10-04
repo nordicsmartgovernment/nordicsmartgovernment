@@ -2,13 +2,11 @@ package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
-import no.nsg.testcategories.ServiceTest;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,9 +33,10 @@ import java.nio.charset.StandardCharsets;
 
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(initializers = {OrderApiControllerTest.Initializer.class})
-@Category(ServiceTest.class)
+@Tag("ServiceTest")
+@Testcontainers
 public class OrderApiControllerTest {
 
     @Mock
@@ -50,7 +51,7 @@ public class OrderApiControllerTest {
     @Autowired
     ConnectionManager connectionManager;
 
-    @ClassRule
+    @Container
     public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
             .withDatabaseName("integration-tests-db")
             .withUsername("testuser")
@@ -72,7 +73,7 @@ public class OrderApiControllerTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         connectionManager.waitUntilSyntheticDataIsImported();
     }
@@ -80,7 +81,7 @@ public class OrderApiControllerTest {
     @Test
     public void happyDay()
     {
-        Assert.assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -88,7 +89,7 @@ public class OrderApiControllerTest {
         final String companyId = "175 269 2355";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_ORDER);
         ResponseEntity<Void> response = orderApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/UBL-Order-2.0-Example.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -96,7 +97,7 @@ public class OrderApiControllerTest {
         final String companyId = "not_set";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_ORDER);
         ResponseEntity<Void> response = orderApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/UBL-Order-2.0-Example.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {

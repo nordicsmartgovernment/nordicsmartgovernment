@@ -3,14 +3,13 @@ package no.nsg.controller;
 import net.sf.saxon.s9api.*;
 import no.nsg.repository.TransformationManager;
 import no.nsg.repository.document.formats.DocumentFormat;
-import no.nsg.testcategories.UnitTest;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -18,8 +17,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 
-@RunWith(SpringRunner.class)
-@Category(UnitTest.class)
+@ExtendWith(SpringExtension.class)
+@Tag("UnitTest")
 public class TransformationTest {
     private static Logger LOGGER = LoggerFactory.getLogger(TransformationTest.class);
 
@@ -51,11 +50,11 @@ public class TransformationTest {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         TransformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE, baos);
         String result = baos.toString(StandardCharsets.UTF_8.name());
-        Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
+        Assertions.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
 
         baos = new ByteArrayOutputStream();
         TransformationManager.transform(getResourceAsStream("ubl/test_purchase_invoice_for_company_id_12345.xml"), DocumentFormat.Format.UBL_2_1_SALES_INVOICE, baos);
         result = baos.toString(StandardCharsets.UTF_8.name());
-        Assert.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
+        Assertions.assertTrue(result.contains("<gl-cor:identifierAuthorityCode "));
     }
 }

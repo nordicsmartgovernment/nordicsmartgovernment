@@ -2,10 +2,11 @@ package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
-import no.nsg.testcategories.ServiceTest;
-import org.junit.*;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -18,8 +19,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +37,10 @@ import java.time.LocalDate;
 
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(initializers = {TransactionsApiControllerTest.Initializer.class})
-@Category(ServiceTest.class)
+@Tag("ServiceTest")
+@Testcontainers
 public class TransactionsApiControllerTest {
     private static Logger LOGGER = LoggerFactory.getLogger(TransactionsApiControllerTest.class);
 
@@ -58,7 +62,7 @@ public class TransactionsApiControllerTest {
     private boolean hasInitializedInvoiceData = false;
 
 
-    @ClassRule
+    @Container
     public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
             .withDatabaseName("integration-tests-db")
             .withUsername("testuser")
@@ -82,7 +86,7 @@ public class TransactionsApiControllerTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         initializeInvoiceData();
     }
@@ -90,34 +94,34 @@ public class TransactionsApiControllerTest {
     @Test
     public void happyDay()
     {
-        Assert.assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
     public void getTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, null);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
     public void getOrganizationTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null, null, null);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
     public void getOrganizationTransactionsAsXbrlTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null, null, null);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
@@ -125,9 +129,9 @@ public class TransactionsApiControllerTest {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         final LocalDate startDate = LocalDate.of(2019, 1, 1);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, startDate, null, null, null);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
@@ -135,9 +139,9 @@ public class TransactionsApiControllerTest {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         final LocalDate endDate = LocalDate.of(2020, 12, 31);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, endDate, null, null);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
@@ -146,36 +150,36 @@ public class TransactionsApiControllerTest {
         final LocalDate startDate = LocalDate.of(2019, 1, 1);
         final LocalDate endDate = LocalDate.of(2020, 12, 31);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, startDate, endDate, null, null);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
     public void getInboundTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, "incoming");
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
     public void getOutboundTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, "outgoing");
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
     public void getOrganizationInboundTransactionsTest() {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> response = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, "20202020", null, null, null, "incoming");
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Object responseBody = response.getBody();
-        Assert.assertNotNull(responseBody);
+        Assertions.assertNotNull(responseBody);
     }
 
     @Test
@@ -183,7 +187,7 @@ public class TransactionsApiControllerTest {
         final String companyId = "2372513-5";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
         ResponseEntity<Void> createResponse = documentApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoice 75 myynti.xml", StandardCharsets.UTF_8));
-        Assert.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
+        Assertions.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdTransactionId = paths[paths.length-2];
@@ -192,7 +196,7 @@ public class TransactionsApiControllerTest {
         String xbrlDocument = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                               "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\"/>";
         ResponseEntity<Void> response = transactionsApiController.putTransactionByDocumentId(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId, xbrlDocument);
-        Assert.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
     private void initializeInvoiceData() throws IOException {

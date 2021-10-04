@@ -2,13 +2,11 @@ package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
-import no.nsg.testcategories.ServiceTest;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +17,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,9 +36,10 @@ import java.security.NoSuchAlgorithmException;
 
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @ContextConfiguration(initializers = {InvoicesApiControllerTest.Initializer.class})
-@Category(ServiceTest.class)
+@Tag("ServiceTest")
+@Testcontainers
 public class InvoicesApiControllerTest {
 
     @Mock
@@ -56,7 +57,7 @@ public class InvoicesApiControllerTest {
     @Autowired
     ConnectionManager connectionManager;
 
-    @ClassRule
+    @Container
     public static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer("postgres:latest")
             .withDatabaseName("integration-tests-db")
             .withUsername("testuser")
@@ -78,7 +79,7 @@ public class InvoicesApiControllerTest {
         }
     }
 
-    @Before
+    @BeforeEach
     public void before() throws IOException {
         connectionManager.waitUntilSyntheticDataIsImported();
     }
@@ -86,7 +87,7 @@ public class InvoicesApiControllerTest {
     @Test
     public void happyDay()
     {
-        Assert.assertTrue(true);
+        Assertions.assertTrue(true);
     }
 
     @Test
@@ -98,17 +99,17 @@ public class InvoicesApiControllerTest {
         String originalChecksum = sha256Checksum(original.getBytes(StandardCharsets.UTF_8));
 
         ResponseEntity<Void> createResponse = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, original);
-        Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdTransactionId = paths[paths.length-2];
         String createdDocumentId = paths[paths.length-1];
 
         ResponseEntity<Object> response2 = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
-        Assert.assertSame(response2.getStatusCode(), HttpStatus.OK);
+        Assertions.assertSame(response2.getStatusCode(), HttpStatus.OK);
         DocumentApi.Document returnedInvoice = (DocumentApi.Document) response2.getBody();
         String returnedInvoiceChecksum = sha256Checksum(returnedInvoice.original);
-        Assert.assertEquals(originalChecksum, returnedInvoiceChecksum);
+        Assertions.assertEquals(originalChecksum, returnedInvoiceChecksum);
     }
 
     @Test
@@ -116,7 +117,7 @@ public class InvoicesApiControllerTest {
         final String companyId = "983294";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
         ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/Invoice_base-example.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -124,7 +125,7 @@ public class InvoicesApiControllerTest {
         final String companyId = "003705140395";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
         ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoice 78 myynti.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -133,17 +134,17 @@ public class InvoicesApiControllerTest {
         final String buyerCompanyId = "1199940-3";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
         ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, sellerCompanyId, resourceAsString("finvoice/finvoice_eKuitti.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
         response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, buyerCompanyId, resourceAsString("finvoice/finvoice_eKuitti.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
 
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
         response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, sellerCompanyId, resourceAsString("finvoice/finvoice_eKuitti.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.NOT_ACCEPTABLE, response.getStatusCode());
 
         response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, buyerCompanyId, resourceAsString("finvoice/finvoice_eKuitti.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -151,7 +152,7 @@ public class InvoicesApiControllerTest {
         final String companyId = "20202020";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
         ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/test_purchase_invoice.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -159,7 +160,7 @@ public class InvoicesApiControllerTest {
         final String companyId = "003711999403";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_PURCHASE_INVOICE);
         ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoiceTestPurchaseEU.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -167,7 +168,7 @@ public class InvoicesApiControllerTest {
         final String companyId = "2372513-5";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
         ResponseEntity<Void> response = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoiceTestPurchaseEU.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
     }
 
     @Test
@@ -175,19 +176,19 @@ public class InvoicesApiControllerTest {
         final String companyId = "2372513-5";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
         ResponseEntity<Void> createResponse = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("finvoice/finvoiceTestPurchaseEU.xml", StandardCharsets.UTF_8));
-        Assert.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
+        Assertions.assertEquals(HttpStatus.CREATED, createResponse.getStatusCode());
 
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdTransactionId = paths[paths.length-2];
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_OTHER);
         ResponseEntity<Void> createResponse2 = invoicesApiController.createDocumentInTransaction(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, "asdf");
-        Assert.assertEquals(HttpStatus.CREATED, createResponse2.getStatusCode());
-        Assert.assertEquals(createdTransactionId, createResponse2.getHeaders().getLocation().getPath().split("/")[3]);
+        Assertions.assertEquals(HttpStatus.CREATED, createResponse2.getStatusCode());
+        Assertions.assertEquals(createdTransactionId, createResponse2.getHeaders().getLocation().getPath().split("/")[3]);
 
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
         ResponseEntity<Object> transactionResponse = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
-        Assert.assertSame(transactionResponse.getStatusCode(), HttpStatus.OK);
+        Assertions.assertSame(transactionResponse.getStatusCode(), HttpStatus.OK);
     }
 
     @Test
@@ -195,7 +196,7 @@ public class InvoicesApiControllerTest {
         final String companyId = "todo";
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> response = invoicesApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, MimeType.NSG_SALES_INVOICE);
-        Assert.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
+        Assertions.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
     @Test
@@ -203,17 +204,17 @@ public class InvoicesApiControllerTest {
         final String companyId = "123456785";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
         ResponseEntity<Void> createResponse = invoicesApiController.createDocument(httpServletRequestMock, httpServletResponseMock, companyId, resourceAsString("ubl/ehf-2-faktura-1.xml", StandardCharsets.UTF_8));
-        Assert.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
+        Assertions.assertSame(createResponse.getStatusCode(), HttpStatus.CREATED);
         URI location = createResponse.getHeaders().getLocation();
         String[] paths = location.getPath().split("/");
         String createdTransactionId = paths[paths.length-2];
         String createdDocumentId = paths[paths.length-1];
 
         ResponseEntity<Object> response = invoicesApiController.getDocumentById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId);
-        Assert.assertSame(response.getStatusCode(), HttpStatus.OK);
+        Assertions.assertSame(response.getStatusCode(), HttpStatus.OK);
 
         DocumentApi.Document invoice = (DocumentApi.Document) response.getBody();
-        Assert.assertEquals(createdDocumentId, invoice.documentid);
+        Assertions.assertEquals(createdDocumentId, invoice.documentid);
     }
 
     private static String resourceAsString(final String resource, final Charset charset) throws IOException {
