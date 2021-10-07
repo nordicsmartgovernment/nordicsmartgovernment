@@ -25,6 +25,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Tag("ServiceTest")
@@ -158,6 +159,19 @@ public class TransactionsApiControllerTest extends EmbeddedPostgresSetup {
         String xbrlDocument = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" +
                               "<xbrli:xbrl xmlns:xbrli=\"http://www.xbrl.org/2003/instance\"/>";
         ResponseEntity<Void> response = transactionsApiController.putTransactionByDocumentId(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId, createdDocumentId, xbrlDocument);
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        ResponseEntity<Object> response2 = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
+        Assertions.assertEquals(HttpStatus.NOT_ACCEPTABLE, response2.getStatusCode());
+
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
+        ResponseEntity<Object> response3 = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
+        Assertions.assertEquals(HttpStatus.OK, response3.getStatusCode());
+    }
+
+    @Test
+    public void getTransactionOwnersTest() throws IOException {
+        ResponseEntity<List<String>> response = transactionsApiController.getTransactionOwners(httpServletRequestMock, httpServletResponseMock);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 

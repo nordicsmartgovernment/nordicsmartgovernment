@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.validation.constraints.NotNull;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -187,7 +188,7 @@ public class BusinessDocumentDbo {
     }
 
     public byte[] getOriginal() {
-        return original;
+        return original.clone();
     }
 
     public void setOriginalFromString(final DocumentType.Type documentType, final String companyId, final String transactionId, final String original) throws IOException, SAXException {
@@ -527,7 +528,7 @@ public class BusinessDocumentDbo {
         throw new NoSuchElementException();
     }
 
-    public URI getLocation(final TransactionManager transactionManager) {
+    public URI getLocation(final @NotNull TransactionManager transactionManager) {
         TransactionDbo transaction;
         try {
             transaction = getTransaction(transactionManager);
