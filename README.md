@@ -52,35 +52,17 @@ sudo apt-get update
 sudo apt-get upgrade
 ```
 
-## Install java, git, maven, docker og docker-compose
+## Install java, git og maven
 
 ##### For Linux
 ```
-sudo apt-get install default-jdk git maven docker.io docker-compose
+sudo apt-get install default-jdk git maven
 ```
 
 ##### For Windows
 Git for Windows - https://gitforwindows.org/
 
 Apache Maven - http://maven.apache.org/download.cgi
-
-Docker for Windows - https://hub.docker.com/editions/community/docker-ce-desktop-windows
-
-## Steps only be necessary for Linux
-
-##### Configure Docker to start on Boot
-```
-systemctl start docker
-systemctl enable docker
-```
-
-##### Enable executing Docker and Maven without sudo
-```
-sudo adduser ${USER} docker
-sudo adduser ${USER} mvn
-```
-
-Check that they have been added with "id -nG", force the update with a reboot or with "su - ${USER}"
 
 ## Environment variables
 These are needed to connect to the local database
@@ -124,7 +106,7 @@ https://www.pgadmin.org/
 ```
 git clone {repo}
 mvn clean install
-docker-compose up -d
+java -jar target/referenceimplementation-1.0.5-SNAPSHOT.jar
 ```
 -d enables "detached mode"
 

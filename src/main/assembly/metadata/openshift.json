@@ -1,0 +1,9 @@
+{
+  "domain": "nsg",
+  "docker": {
+    "maintainer": "Bjørn Grøva <bjg@brreg.no>"
+  },
+  "java": {
+    "applicationArgs": "--logging.config=${LOGBACK_FILE}"
+  }
+}
