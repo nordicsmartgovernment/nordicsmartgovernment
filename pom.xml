@@ -33,7 +33,6 @@
 
         <sonar.host.url>http://sonar1.brreg.no:9000</sonar.host.url>
         <sonar.maven.version>6.2</sonar.maven.version>
-        <sonar.coverage.exclusions>**/AccountDbo.java,**/CurrencyDbo.java,**/JournalDbo.java</sonar.coverage.exclusions>
 
         <unittest.tag/>
         <servicetest.tag/>
@@ -349,13 +348,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>**/AccountDbo.java</exclude>
-                        <exclude>**/CurrencyDbo.java</exclude>
-                        <exclude>**/JournalDbo.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
 
             <plugin>

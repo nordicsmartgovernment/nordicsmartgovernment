@@ -2,6 +2,7 @@ package no.nsg.repository.dbo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.nsg.spring.ExcludeFromJacocoGeneratedReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,7 @@ import java.sql.*;
 import java.util.*;
 
 
+@ExcludeFromJacocoGeneratedReport
 @JsonIgnoreProperties({"id"}) /* Default serialization insists on appending this lowercase id element?!? We do not want it */
 public class CurrencyDbo {
     public static final int UNINITIALIZED = 0;
