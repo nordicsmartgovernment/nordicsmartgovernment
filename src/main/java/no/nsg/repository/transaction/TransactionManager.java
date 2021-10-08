@@ -6,7 +6,6 @@ import no.nsg.repository.TransformationManager;
 import no.nsg.repository.dbo.BusinessDocumentDbo;
 import no.nsg.repository.dbo.TransactionDbo;
 import no.nsg.repository.document.formats.DocumentFormat;
-import no.nsg.spring.ExcludeFromJacocoGeneratedReport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +59,6 @@ public class TransactionManager {
         return new TransactionDbo(connection, id);
     }
 
-    @ExcludeFromJacocoGeneratedReport
     public TransactionDbo getTransactionByGuid(final String guid) throws SQLException {
         TransactionDbo transaction = null;
         try (Connection connection = connectionManager.getConnection()) {
