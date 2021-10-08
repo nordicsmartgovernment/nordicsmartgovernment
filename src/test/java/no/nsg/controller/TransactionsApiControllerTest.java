@@ -64,7 +64,7 @@ public class TransactionsApiControllerTest extends EmbeddedPostgresSetup {
     @Test
     public void applicationVersion()
     {
-        Assertions.assertFalse(ApplicationInfo.VERSION.isEmpty());
+        Assertions.assertFalse(new ApplicationInfo().VERSION.isEmpty());
     }
 
     @Test

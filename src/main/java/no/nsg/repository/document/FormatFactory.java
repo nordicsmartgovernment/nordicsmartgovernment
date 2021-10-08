@@ -9,74 +9,89 @@ import static no.nsg.repository.document.formats.DocumentFormat.Format.*;
 public class FormatFactory {
 
     public static DocumentFormat create(DocumentFormat.Format format) {
+        DocumentFormat documentFormat = new UnknownDocumentFormat();
         switch (format) {
-            case CAMT_053_001_08:
-                return new CamtFormat();
+            case CAMT_053_001_08: {
+                documentFormat = new CamtFormat();
+                break;
+            }
 
             case FINVOICE_PURCHASE_INVOICE:
             case FINVOICE_PURCHASE_RECEIPT:
             case FINVOICE_SALES_INVOICE:
-            case FINVOICE_SALES_RECEIPT:
-                return new FinvoiceFormat();
+            case FINVOICE_SALES_RECEIPT: {
+                documentFormat = new FinvoiceFormat();
+                break;
+            }
 
             case UBL_2_1_SALES_INVOICE:
-            case UBL_2_1_PURCHASE_INVOICE:
-                return new UBLInvoiceFormat();
+            case UBL_2_1_PURCHASE_INVOICE: {
+                documentFormat = new UBLInvoiceFormat();
+                break;
+            }
 
             case UBL_2_1_SALES_ORDER:
-            case UBL_2_1_PURCHASE_ORDER:
-                return new UBLOrderFormat();
-
-            default:
-                return new UnknownDocumentFormat();
+            case UBL_2_1_PURCHASE_ORDER: {
+                documentFormat = new UBLOrderFormat();
+                break;
+            }
         }
+        return documentFormat;
     }
 
     public static DocumentFormat.Format guessFormat(final DocumentType.Type documentType, final String document) {
+        DocumentFormat.Format format = null;
         if (document.contains("<Finvoice ")) {
             if (document.contains("<InvoiceTypeCode>REC")) {
                 if (DocumentType.Type.SALES_RECEIPT == documentType) {
-                    return FINVOICE_SALES_RECEIPT;
+                    format = FINVOICE_SALES_RECEIPT;
                 } else if (DocumentType.Type.PURCHASE_RECEIPT == documentType) {
-                    return FINVOICE_PURCHASE_RECEIPT;
+                    format = FINVOICE_PURCHASE_RECEIPT;
                 }
             } else {
                 if (DocumentType.Type.SALES_INVOICE == documentType) {
-                    return FINVOICE_SALES_INVOICE;
+                    format = FINVOICE_SALES_INVOICE;
                 } else if (DocumentType.Type.PURCHASE_INVOICE == documentType) {
-                    return FINVOICE_PURCHASE_INVOICE;
+                    format = FINVOICE_PURCHASE_INVOICE;
                 }
             }
         } else if (document.contains("xmlns=\"urn:iso:std:iso:20022:tech:xsd:camt.053.")) {
-            return DocumentFormat.Format.CAMT_053_001_08;
+            format = DocumentFormat.Format.CAMT_053_001_08;
         } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2\"") || document.contains("<Invoice ")) {
             if (DocumentType.Type.SALES_INVOICE == documentType) {
-                return DocumentFormat.Format.UBL_2_1_SALES_INVOICE;
+                format = DocumentFormat.Format.UBL_2_1_SALES_INVOICE;
             } else if (DocumentType.Type.PURCHASE_INVOICE == documentType) {
-                return DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE;
+                format = DocumentFormat.Format.UBL_2_1_PURCHASE_INVOICE;
             }
         } else if (document.contains("xmlns=\"urn:oasis:names:specification:ubl:schema:xsd:Order-2\"") || document.contains("<Order ")) {
             if (DocumentType.Type.SALES_ORDER == documentType) {
-                return DocumentFormat.Format.UBL_2_1_SALES_ORDER;
+                format = DocumentFormat.Format.UBL_2_1_SALES_ORDER;
             } else if (DocumentType.Type.PURCHASE_ORDER == documentType) {
-                return DocumentFormat.Format.UBL_2_1_PURCHASE_ORDER;
+                format = DocumentFormat.Format.UBL_2_1_PURCHASE_ORDER;
             }
         } else if (document.contains("<xbrli:xbrl")) {
-            return DocumentFormat.Format.XBRL_GL;
+            format = DocumentFormat.Format.XBRL_GL;
         } else {
-            return DocumentFormat.Format.OTHER;
+            format = DocumentFormat.Format.OTHER;
         }
-        throw new IllegalArgumentException("Could not find document format from type" + documentType.name());
+
+        if (format == null) {
+            throw new IllegalArgumentException("Could not find document format from type" + documentType.name());
+        }
+
+        return format;
     }
 
     public static boolean isCompatible(final DocumentType.Type documentType, final DocumentFormat.Format documentFormat) {
+        boolean isCompatible;
         if (DocumentType.isInvoice(documentType)) {
-            return DocumentFormat.isInvoice(documentFormat);
+            isCompatible =  DocumentFormat.isInvoice(documentFormat);
         } else if (DocumentType.isOrder(documentType)) {
-            return DocumentFormat.isOrder(documentFormat);
+            isCompatible =  DocumentFormat.isOrder(documentFormat);
         } else {
-            return (!DocumentFormat.isInvoice(documentFormat) && !DocumentFormat.isOrder(documentFormat));
+            isCompatible =  (!DocumentFormat.isInvoice(documentFormat) && !DocumentFormat.isOrder(documentFormat));
         }
+        return isCompatible;
     }
 
 }

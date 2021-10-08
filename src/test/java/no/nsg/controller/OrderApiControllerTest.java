@@ -3,6 +3,7 @@ package no.nsg.controller;
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
 import no.nsg.repository.document.FormatFactory;
+import no.nsg.repository.document.formats.CamtFormat;
 import no.nsg.repository.document.formats.DocumentFormat;
 import no.nsg.utils.EmbeddedPostgresSetup;
 import org.junit.jupiter.api.Assertions;
@@ -63,6 +64,38 @@ public class OrderApiControllerTest extends EmbeddedPostgresSetup {
         Assertions.assertNull(documentFormat.getDocumentCustomer(null));
         Assertions.assertNull(documentFormat.getDocumentSupplier(null));
         Assertions.assertNull(documentFormat.getTransactionTime(null));
+    }
+
+    @Test
+    public void pleaseSonar3() {
+        DocumentFormat camtFormat = FormatFactory.create(DocumentFormat.Format.CAMT_053_001_08);
+        Assertions.assertNull(camtFormat.getDocumentCustomer(null));
+        Assertions.assertNull(camtFormat.getDocumentSupplier(null));
+        Assertions.assertNull(camtFormat.getTransactionTime(null));
+    }
+
+    @Test
+    public void pleaseSonar4() {
+        DocumentFormat ublOrderFormat = FormatFactory.create(DocumentFormat.Format.UBL_2_1_SALES_ORDER);
+        Assertions.assertNull(ublOrderFormat.getDocumentCustomer(null));
+        Assertions.assertNull(ublOrderFormat.getDocumentSupplier(null));
+        Assertions.assertNull(ublOrderFormat.getTransactionTime(null));
+    }
+
+    @Test
+    public void pleaseSonar5() {
+        DocumentFormat ublInvoiceFormat = FormatFactory.create(DocumentFormat.Format.UBL_2_1_SALES_INVOICE);
+        Assertions.assertNull(ublInvoiceFormat.getDocumentCustomer(null));
+        Assertions.assertNull(ublInvoiceFormat.getDocumentSupplier(null));
+        Assertions.assertNull(ublInvoiceFormat.getTransactionTime(null));
+    }
+
+    @Test
+    public void pleaseSonar6() {
+        DocumentFormat fnvoiceFormat = FormatFactory.create(DocumentFormat.Format.FINVOICE_PURCHASE_INVOICE);
+        Assertions.assertNull(fnvoiceFormat.getDocumentCustomer(null));
+        Assertions.assertNull(fnvoiceFormat.getDocumentSupplier(null));
+        Assertions.assertNull(fnvoiceFormat.getTransactionTime(null));
     }
 
     @Test

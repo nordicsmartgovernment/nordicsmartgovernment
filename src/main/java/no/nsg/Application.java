@@ -2,14 +2,6 @@ package no.nsg;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
-import liquibase.Contexts;
-import liquibase.LabelExpression;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import no.nsg.repository.ConnectionManager;
 import no.nsg.generated.spring.ApplicationInfo;
 import no.nsg.spring.CachableDispatcherServlet;
@@ -25,9 +17,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import java.sql.Connection;
-import java.sql.SQLException;
 
 
 @SpringBootApplication
@@ -55,6 +44,7 @@ public class Application {
     @EventListener(ApplicationReadyEvent.class)
     public void initializeDatabase() {
         connectionManager.initializeDatabase();
+        LOGGER.info("Database initialized");
     }
 
     public static void main(String[] args) {
