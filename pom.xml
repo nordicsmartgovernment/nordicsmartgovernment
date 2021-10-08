@@ -348,6 +348,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <excludes>
+                        <exclude>**/AccountDbo.java</exclude>
+                        <exclude>**/CurrencyDbo.java</exclude>
+                        <exclude>**/JournalDbo.java</exclude>
+                    </excludes>
+                </configuration>
             </plugin>
 
             <plugin>
