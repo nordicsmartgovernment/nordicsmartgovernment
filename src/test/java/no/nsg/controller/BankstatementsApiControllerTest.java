@@ -80,6 +80,10 @@ public class BankstatementsApiControllerTest extends EmbeddedPostgresSetup {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.JSON);
         ResponseEntity<Object> response = bankstatementsApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, MimeType.NSG_BANKSTATEMENT);
         Assertions.assertTrue(response.getStatusCode()==HttpStatus.OK || response.getStatusCode()==HttpStatus.NO_CONTENT);
+
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XML);
+        ResponseEntity<Object> response2 = bankstatementsApiController.getDocuments(httpServletRequestMock, httpServletResponseMock, companyId, MimeType.NSG_BANKSTATEMENT);
+        Assertions.assertTrue(response2.getStatusCode()==HttpStatus.OK || response2.getStatusCode()==HttpStatus.NO_CONTENT);
     }
 
     @Test

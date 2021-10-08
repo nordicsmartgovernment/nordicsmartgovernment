@@ -1,5 +1,6 @@
 package no.nsg.controller;
 
+import no.nsg.generated.spring.ApplicationInfo;
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
 import no.nsg.utils.EmbeddedPostgresSetup;
@@ -58,6 +59,12 @@ public class TransactionsApiControllerTest extends EmbeddedPostgresSetup {
     public void happyDay()
     {
         Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void applicationVersion()
+    {
+        Assertions.assertFalse(ApplicationInfo.VERSION.isEmpty());
     }
 
     @Test
@@ -167,6 +174,10 @@ public class TransactionsApiControllerTest extends EmbeddedPostgresSetup {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
         ResponseEntity<Object> response3 = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
         Assertions.assertEquals(HttpStatus.OK, response3.getStatusCode());
+
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.SAF_T);
+        ResponseEntity<Object> response4 = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, companyId, createdTransactionId);
+        Assertions.assertEquals(HttpStatus.OK, response4.getStatusCode());
     }
 
     @Test

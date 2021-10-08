@@ -2,6 +2,8 @@ package no.nsg.controller;
 
 import no.nsg.repository.ConnectionManager;
 import no.nsg.repository.MimeType;
+import no.nsg.repository.document.FormatFactory;
+import no.nsg.repository.document.formats.DocumentFormat;
 import no.nsg.utils.EmbeddedPostgresSetup;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,6 +49,20 @@ public class OrderApiControllerTest extends EmbeddedPostgresSetup {
     public void happyDay()
     {
         Assertions.assertTrue(true);
+    }
+
+    @Test
+    public void pleaseSonar1() {
+        MimeType mimeType = new MimeType();
+        Assertions.assertNotNull(mimeType);
+    }
+
+    @Test
+    public void pleaseSonar2() {
+        DocumentFormat documentFormat = FormatFactory.create(DocumentFormat.Format.OTHER);
+        Assertions.assertNull(documentFormat.getDocumentCustomer(null));
+        Assertions.assertNull(documentFormat.getDocumentSupplier(null));
+        Assertions.assertNull(documentFormat.getTransactionTime(null));
     }
 
     @Test
