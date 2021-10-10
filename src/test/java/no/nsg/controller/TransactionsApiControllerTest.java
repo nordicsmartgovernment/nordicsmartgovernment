@@ -181,7 +181,7 @@ public class TransactionsApiControllerTest extends EmbeddedPostgresSetup {
     }
 
     @Test
-    public void getTransactionOwnersTest() throws IOException {
+    public void getTransactionOwnersTest() {
         ResponseEntity<List<String>> response = transactionsApiController.getTransactionOwners(httpServletRequestMock, httpServletResponseMock);
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
     }
