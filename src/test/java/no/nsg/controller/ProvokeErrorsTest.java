@@ -82,14 +82,37 @@ public class ProvokeErrorsTest extends EmbeddedPostgresSetup {
     }
 
     @Test
-    public void patchTransactionByIdProvokeErrorTest() throws SQLException, IOException, SAXException {
+    public void getTransactionByIdProvokeErrorTest1() throws SQLException, IOException, SAXException {
         Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
         Mockito.when(transactionManager.getTransactionDocumentAsXbrlGl((String) Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IllegalArgumentException("Mock"));
         ResponseEntity<Object> response2 = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, null, null);
         Assertions.assertEquals(HttpStatus.NOT_ACCEPTABLE, response2.getStatusCode());
     }
 
-    
+    @Test
+    public void getTransactionByIdProvokeErrorTest2() throws SQLException, IOException, SAXException {
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
+        Mockito.when(transactionManager.getTransactionDocumentAsXbrlGl((String) Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new RuntimeException("Mock"));
+        ResponseEntity<Object> response2 = transactionsApiController.getTransactionById(httpServletRequestMock, httpServletResponseMock, null, null);
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response2.getStatusCode());
+    }
+
+    @Test
+    public void getTransactionsProvokeErrorTest1() throws SQLException {
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
+        Mockito.when(transactionManager.getTransactionIds(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IllegalArgumentException("Mock"));
+        ResponseEntity<Object> response2 = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, null);
+        Assertions.assertEquals(HttpStatus.NOT_ACCEPTABLE, response2.getStatusCode());
+    }
+
+    @Test
+    public void getTransactionsProvokeErrorTest2() throws SQLException {
+        Mockito.when(httpServletRequestMock.getHeader("Accept")).thenReturn(MimeType.XBRL_GL);
+        Mockito.when(transactionManager.getTransactionIds(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new RuntimeException("Mock"));
+        ResponseEntity<Object> response2 = transactionsApiController.getTransactions(httpServletRequestMock, httpServletResponseMock, null, null, null, null, null);
+        Assertions.assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response2.getStatusCode());
+    }
+
     private void initializeInvoiceData() throws IOException {
         final String customerId = "983294";
         Mockito.when(httpServletRequestMock.getContentType()).thenReturn(MimeType.NSG_SALES_INVOICE);
