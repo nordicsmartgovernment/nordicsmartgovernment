@@ -1,5 +1,5 @@
 def jenkinsfile
-def version = '2'
+def version = 'tmp-deploy-nsg'
 def credentialsId = 'git'
 stage('load pipeline') {
     jenkinsfile = fileLoader.fromGit('templates/leveranse-maven', 'https://bitbucket.brreg.no/scm/raas/pipeline-scripts.git', version, credentialsId)
