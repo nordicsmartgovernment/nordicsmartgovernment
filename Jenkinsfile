@@ -15,7 +15,7 @@ def deployOrder = [
 def roleyOptions = [
     "appname"    : "nordicsmartgovernment",
     "filename"   : "apps/nordicsmartgovernment",
-    "domain"     : "nsg",
+    "domain"     : "regsys",
     "deployments": deployOrder
 ]
 def overrides = [
