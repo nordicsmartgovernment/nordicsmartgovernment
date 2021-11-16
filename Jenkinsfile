@@ -8,6 +8,7 @@ def overrides = [
         "noCucumber": true,
         "buildLoglevel": "DEBUG",
         "cleanJVMOpts": true,
-        "deployFromBranch": "develop"
+        "deployFromBranch": "develop",
+        "ignoreQuality": true
 ]
 jenkinsfile.run(version, overrides)
