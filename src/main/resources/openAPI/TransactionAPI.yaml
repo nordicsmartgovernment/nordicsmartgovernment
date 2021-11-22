@@ -15,7 +15,7 @@ externalDocs:
 servers:
   - url: 'https://api.nordicsmartgovernment.org'
     description: The reference implementation server
-  - url: 'https://nsg.fellesdatakatalog.brreg.no/swagger-ui.html'
+  - url: 'https://api.nordicsmartgovernment.org/swagger-ui.html'
     description: The Demo-environment Swagger UI endpoint
 tags:
   - name: transactionCollection
