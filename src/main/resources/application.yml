@@ -18,8 +18,7 @@ springdoc:
     path: v3/api-docs
   swagger-ui:
     url: v3/api-docs
-    path: swagger-ui/index.html
-    
+
 #spring:
 #  autoconfigure:
 #    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
