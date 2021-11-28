@@ -4,7 +4,7 @@
 
     <groupId>no.nsg</groupId>
     <artifactId>referenceimplementation</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -75,7 +75,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.5.10</version>
+            <version>1.5.12</version>
         </dependency>
 
         <!-- Database -->
