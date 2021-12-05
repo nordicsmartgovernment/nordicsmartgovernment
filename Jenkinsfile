@@ -22,7 +22,7 @@ def overrides = [
         "noCucumber": true,
         "buildLoglevel": "DEBUG",
         "cleanJVMOpts": true,
-        "deployFromBranch": "develop",
+        "deployFromBranch": "fix-swagger-urls",
         "ignoreQuality": true,
         roleyOptions: roleyOptions
 ]

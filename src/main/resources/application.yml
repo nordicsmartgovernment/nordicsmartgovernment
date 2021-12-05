@@ -13,6 +13,11 @@ server:
   http2:
     enabled: true
 
+logging:
+  level: 
+    root: DEBUG
+
+
 #spring:
 #  autoconfigure:
 #    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
