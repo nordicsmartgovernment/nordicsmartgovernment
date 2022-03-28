@@ -13,19 +13,14 @@ server:
   http2:
     enabled: true
 
-management:
-  endpoint:
-    mappings:
-      enabled: true
-    web:
-      exposure:
-        include: health,mappings
-  endpoints:
-    mappings:
-      enabled: true
-    web:
-      exposure:
-        include: health,mappings
+#Uncomment to enable "/actuator/mappings"-URL
+#management:
+#  endpoints:
+#    mappings:
+#      enabled: true
+#    web:
+#      exposure:
+#        include: health,mappings
 
 
 #spring:

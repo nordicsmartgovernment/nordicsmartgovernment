@@ -4,7 +4,7 @@
 
     <groupId>no.nsg</groupId>
     <artifactId>referenceimplementation</artifactId>
-    <version>1.0.18</version>
+    <version>1.0.19</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -54,11 +54,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-<!--        <dependency>
-            <groupId>no.brreg.spring</groupId>
-            <artifactId>spring-boot-2-actuator-prometheus</artifactId>
-            <version>1.0.0</version>
-        </dependency> -->
 
         <dependency>
             <groupId>net.sf.saxon</groupId>
@@ -134,11 +129,6 @@
         </dependency>
 
         <!-- Generated code dependencies -->
-<!--        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
-        </dependency> -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-core</artifactId>
