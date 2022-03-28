@@ -20,6 +20,13 @@ management:
     web:
       exposure:
         include: health,mappings
+  endpoints:
+    mappings:
+      enabled: true
+    web:
+      exposure:
+        include: health,mappings
+
 
 #spring:
 #  autoconfigure:

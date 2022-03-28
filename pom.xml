@@ -4,7 +4,7 @@
 
     <groupId>no.nsg</groupId>
     <artifactId>referenceimplementation</artifactId>
-    <version>1.0.16</version>
+    <version>1.0.17</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -54,11 +54,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>no.brreg.spring</groupId>
             <artifactId>spring-boot-2-actuator-prometheus</artifactId>
             <version>1.0.0</version>
-        </dependency>
+        </dependency> -->
 
         <dependency>
             <groupId>net.sf.saxon</groupId>
