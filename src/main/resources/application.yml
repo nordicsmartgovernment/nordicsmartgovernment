@@ -13,6 +13,14 @@ server:
   http2:
     enabled: true
 
+management:
+  endpoint:
+    mappings:
+      enabled: true
+    web:
+      exposure:
+        include: health,mappings
+
 #spring:
 #  autoconfigure:
 #    exclude: org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration
