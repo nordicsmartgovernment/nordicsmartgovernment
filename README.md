@@ -12,17 +12,17 @@ The Reference Implementation transforms all the different document formats to XB
 **Be aware** that there are **NO GUARANTEES** for stability and availability of the Reference Implementation or it's data! Please [let us know](mailto:steinar.skagemo@brreg.no) in advance if you are planning to do some extensive testing of the reference implementation in a specific period, so that we can try to avoid re-setting the data while you are testing.
 
 ## Exploring the API
-The API can be explored using [Swagger UI](https://nsg.fellesdatakatalog.brreg.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#) that is based on our [Open API Specification](https://nsg.fellesdatakatalog.brreg.no/v3/api-docs) of the API.
+The API can be explored using [Swagger UI](https://nsg.apps.ocp-ppe.regsys.brreg.no/swagger-ui/index.html) that is based on our [Open API Specification](https://nsg.apps.ocp-ppe.regsys.brreg.no/v3/api-docs) of the API.
 
 Example Curl-request that will return a list of transactionIds for the company with companyId 20202020
 ```bash
-curl -X GET "https://nsg.fellesdatakatalog.brreg.no/transactions/20202020?invoiceType=all" -H "accept: application/json"
+curl -X GET "https://nsg.apps.ocp-ppe.regsys.brreg.no/transactions/20202020?invoiceType=all" -H "accept: application/json"
 ```
 
 Example Curl-request that will return details about a specific transaction in XBRL GL:
 
 ```bash
-curl -X GET "https://nsg.fellesdatakatalog.brreg.no/transactions/20202020/0164ee71-1334-4e7e-9002-8830db6d61ab" -H "accept: application/xbrl-instance+xml"
+curl -X GET "nsg.apps.ocp-ppe.regsys.brreg.no/transactions/20202020/0164ee71-1334-4e7e-9002-8830db6d61ab" -H "accept: application/xbrl-instance+xml"
 ```
 
 ## Test data
@@ -32,7 +32,7 @@ The Reference Implementation comes with some test data that will be reset whenev
 These data are purchase and sales invoices and bank statements for a company with companyId 20202020 (used in the examples above), and purchase and sales invoices for a company with companyId 1252525-9. [More details](https://docs.google.com/document/d/12a1i9_e4s-zC_JH-KQeuvCy9taYPO0aLUDR6DEzobQM/edit#heading=h.gizf2iiupa45)
 
 ### Bring your own test-data
-By POST-ing invoices and other supported business transaction documents, you will add data to the reference implementation that can later be accessed either as the original documents (see [document-API](https://nsg.fellesdatakatalog.brreg.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/document-api) or as standardised transaction information (see [transactions-API](https://nsg.fellesdatakatalog.brreg.no/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config#/transactions-api). 
+By POST-ing invoices and other supported business transaction documents, you will add data to the reference implementation that can later be accessed either as the original documents (see [document-API](https://nsg.apps.ocp-ppe.regsys.brreg.no/swagger-ui/index.html#/document-api) or as standardised transaction information (see [transactions-API](https://nsg.apps.ocp-ppe.regsys.brreg.no/swagger-ui/index.html#/transactions-api). 
 
 ## More detailed documentation
 The NSG-project has created a [more detailed introduction](https://docs.google.com/document/d/12a1i9_e4s-zC_JH-KQeuvCy9taYPO0aLUDR6DEzobQM/edit#) to the purpose and the functionality of the NSG Reference Implementation.
