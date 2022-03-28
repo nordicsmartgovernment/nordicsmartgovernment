@@ -4,7 +4,7 @@
 
     <groupId>no.nsg</groupId>
     <artifactId>referenceimplementation</artifactId>
-    <version>1.0.17</version>
+    <version>1.0.18</version>
     <packaging>jar</packaging>
 
     <parent>
@@ -134,10 +134,20 @@
         </dependency>
 
         <!-- Generated code dependencies -->
-        <dependency>
+<!--        <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
             <version>3.0.0</version>
+        </dependency> -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-core</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.20</version>
         </dependency>
 
         <dependency>
